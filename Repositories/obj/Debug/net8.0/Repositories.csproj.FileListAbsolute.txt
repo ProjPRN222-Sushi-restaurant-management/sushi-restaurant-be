@@ -1,0 +1,17 @@
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\bin\Debug\net8.0\Repositories.deps.json
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\bin\Debug\net8.0\Repositories.dll
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\bin\Debug\net8.0\Repositories.pdb
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\bin\Debug\net8.0\BusinessObjects.dll
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\bin\Debug\net8.0\DataAccessObjects.dll
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\bin\Debug\net8.0\BusinessObjects.pdb
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\bin\Debug\net8.0\DataAccessObjects.pdb
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Repositories.csproj.AssemblyReference.cache
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Repositories.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Repositories.AssemblyInfoInputs.cache
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Repositories.AssemblyInfo.cs
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Repositories.csproj.CoreCompileInputs.cache
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Reposito.787EC4B2.Up2Date
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Repositories.dll
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\refint\Repositories.dll
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\Repositories.pdb
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Repositories\obj\Debug\net8.0\ref\Repositories.dll

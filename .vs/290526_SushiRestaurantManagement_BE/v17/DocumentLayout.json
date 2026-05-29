@@ -90,8 +90,7 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IOrderRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:06:47.997Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:06:47.997Z"
             },
             {
               "$type": "Document",
@@ -101,7 +100,7 @@
               "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Program.cs",
               "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Program.cs",
               "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-29T07:02:06.075Z",
               "EditorCaption": ""
@@ -116,8 +115,7 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IRestaurantTableRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:07:30.823Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:07:30.823Z"
             },
             {
               "$type": "Document",
@@ -129,8 +127,7 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IOrderItemRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:07:01.833Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:07:01.833Z"
             },
             {
               "$type": "Document",
@@ -142,8 +139,7 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IStaffRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:05:38.452Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:05:38.452Z"
             },
             {
               "$type": "Document",
@@ -155,8 +151,7 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IMenuItemRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:06:05.523Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:06:05.523Z"
             },
             {
               "$type": "Document",
@@ -168,8 +163,7 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IMenuCategoryRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:06:29.96Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:06:29.96Z"
             },
             {
               "$type": "Document",
@@ -181,8 +175,7 @@
               "RelativeToolTip": "DataAccessObjects\\RestaurantSystemDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAEgBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:08:03.729Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:08:03.729Z"
             },
             {
               "$type": "Document",
@@ -194,8 +187,7 @@
               "RelativeToolTip": "BusinessObjects\\Models\\Booking.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T08:11:08.993Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T08:11:08.993Z"
             },
             {
               "$type": "Document",
@@ -207,8 +199,7 @@
               "RelativeToolTip": "Repositories\\Interfaces\\IBookingRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T07:05:15.802Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T07:05:15.802Z"
             },
             {
               "$type": "Document",
@@ -220,8 +211,7 @@
               "RelativeToolTip": "BusinessObjects\\Models\\Order.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-29T06:59:51.981Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T06:59:51.981Z"
             }
           ]
         },

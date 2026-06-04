@@ -1,12 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using DataAccessObjects;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Interfaces;
 
 namespace Repositories.Implementations
 {
-    internal class OrderRepository
+    public class OrderRepository : IOrderRepository
     {
+        private readonly RestaurantSystemDbContext _context;
+
+        public OrderRepository(RestaurantSystemDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IReadOnlyList<Order>> GetAllOrdersAsync(
+            CancellationToken ct = default)
+        {
+            return await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.Customer)
+                .Include(o => o.Table)
+                .Include(o => o.Booking)
+                .OrderByDescending(o => o.OrderId)
+                .ToListAsync(ct);
+        }
+
+        public async Task<Order> GetOrderById(
+            int id,
+            CancellationToken ct = default)
+        {
+            var order = await _context.Orders
+                .AsNoTracking()
+                .Include(o => o.Customer)
+                .Include(o => o.Table)
+                .Include(o => o.Booking)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.MenuItem)
+                .FirstOrDefaultAsync(o => o.OrderId == id, ct);
+
+            return order ?? throw new KeyNotFoundException($"Order {id} not found.");
+        }
     }
 }

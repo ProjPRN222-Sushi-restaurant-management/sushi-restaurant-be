@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+	  
     <ProjectReference Include="..\BusinessObjects\BusinessObjects.csproj" />
     <ProjectReference Include="..\DataAccessObjects\DataAccessObjects.csproj" />
     <ProjectReference Include="..\Repositories\Repositories.csproj" />

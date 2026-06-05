@@ -3,28 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\repositories\\interfaces\\imenucategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|solutionrelative:repositories\\interfaces\\imenucategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\auth\\login.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\auth\\login.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\repositories\\implementations\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|solutionrelative:repositories\\implementations\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\repositories\\implementations\\restauranttablerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|solutionrelative:repositories\\implementations\\restauranttablerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\repositories\\implementations\\staffrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|solutionrelative:repositories\\implementations\\staffrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\repositories\\implementations\\menucategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|solutionrelative:repositories\\implementations\\menucategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\repositories\\interfaces\\icustomerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{732014C0-7B00-400E-9882-D66F36C2B9B4}|Repositories\\Repositories.csproj|solutionrelative:repositories\\interfaces\\icustomerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\auth\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\auth\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 594,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,83 +46,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "IMenuCategoryRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Interfaces\\IMenuCategoryRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Interfaces\\IMenuCategoryRepository.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Interfaces\\IMenuCategoryRepository.cs",
-              "RelativeToolTip": "Repositories\\Interfaces\\IMenuCategoryRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T09:53:04.479Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ICustomerRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Interfaces\\ICustomerRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Interfaces\\ICustomerRepository.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Interfaces\\ICustomerRepository.cs",
-              "RelativeToolTip": "Repositories\\Interfaces\\ICustomerRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T09:39:46.042Z"
-            }
-          ]
-        },
-        {
-          "DockedWidth": 531,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "OrderRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\OrderRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Implementations\\OrderRepository.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\OrderRepository.cs",
-              "RelativeToolTip": "Repositories\\Implementations\\OrderRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Title": "Register.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwAYAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-03T14:17:49.158Z",
+              "WhenOpened": "2026-06-05T03:41:07.123Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "StaffRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\StaffRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Implementations\\StaffRepository.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\StaffRepository.cs",
-              "RelativeToolTip": "Repositories\\Implementations\\StaffRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Login.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwCYAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-03T14:17:46.983Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "RestaurantTableRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\RestaurantTableRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Implementations\\RestaurantTableRepository.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\RestaurantTableRepository.cs",
-              "RelativeToolTip": "Repositories\\Implementations\\RestaurantTableRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-03T14:17:45.738Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MenuCategoryRepository.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\MenuCategoryRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Implementations\\MenuCategoryRepository.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Implementations\\MenuCategoryRepository.cs",
-              "RelativeToolTip": "Repositories\\Implementations\\MenuCategoryRepository.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T09:53:19.573Z"
+              "WhenOpened": "2026-06-05T03:19:31.021Z",
+              "EditorCaption": ""
             }
           ]
         },

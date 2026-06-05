@@ -17,3 +17,4 @@ C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantM
 C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Services\obj\Debug\net8.0\refint\Services.dll
 C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Services\obj\Debug\net8.0\Services.pdb
 C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Services\obj\Debug\net8.0\ref\Services.dll
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\Services\obj\Debug\net8.0\Services.sourcelink.json

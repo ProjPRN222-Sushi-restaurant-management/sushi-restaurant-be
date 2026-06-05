@@ -18,4 +18,10 @@ public class OrderService : IOrderService
 
     public Task<Order> GetOrderByIdAsync(int id, CancellationToken ct = default)
         => _orderRepository.GetOrderById(id, ct);
+
+    public Task AddOrderAsync(Order order, CancellationToken ct = default)
+        => _orderRepository.AddOrderAsync(order, ct);
+
+    public Task SaveChangesAsync(CancellationToken ct = default)
+        => _orderRepository.SaveChangesAsync(ct);
 }

@@ -6,4 +6,6 @@ public interface IOrderService
 {
     Task<IReadOnlyList<Order>> GetAllOrdersAsync(CancellationToken ct = default);
     Task<Order> GetOrderByIdAsync(int id, CancellationToken ct = default);
+    Task AddOrderAsync(Order order, CancellationToken ct = default);
+    Task SaveChangesAsync(CancellationToken ct = default);
 }

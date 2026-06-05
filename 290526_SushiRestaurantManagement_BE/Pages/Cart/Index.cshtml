@@ -1,0 +1,48 @@
+﻿@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Cart.IndexModel
+
+<h2>Giỏ hàng</h2>
+
+@if (!Model.CartItems.Any())
+{
+    <p>Giỏ hàng đang trống.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Món</th>
+                <th>Ghi chú / tùy biến</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Tổng</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.CartItems)
+        {
+            <tr>
+                <td>@item.ItemName</td>
+                <td>@item.Note</td>
+                <td>@item.UnitPrice.ToString("N0") đ</td>
+                <td>@item.Quantity</td>
+                <td>@item.Total.ToString("N0") đ</td>
+                <td>
+                    <form method="post" asp-page-handler="Remove">
+                        <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                        <button class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h4>Tổng tiền dự kiến: @Model.TotalAmount.ToString("N0") đ</h4>
+
+    <a asp-page="/Cart/Checkout" class="btn btn-success">
+        Gửi order
+    </a>
+}

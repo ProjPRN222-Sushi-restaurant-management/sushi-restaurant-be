@@ -1,0 +1,16 @@
+﻿@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Booking.SuccessModel
+
+<h2>Đặt bàn thành công</h2>
+
+<div class="alert alert-success">
+    @TempData["BookingSuccess"]
+</div>
+
+<a asp-page="/Menu/Index" asp-route-bookingId="@Model.BookingId" class="btn btn-success">
+    Order món trước khi đến nhà hàng
+</a>
+
+<a asp-page="/Index" class="btn btn-secondary">
+    Về trang chủ
+</a>

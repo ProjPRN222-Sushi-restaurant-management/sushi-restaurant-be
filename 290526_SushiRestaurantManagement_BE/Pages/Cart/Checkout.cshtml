@@ -1,0 +1,42 @@
+﻿@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Cart.CheckoutModel
+
+<h2>Xác nhận order</h2>
+
+@if (TempData["OrderSuccess"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["OrderSuccess"]
+    </div>
+}
+
+@if (Model.CartItems.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Món</th>
+                <th>Tùy chọn</th>
+                <th>Số lượng</th>
+                <th>Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.CartItems)
+        {
+            <tr>
+                <td>@item.ItemName</td>
+                <td>@item.Note</td>
+                <td>@item.Quantity</td>
+                <td>@item.Total.ToString("N0") đ</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h4>Tổng tiền dự kiến: @Model.TotalAmount.ToString("N0") đ</h4>
+
+    <form method="post">
+        <button class="btn btn-success">Gửi order</button>
+    </form>
+}

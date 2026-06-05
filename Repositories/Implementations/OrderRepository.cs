@@ -41,5 +41,15 @@ namespace Repositories.Implementations
 
             return order ?? throw new KeyNotFoundException($"Order {id} not found.");
         }
+
+        public async Task AddOrderAsync(Order order, CancellationToken ct = default)
+        {
+            await _context.Orders.AddAsync(order, ct);
+        }
+
+        public async Task SaveChangesAsync(CancellationToken ct = default)
+        {
+            await _context.SaveChangesAsync(ct);
+        }
     }
 }

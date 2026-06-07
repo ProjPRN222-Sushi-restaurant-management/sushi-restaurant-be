@@ -12,6 +12,8 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddSession();
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddDbContext<RestaurantSystemDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -35,6 +37,11 @@ builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 builder.Services.AddScoped<IRestaurantTableService, RestaurantTableService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+
+builder.Services.AddScoped<ITableAvailabilityService, TableAvailabilityService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
+builder.Services.AddHostedService<TableStatusUpdateHostedService>();
 
 var app = builder.Build();
 

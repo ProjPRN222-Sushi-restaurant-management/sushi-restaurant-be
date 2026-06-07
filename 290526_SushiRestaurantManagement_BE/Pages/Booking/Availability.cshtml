@@ -1,0 +1,165 @@
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Booking.AvailabilityModel
+
+<div class="container mt-4">
+    <h2>Quản lý đặt bàn & Tình trạng bàn</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <form method="get" class="form-inline">
+                <div class="form-group mr-2">
+                    <label for="selectedDate">Chọn ngày:</label>
+                    <input type="date" id="selectedDate" name="selectedDate" class="form-control" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                </div>
+                <button type="submit" class="btn btn-primary">Xem</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Tổng bàn</h5>
+                    <h2 class="text-primary">@Model.TotalTables</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Bàn được đặt</h5>
+                    <h2 class="text-danger">@Model.BookedTablesCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Bàn trống</h5>
+                    <h2 class="text-success">@Model.AvailableTablesCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Tỉ lệ chiếm</h5>
+                    <h2 class="text-warning">@Model.OccupancyRate%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Slots -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Tình trạng theo khung giờ</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Khung giờ</th>
+                        <th>Bàn được đặt</th>
+                        <th>Bàn trống</th>
+                        <th>Tỉ lệ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var timeSlot in Model.TimeSlots)
+                    {
+                        <tr>
+                            <td>@timeSlot.Time.ToString("HH:mm")</td>
+                            <td><span class="badge badge-danger">@timeSlot.BookedCount</span></td>
+                            <td><span class="badge badge-success">@timeSlot.AvailableCount</span></td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    @if (timeSlot.OccupancyPercentage > 0)
+                                    {
+                                        <div class="progress-bar bg-danger" role="progressbar" 
+                                             style="width: @timeSlot.OccupancyPercentage%;">
+                                            @timeSlot.OccupancyPercentage%
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bookings for Selected Date -->
+    <div class="row">
+        <div class="col-12">
+            <h4>Danh sách đặt bàn - @Model.SelectedDate.ToString("dd/MM/yyyy")</h4>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã đặt</th>
+                        <th>Khách hàng</th>
+                        <th>SĐT</th>
+                        <th>Giờ</th>
+                        <th>Số khách</th>
+                        <th>Bàn</th>
+                        <th>Trạng thái</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var booking in Model.Bookings)
+                    {
+                        <tr>
+                            <td>
+                                <strong>#@booking.BookingId</strong>
+                            </td>
+                            <td>@booking.GuestName</td>
+                            <td>@booking.GuestPhone</td>
+                            <td>@booking.BookingTime.ToString("HH:mm")</td>
+                            <td>@booking.GuestCount</td>
+                            <td>@booking.Table?.TableNum</td>
+                            <td>
+                                @switch (booking.BookingStatus)
+                                {
+                                    case BusinessObjects.Enums.BookingStatusEnum.PENDING:
+                                        <span class="badge badge-warning">Chờ xác nhận</span>
+                                        break;
+                                    case BusinessObjects.Enums.BookingStatusEnum.COMPLETED:
+                                        <span class="badge badge-success">Hoàn tất</span>
+                                        break;
+                                    case BusinessObjects.Enums.BookingStatusEnum.CANCELLED:
+                                        <span class="badge badge-danger">Hủy</span>
+                                        break;
+                                }
+                            </td>
+                            <td>@booking.Note</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Bookings.Any())
+            {
+                <div class="alert alert-info">
+                    Không có đặt bàn nào trong ngày này.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+</style>

@@ -1,11 +1,8 @@
-using BusinessObjects.Models;
 using DataAccessObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
 {
@@ -25,7 +22,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
 
         public void OnGet(string phone)
         {
-            Input.Phone = phone;
+            Input.Phone = phone?.Trim() ?? "";
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -33,8 +30,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             if (!ModelState.IsValid)
                 return Page();
 
+            var phone = Input.Phone.Trim();
+
             var staff = await _context.Staffs
-                .FirstOrDefaultAsync(s => s.Phone == Input.Phone && s.IsActive == true);
+                .FirstOrDefaultAsync(s =>
+                    s.Phone == phone &&
+                    (s.IsActive ?? false));
 
             if (staff == null)
             {
@@ -42,7 +43,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
                 return Page();
             }
 
-            staff.PasswordHash = HashPassword(Input.NewPassword);
+            staff.PasswordHash = global::BCrypt.Net.BCrypt.HashPassword(Input.NewPassword);
 
             _context.Staffs.Update(staff);
             await _context.SaveChangesAsync();
@@ -50,18 +51,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             TempData["Success"] = "Password reset successfully. Please login.";
             return RedirectToPage("/Auth/Login");
         }
-
-        private static string HashPassword(string password)
-        {
-            using var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
     }
 
     public class ResetPasswordInput
     {
+        [Required]
         public string Phone { get; set; } = "";
 
         [Required(ErrorMessage = "New password is required")]

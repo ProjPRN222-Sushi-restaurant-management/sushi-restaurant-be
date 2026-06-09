@@ -29,26 +29,47 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             if (!ModelState.IsValid)
                 return Page();
 
+            var phone = Input.Phone.Trim();
+
             var staff = await _context.Staffs
                 .FirstOrDefaultAsync(s =>
-                    s.Phone == Input.Phone &&
+                    s.Phone == phone &&
                     (s.IsActive ?? false));
 
-            if (staff == null)
+            if (staff == null || string.IsNullOrWhiteSpace(staff.PasswordHash))
             {
                 ErrorMessage = "Invalid phone or password.";
                 return Page();
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(Input.Password, staff.PasswordHash))
+            var hash = staff.PasswordHash.Trim();
+
+            if (hash.StartsWith("$2y$"))
+            {
+                hash = "$2a$" + hash.Substring(4);
+            }
+
+            bool isValidPassword;
+
+            try
+            {
+                isValidPassword = global::BCrypt.Net.BCrypt.Verify(Input.Password, hash);
+            }
+            catch
+            {
+                ErrorMessage = "Password hash in database is invalid.";
+                return Page();
+            }
+
+            if (!isValidPassword)
             {
                 ErrorMessage = "Invalid phone or password.";
                 return Page();
             }
 
             HttpContext.Session.SetString("StaffId", staff.StaffId.ToString());
-            HttpContext.Session.SetString("StaffName", staff.FullName);
-            HttpContext.Session.SetString("StaffPhone", staff.Phone);
+            HttpContext.Session.SetString("StaffName", staff.FullName ?? "");
+            HttpContext.Session.SetString("StaffPhone", staff.Phone ?? "");
 
             return RedirectToPage("/Index");
         }

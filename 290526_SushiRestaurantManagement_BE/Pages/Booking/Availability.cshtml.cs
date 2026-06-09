@@ -1,4 +1,3 @@
-using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Interfaces;
 
@@ -25,7 +24,8 @@ public class AvailabilityModel : PageModel
     public int BookedTablesCount { get; set; }
     public int AvailableTablesCount { get; set; }
     public decimal OccupancyRate { get; set; }
-    public IEnumerable<Booking> Bookings { get; set; } = [];
+    public IEnumerable<BusinessObjects.Models.Booking> Bookings { get; set; }
+    = new List<BusinessObjects.Models.Booking>();
     public List<TimeSlotInfo> TimeSlots { get; set; } = [];
 
     public async Task OnGetAsync(DateOnly? selectedDate)

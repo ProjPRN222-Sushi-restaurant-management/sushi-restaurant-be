@@ -3,12 +3,40 @@
   "WorkspaceRootPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\auth\\resetpassword.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\auth\\resetpassword.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\auth\\forgotpassword.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\auth\\forgotpassword.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\auth\\login.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\auth\\login.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\auth\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\auth\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7C45772-DEAE-4C28-B91F-18A5AC693D9C}|Services\\Services.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\services\\implementations\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E7C45772-DEAE-4C28-B91F-18A5AC693D9C}|Services\\Services.csproj|solutionrelative:services\\implementations\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7C45772-DEAE-4C28-B91F-18A5AC693D9C}|Services\\Services.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\services\\implementations\\tablestatusupdatehostedservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E7C45772-DEAE-4C28-B91F-18A5AC693D9C}|Services\\Services.csproj|solutionrelative:services\\implementations\\tablestatusupdatehostedservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7C45772-DEAE-4C28-B91F-18A5AC693D9C}|Services\\Services.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\services\\implementations\\tableavailabilityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E7C45772-DEAE-4C28-B91F-18A5AC693D9C}|Services\\Services.csproj|solutionrelative:services\\implementations\\tableavailabilityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\booking\\availability.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\booking\\availability.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\booking\\create.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\booking\\create.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 594,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -46,13 +74,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
+              "Title": "Login.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAAADIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-05T03:19:31.021Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Register.cshtml.cs",
               "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
               "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
               "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
               "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Register.cshtml.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAwAYAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-06-05T03:41:07.123Z",
               "EditorCaption": ""
@@ -60,14 +101,92 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Login.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
-              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
-              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\Login.cshtml.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAxwCYAAAA8AAAAAAAAAA==",
+              "Title": "ResetPassword.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ResetPassword.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ResetPassword.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ResetPassword.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ResetPassword.cshtml.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAQwCAAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-05T03:19:31.021Z",
+              "WhenOpened": "2026-06-09T02:39:31.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ForgotPassword.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ForgotPassword.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ForgotPassword.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ForgotPassword.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Auth\\ForgotPassword.cshtml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T02:33:35.226Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "NotificationService.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Implementations\\NotificationService.cs",
+              "RelativeDocumentMoniker": "Services\\Implementations\\NotificationService.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Implementations\\NotificationService.cs",
+              "RelativeToolTip": "Services\\Implementations\\NotificationService.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAYwC8AAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T02:48:01.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "TableAvailabilityService.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Implementations\\TableAvailabilityService.cs",
+              "RelativeDocumentMoniker": "Services\\Implementations\\TableAvailabilityService.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Implementations\\TableAvailabilityService.cs",
+              "RelativeToolTip": "Services\\Implementations\\TableAvailabilityService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T02:44:50.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "TableStatusUpdateHostedService.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Implementations\\TableStatusUpdateHostedService.cs",
+              "RelativeDocumentMoniker": "Services\\Implementations\\TableStatusUpdateHostedService.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Implementations\\TableStatusUpdateHostedService.cs",
+              "RelativeToolTip": "Services\\Implementations\\TableStatusUpdateHostedService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T02:46:19.295Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Create.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Create.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Create.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Create.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Create.cshtml.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAowGIAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T02:39:48.302Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Availability.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Availability.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Availability.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Availability.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Booking\\Availability.cshtml.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwA4AAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T02:33:58.029Z",
               "EditorCaption": ""
             }
           ]

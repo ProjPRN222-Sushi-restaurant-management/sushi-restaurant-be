@@ -7,11 +7,11 @@ namespace Services.Implementations;
 
 public class TableAvailabilityService : ITableAvailabilityService
 {
-    private readonly ITableService _tableService;
+    private readonly IRestaurantTableService _tableService;
     private readonly IBookingService _bookingService;
 
     public TableAvailabilityService(
-        ITableService tableService,
+        IRestaurantTableService tableService,
         IBookingService bookingService)
     {
         _tableService = tableService;

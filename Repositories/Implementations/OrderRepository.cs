@@ -51,5 +51,14 @@ namespace Repositories.Implementations
         {
             await _context.SaveChangesAsync(ct);
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersByBookingIdAsync(long bookingId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(od => od.MenuItem)
+                .Where(o => o.BookingId == bookingId)
+                .ToListAsync();
+        }
     }
 }

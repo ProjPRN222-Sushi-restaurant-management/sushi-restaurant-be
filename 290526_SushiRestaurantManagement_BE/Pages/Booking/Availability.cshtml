@@ -65,13 +65,13 @@
                         <th>Tỉ lệ</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="color: darkgreen">
                     @foreach (var timeSlot in Model.TimeSlots)
                     {
                         <tr>
                             <td>@timeSlot.Time.ToString("HH:mm")</td>
-                            <td><span class="badge badge-danger">@timeSlot.BookedCount</span></td>
-                            <td><span class="badge badge-success">@timeSlot.AvailableCount</span></td>
+                            <td><span class="badge bg-danger">@timeSlot.BookedCount</span></td>
+                            <td><span class="badge bg-success">@timeSlot.AvailableCount</span></td>
                             <td>
                                 <div class="progress" style="height: 20px;">
                                     @if (timeSlot.OccupancyPercentage > 0)
@@ -105,35 +105,108 @@
                         <th>Bàn</th>
                         <th>Trạng thái</th>
                         <th>Ghi chú</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var booking in Model.Bookings)
                     {
                         <tr>
-                            <td>
-                                <strong>#@booking.BookingId</strong>
-                            </td>
+                            <td>#@booking.BookingId</td>
                             <td>@booking.GuestName</td>
                             <td>@booking.GuestPhone</td>
                             <td>@booking.BookingTime.ToString("HH:mm")</td>
                             <td>@booking.GuestCount</td>
-                            <td>@booking.Table?.TableNum</td>
+                            <td>@booking.TableId</td>
+
                             <td>
-                                @switch (booking.BookingStatus)
+                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
                                 {
-                                    case BusinessObjects.Enums.BookingStatusEnum.PENDING:
-                                        <span class="badge badge-warning">Chờ xác nhận</span>
-                                        break;
-                                    case BusinessObjects.Enums.BookingStatusEnum.COMPLETED:
-                                        <span class="badge badge-success">Hoàn tất</span>
-                                        break;
-                                    case BusinessObjects.Enums.BookingStatusEnum.CANCELLED:
-                                        <span class="badge badge-danger">Hủy</span>
-                                        break;
+                                    <span class="badge bg-warning text-dark">PENDING</span>
+                                }
+                                else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
+                                {
+                                    <span class="badge bg-success">COMPLETED</span>
+                                }
+                                else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
+                                {
+                                    <span class="badge bg-danger">CANCELLED</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@booking.BookingStatus</span>
                                 }
                             </td>
+
                             <td>@booking.Note</td>
+
+                            <td style="white-space: nowrap;">
+                                <a asp-page="/Order/History"
+                                   asp-route-bookingId="@booking.BookingId"
+                                   class="btn btn-info btn-sm">
+                                    Xem order
+                                </a>
+
+                                <a asp-page="/Menu/Index"
+                                   asp-route-bookingId="@booking.BookingId"
+                                   asp-route-tableId="@booking.TableId"
+                                   class="btn btn-success btn-sm">
+                                    Order thêm
+                                </a>
+
+                                <form method="post"
+                                      asp-page-handler="UpdateStatus"
+                                      class="d-inline">
+
+                                    <input type="hidden"
+                                           name="bookingId"
+                                           value="@booking.BookingId" />
+
+                                    <input type="hidden"
+                                           name="selectedDate"
+                                           value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+
+                                    <select name="status"
+                                            class="form-select form-select-sm d-inline"
+                                            style="width:140px">
+
+                                        @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
+                                        {
+                                            <option value="PENDING" selected>Pending</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="PENDING">Pending</option>
+                                        }
+
+                                        @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
+                                        {
+                                            <option value="COMPLETED" selected>Completed</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="COMPLETED">Completed</option>
+                                        }
+
+                                        @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
+                                        {
+                                            <option value="CANCELLED" selected>Cancelled</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="CANCELLED">Cancelled</option>
+                                        }
+
+                                    </select>
+
+                                    <button type="submit"
+                                            class="btn btn-primary btn-sm">
+                                        Update
+                                    </button>
+
+                                </form>
+
+                            </td>
                         </tr>
                     }
                 </tbody>

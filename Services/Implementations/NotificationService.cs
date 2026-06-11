@@ -87,9 +87,23 @@ public class NotificationService : INotificationService
             var zaloApiUrl = _configuration["Zalo:ApiUrl"];
             var zaloAccessToken = _configuration["Zalo:AccessToken"];
 
+            //if (string.IsNullOrEmpty(zaloApiUrl) || string.IsNullOrEmpty(zaloAccessToken))
+            //{
+            //    // If Zalo config is not set, just return true (logging purposes)
+            //    return true;
+            //}
+
+            /// Mô phỏng gửi qua zalo thành công (do chưa có access token thực tế)
+            /// Được thể hiện trên console
+
             if (string.IsNullOrEmpty(zaloApiUrl) || string.IsNullOrEmpty(zaloAccessToken))
             {
-                // If Zalo config is not set, just return true (logging purposes)
+                Console.WriteLine("========== MOCK ZALO MESSAGE ==========");
+                Console.WriteLine($"To phone: {phoneNumber}");
+                Console.WriteLine($"Message: {message}");
+                Console.WriteLine($"Sent at: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+                Console.WriteLine("=======================================");
+
                 return true;
             }
 

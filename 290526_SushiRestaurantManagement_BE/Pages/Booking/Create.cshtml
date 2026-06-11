@@ -61,5 +61,43 @@
         Bàn phù hợp hiện có: <strong>@Model.AvailableTableCount</strong>
     </p>
 
+    @if (Model.AvailableTables.Any())
+    {
+        <div class="alert alert-success">
+            <strong>Các bàn còn trống:</strong>
+            <ul>
+                @foreach (var table in Model.AvailableTables)
+                {
+                    <li>
+                        Bàn @table.TableNum - Sức chứa: @table.Capacity - Loại: @table.TableType
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            Khung giờ này đã hết bàn phù hợp.
+        </div>
+    }
+
+    @if (Model.ExistingBookings.Any())
+    {
+        <div class="alert alert-warning">
+            <strong>Khung giờ này đã có người đặt:</strong>
+            <ul>
+                @foreach (var booking in Model.ExistingBookings)
+                {
+                    <li>
+                        Bàn ID: @booking.TableId -
+                        Khách: @booking.GuestName -
+                        SĐT: @booking.GuestPhone
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
     <button type="submit" class="btn btn-primary">Xác nhận đặt bàn</button>
 </form>

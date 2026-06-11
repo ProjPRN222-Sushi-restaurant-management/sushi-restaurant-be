@@ -53,6 +53,17 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/Auth/Login");
+        return;
+    }
+
+    await next();
+});
+
 app.UseSession();
 
 app.UseHttpsRedirection();

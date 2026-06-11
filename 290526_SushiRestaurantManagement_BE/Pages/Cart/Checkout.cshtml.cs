@@ -44,7 +44,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             if (long.TryParse(HttpContext.Session.GetString("TABLE_ID"), out var tId))
                 tableId = tId;
 
-            var order = new Order
+            var order = new BusinessObjects.Models.Order
             {
                 BookingId = bookingId,
                 TableId = tableId,

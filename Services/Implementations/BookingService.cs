@@ -14,8 +14,8 @@ public class BookingService : IBookingService
         _bookingRepository = bookingRepository;
     }
 
-    public Task<Booking> GetBookingByIdAsync(int id, CancellationToken ct = default)
-        => _bookingRepository.GetBookingByIdAsync(id, ct);
+    public Task<Booking> GetBookingByIdAsync(long id, CancellationToken ct = default)
+        => _bookingRepository.GetBookingByIdAsync((int)id, ct);
 
     public Task<IReadOnlyList<Booking>> GetAllBookingsAsync(CancellationToken ct = default)
         => _bookingRepository.GetAllBookingsAsync(ct);

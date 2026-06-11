@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    var isLoggedIn = Context.Session.GetString("StaffId") != null;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,20 +14,24 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-page="/Index">Sushi Restaurant</a>
 
-                <div class="navbar-nav">
-                    <a class="nav-link" asp-page="/Booking/Create">Booking</a>
-                    <a class="nav-link" asp-page="/Menu/Index">Menu</a>
-                    <a class="nav-link" asp-page="/Cart/Index">Cart</a>
-                </div>
+    @if (isLoggedIn)
+    {
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container">
+                    <div class="navbar-brand">
+                        Sushi Restaurant
+                    </div>
 
-                <div class="ms-auto">
-                    @if (Context.Session.GetString("StaffId") != null)
-                    {
+                    <div class="navbar-nav">
+                        <a class="nav-link" asp-page="/Booking/Create">Booking</a>
+                        <a class="nav-link" asp-page="/Menu/Index">Menu</a>
+                        <a class="nav-link" asp-page="/Cart/Index">Cart</a>
+                        <a class="nav-link" asp-page="/Booking/Availability">Management status</a>
+                    </div>
+
+                    <div class="ms-auto">
                         <span class="me-2">
                             Hello, @Context.Session.GetString("StaffName")
                         </span>
@@ -29,15 +39,11 @@
                         <form method="post" asp-page="/Auth/Login" asp-page-handler="Logout" class="d-inline">
                             <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
                         </form>
-                    }
-                    else
-                    {
-                        <a asp-page="/Auth/Login" class="btn btn-outline-primary btn-sm">Login</a>
-                    }
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
+    }
 
     <main role="main" class="container pb-3">
         @RenderBody()

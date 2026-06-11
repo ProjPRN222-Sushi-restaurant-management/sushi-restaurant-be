@@ -15,6 +15,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             _menuItemService = menuItemService;
         }
 
+        [BindProperty(SupportsGet = true)]
+        public long? BookingId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public long? TableId { get; set; }
+
         public List<CartItemViewModel> CartItems { get; set; } = [];
 
         public decimal TotalAmount => CartItems.Sum(x => x.Total);
@@ -63,7 +69,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             if (tableId != null)
                 HttpContext.Session.SetString("TABLE_ID", tableId.Value.ToString());
 
-            return RedirectToPage("/Cart/Index");
+            return RedirectToPage("/Cart/Index", new
+            {
+                bookingId = bookingId,
+                tableId = tableId
+            });
         }
 
         public IActionResult OnPostRemove(long menuItemId)

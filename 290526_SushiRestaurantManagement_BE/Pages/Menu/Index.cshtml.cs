@@ -24,6 +24,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
 
         public async Task OnGetAsync()
         {
+            BookingId = BookingId;
+            TableId = TableId;
             MenuItems = await _menuItemService.GetAllMenuItemsAsync();
         }
     }

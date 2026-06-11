@@ -71,7 +71,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             HttpContext.Session.SetString("StaffName", staff.FullName ?? "");
             HttpContext.Session.SetString("StaffPhone", staff.Phone ?? "");
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Booking/Create");
         }
 
         public IActionResult OnPostLogout()

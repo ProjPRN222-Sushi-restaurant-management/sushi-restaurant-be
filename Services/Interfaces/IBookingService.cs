@@ -5,7 +5,7 @@ namespace Services.Interfaces;
 
 public interface IBookingService
 {
-    Task<Booking> GetBookingByIdAsync(int id, CancellationToken ct = default);
+    Task<Booking> GetBookingByIdAsync(long id, CancellationToken ct = default);
     Task<IReadOnlyList<Booking>> GetAllBookingsAsync(CancellationToken ct = default);
     Task<IEnumerable<Booking>> GetByDateAsync(DateOnly bookingDate, CancellationToken ct = default);
     Task<IEnumerable<Booking>> GetByStatusAsync(BookingStatusEnum status, CancellationToken ct = default);

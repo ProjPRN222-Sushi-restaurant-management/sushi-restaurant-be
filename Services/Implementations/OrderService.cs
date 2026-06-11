@@ -24,4 +24,7 @@ public class OrderService : IOrderService
 
     public Task SaveChangesAsync(CancellationToken ct = default)
         => _orderRepository.SaveChangesAsync(ct);
+
+    public Task<IEnumerable<Order>> GetOrdersByBookingIdAsync(long bookingId)
+        => _orderRepository.GetOrdersByBookingIdAsync(bookingId);
 }

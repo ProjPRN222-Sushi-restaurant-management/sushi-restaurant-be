@@ -1,3 +1,5 @@
+using BusinessObjects.Enums;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Interfaces;
 
@@ -76,6 +78,29 @@ public class AvailabilityModel : PageModel
         OccupancyRate = TotalTables > 0 
             ? Math.Round((decimal)BookedTablesCount / TotalTables * 100)
             : 0;
+    }
+
+    public async Task<IActionResult> OnPostUpdateStatusAsync(
+    long bookingId,
+    BookingStatusEnum status,
+    DateOnly selectedDate)
+    {
+        var booking = await _bookingService.GetBookingByIdAsync(bookingId);
+
+        if (booking == null)
+        {
+            return NotFound();
+        }
+
+        booking.BookingStatus = status;
+
+        await _bookingService.UpdateAsync(booking);
+        await _bookingService.SaveChangesAsync();
+
+        return RedirectToPage("/Booking/Availability", new
+        {
+            selectedDate = selectedDate.ToString("yyyy-MM-dd")
+        });
     }
 
     public class TimeSlotInfo

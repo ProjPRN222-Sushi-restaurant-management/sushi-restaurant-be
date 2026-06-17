@@ -1,6 +1,7 @@
 using BusinessObjects.Enums;
 using BusinessObjects.Models;
 using DataAccessObjects;
+using DataAccessObjects.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,7 @@ public class CreateModel : PageModel
         await LoadAvailableTablesAsync();
     }
 
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync(CancellationToken ct)
     {
         if (!ModelState.IsValid)
         {
@@ -49,68 +50,39 @@ public class CreateModel : PageModel
             return Page();
         }
 
-        var table = await FindAvailableTableAsync();
-
-        if (table == null)
+        try
         {
-            ModelState.AddModelError("", "Khong con ban trong phu hop trong khung gio nay.");
+            // Mapping d? li?u t? Form (BookingInput) sang DTO Request c?a Service
+            var request = new CreateBookingRequest
+            {
+                BookingDate = Input.BookingDate,
+                BookingTime = Input.BookingTime,
+                AdultCount = Input.AdultCount,
+                ChildCount = Input.ChildCount,
+                TableType = Input.TableType,
+                GuestName = Input.GuestName,
+                GuestPhone = Input.GuestPhone,
+                Note = Input.Note
+            };
+
+            // G?i Service x? lý tr?n gói toàn b? nghi?p v?
+            var booking = await _bookingService.CreateBookingAsync(request, ct);
+
+            TempData["BookingSuccess"] = $"??t bàn thành công! Mã booking c?a b?n là #{booking.BookingId}.";
+            return RedirectToPage("/Booking/Success", new { id = booking.BookingId });
+        }
+        catch (InvalidOperationException ex) // B?t ?úng l?i nghi?p v? (h?t bàn, sai d? li?u...)
+        {
+            ModelState.AddModelError("", ex.Message);
+            await LoadAvailableTablesAsync(); // N?p l?i danh sách ?? hi?n th? giao di?n
+            return Page();
+        }
+        catch (Exception) // B?t các l?i h? th?ng không l??ng tr??c ???c
+        {
+            ModelState.AddModelError("", "?ã có l?i h? th?ng x?y ra. Vui lòng th? l?i sau.");
             await LoadAvailableTablesAsync();
             return Page();
         }
-
-        var phone = Input.GuestPhone.Trim();
-
-        var customer = await _context.Customers
-            .FirstOrDefaultAsync(c => c.Phone == phone);
-
-        if (customer == null)
-        {
-            customer = new Customer
-            {
-                FullName = Input.GuestName.Trim(),
-                Phone = phone,
-                CreatedAt = DateTime.Now
-            };
-
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-        }
-        else
-        {
-            customer.FullName = Input.GuestName.Trim();
-            await _context.SaveChangesAsync();
-        }
-
-        var booking = new BusinessObjects.Models.Booking
-        {
-            CustomerId = customer.CustomerId,
-            GuestName = Input.GuestName,
-            GuestPhone = Input.GuestPhone,
-            BookingDate = Input.BookingDate,
-            BookingTime = Input.BookingTime,
-            GuestCount = Input.AdultCount + Input.ChildCount,
-            TableId = table.TableId,
-            BookingStatus = BookingStatusEnum.PENDING,
-            Note = $"Nguoi lon: {Input.AdultCount}, Tre em: {Input.ChildCount}. {Input.Note}",
-            CreatedAt = DateTime.Now
-        };
-
-        await _bookingService.AddAsync(booking);
-        await _bookingService.SaveChangesAsync();
-
-        var bookingDateTime = booking.BookingDate.ToDateTime(booking.BookingTime);
-
-        await _notificationService.SendBookingConfirmationAsync(
-            booking.GuestPhone,
-            booking.BookingId,
-            bookingDateTime,
-            booking.GuestName
-        );
-
-        TempData["BookingSuccess"] =
-            $"Dat ban thanh cong! Ma booking cua ban la #{booking.BookingId}. Nha hang se xac nhan som.";
-
-        return RedirectToPage("/Booking/Success", new { id = booking.BookingId });
     }
 
     private async Task<List<RestaurantTable>> GetAvailableTablesAsync()
@@ -173,3 +145,4 @@ public class BookingInput
 
     public string? Note { get; set; }
 }
+

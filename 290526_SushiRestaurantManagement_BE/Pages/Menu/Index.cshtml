@@ -3,6 +3,13 @@
 
 <h2>Menu Sushi</h2>
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
 <div class="menu-grid">
     @foreach (var item in Model.MenuItems)
     {

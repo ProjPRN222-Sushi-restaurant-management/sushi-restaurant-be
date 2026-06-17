@@ -1,4 +1,4 @@
-using _290526_SushiRestaurantManagement_BE.Helpers;
+﻿using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -35,7 +35,9 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             int quantity,
             string? note,
             long? bookingId,
-            long? tableId)
+            long? tableId,
+            string? returnUrl,
+            int? scrollY)
         {
             var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
 
@@ -69,7 +71,9 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             if (tableId != null)
                 HttpContext.Session.SetString("TABLE_ID", tableId.Value.ToString());
 
-            return RedirectToPage("/Cart/Index", new
+            TempData["Success"] = "Đã thêm món vào giỏ hàng.";
+
+            return RedirectToPage("/Menu/Index", new
             {
                 bookingId = bookingId,
                 tableId = tableId

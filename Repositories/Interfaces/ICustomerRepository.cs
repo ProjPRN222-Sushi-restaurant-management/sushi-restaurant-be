@@ -6,5 +6,7 @@ namespace Repositories.Interfaces
     {
         Task<IReadOnlyList<Customer>> GetAllCustomersAsync(CancellationToken ct = default);
         Task<Customer?> GetCustomerByIdAsync(long id, CancellationToken ct = default);
+        Task<Customer?> GetCustomerByPhoneAsync(string phone, CancellationToken ct = default);
+        Task AddCustomerAsync(Customer customer, CancellationToken ct = default);
     }
 }

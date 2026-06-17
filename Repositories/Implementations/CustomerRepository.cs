@@ -31,5 +31,16 @@ namespace Repositories.Implementations
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CustomerId == id, ct);
         }
+
+        public async Task<Customer?> GetCustomerByPhoneAsync(string phone, CancellationToken ct = default)
+        {
+            return await _context.Customers
+                .FirstOrDefaultAsync(c => c.Phone == phone, ct);
+        }
+
+        public async Task AddCustomerAsync(Customer customer, CancellationToken ct = default)
+        {
+            await _context.Customers.AddAsync(customer, ct);
+        }
     }
 }

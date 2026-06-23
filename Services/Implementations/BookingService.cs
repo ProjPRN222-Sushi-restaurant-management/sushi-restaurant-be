@@ -174,13 +174,10 @@ public class BookingService : IBookingService
             };
 
             await _customerRepository.AddCustomerAsync(customer, ct);
-            await _bookingRepository.SaveChangesAsync(ct);
         }
         else
         {
             customer.FullName = request.GuestName.Trim();
-            await _customerRepository.AddCustomerAsync(customer, ct);
-            await _bookingRepository.SaveChangesAsync(ct);
         }
 
         return customer;
@@ -197,13 +194,13 @@ public class BookingService : IBookingService
             throw new ArgumentNullException(nameof(request));
 
         if (string.IsNullOrWhiteSpace(request.GuestName))
-            throw new Exception("Tên khách hàng không được để trống.");
+            throw new ArgumentException("Tên khách hàng không được để trống.", nameof(request.GuestName));
 
         if (string.IsNullOrWhiteSpace(request.GuestPhone))
-            throw new Exception("Số điện thoại không được để trống.");
+            throw new ArgumentException("Số điện thoại không được để trống.", nameof(request.GuestPhone));
 
         if (request.AdultCount + request.ChildCount <= 0)
-            throw new Exception("Số lượng khách phải lớn hơn 0.");
+            throw new ArgumentException("Số lượng khách phải lớn hơn 0.", nameof(request.AdultCount));
     }
 
     public async Task<BookingOrderHistoryResult> GetBookingOrderHistoryAsync(

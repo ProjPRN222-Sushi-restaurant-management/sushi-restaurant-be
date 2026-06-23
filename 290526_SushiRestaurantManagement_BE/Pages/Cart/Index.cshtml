@@ -27,13 +27,44 @@ else
                 <td>@item.ItemName</td>
                 <td>@item.Note</td>
                 <td>@item.UnitPrice.ToString("N0") đ</td>
-                <td>@item.Quantity</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+
+                            <form method="post"
+                                  asp-page-handler="Decrease"
+                                  class="d-inline">
+                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                <input type="hidden" name="note" value="@item.Note" />
+
+                                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                    -
+                                </button>
+                            </form>
+
+                            <span class="fw-bold text-center" style="min-width: 30px;">
+                                @item.Quantity
+                            </span>
+
+                            <form method="post"
+                                  asp-page-handler="Increase"
+                                  class="d-inline">
+                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                <input type="hidden" name="note" value="@item.Note" />
+
+                                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                    +
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
                 <td>@item.Total.ToString("N0") đ</td>
                 <td>
-                    <form method="post" asp-page-handler="Remove">
-                        <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
-                        <button class="btn btn-danger btn-sm">Xóa</button>
-                    </form>
+                        <form method="post" asp-page-handler="Remove">
+                            <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                            <input type="hidden" name="note" value="@item.Note" />
+                            <button class="btn btn-danger btn-sm">Xóa</button>
+                        </form>
                 </td>
             </tr>
         }

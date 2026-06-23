@@ -1,0 +1,121 @@
+﻿@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.IndexModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Trang Tổng Quan";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="h3 mb-0 text-gray-800">Bảng Thống Kê Hệ Thống</h2>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body bg-white rounded">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-bold text-secondary small">Từ ngày</label>
+                <input type="date" name="StartDate" class="form-control" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold text-secondary small">Đến ngày</label>
+                <input type="date" name="EndDate" class="form-control" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-filter me-1"></i> Lọc dữ liệu</button>
+                <a asp-page="/Admin/Index" class="btn btn-outline-secondary w-100">Xóa bộ lọc</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-start border-primary border-4 shadow-sm h-100 py-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: 0.8rem;">Tổng lượt đặt bàn (Giai đoạn)</div>
+                        <div class="h3 mb-0 fw-bold text-gray-800">@Model.TotalBookingsCount</div>
+                    </div>
+                    <i class="fa-solid fa-calendar-check fa-2x text-primary opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-start border-success border-4 shadow-sm h-100 py-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1" style="font-size: 0.8rem;">Số bàn trống hiện tại</div>
+                        <div class="h3 mb-0 fw-bold text-gray-800">@Model.AvailableTablesCount</div>
+                    </div>
+                    <i class="fa-solid fa-table-cells fa-2x text-success opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-start border-warning border-4 shadow-sm h-100 py-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" style="font-size: 0.8rem;">Thu nhập (Giai đoạn)</div>
+                        <div class="h3 mb-0 fw-bold text-danger">@Model.MonthlyRevenue.ToString("N0") VNĐ</div>
+                    </div>
+                    <i class="fa-solid fa-coins fa-2x text-warning opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 fw-bold text-dark border-bottom">
+        <i class="fa-solid fa-list-check me-2 text-secondary"></i>Danh sách đặt bàn trong khoảng thời gian lọc
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">Mã Booking</th>
+                    <th>Ngày đặt</th>
+                    <th>Khách Hàng</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Thời Gian Đến</th>
+                    <th>Số Khách</th>
+                    <th class="pe-3">Trạng Thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.FilteredBookings == null || !Model.FilteredBookings.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">Không có lượt đặt bàn nào trong thời gian này.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var b in Model.FilteredBookings)
+                    {
+                        <tr>
+                            <td class="ps-3">#@b.BookingId</td>
+                            <td>@b.BookingDate.ToString("dd/MM/yyyy")</td>
+                            <td><strong>@b.GuestName</strong></td>
+                            <td>@b.GuestPhone</td>
+                            <td>@b.BookingTime.ToString("HH:mm")</td>
+                            <td>@b.GuestCount người</td>
+                            <td class="pe-3">
+                                <span class="badge @(b.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING ? "bg-warning text-dark" : b.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED ? "bg-danger" : "bg-success")">
+                                    @b.BookingStatus
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

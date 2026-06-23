@@ -35,7 +35,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             var staff = await _context.Staffs
                 .FirstOrDefaultAsync(s =>
                     s.Phone == phone &&
-                    (s.IsActive ?? false));
+                    s.IsActive);
 
             if (staff == null)
             {

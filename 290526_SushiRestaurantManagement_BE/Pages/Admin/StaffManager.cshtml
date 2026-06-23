@@ -1,0 +1,124 @@
+﻿@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.StaffManagerModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản Lý Nhân Viên";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-user-tie me-2"></i>Quản Lý Nhân Viên</h2>
+    <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+        <i class="fa-solid fa-user-plus me-1"></i> Thêm Nhân Viên
+    </button>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2">
+            <div class="col-sm-9">
+                <input type="text" name="SearchString" class="form-control" placeholder="Tìm theo tên hoặc số điện thoại..." value="@Model.SearchString" />
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" class="btn btn-dark w-100 fw-semibold">Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-dark text-white fw-bold">Danh Sách Nhân Viên</div>
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">Mã NV</th>
+                    <th>Họ và Tên</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Trạng Thái</th>
+                    <th>Ngày Tạo</th>
+                    <th class="text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var staff in Model.StaffList)
+                {
+                    <tr>
+                        <td class="ps-3">#@staff.StaffId</td>
+                        <td><strong>@staff.FullName</strong></td>
+                        <td>@staff.Phone</td>
+                        <td>
+                            <span class="badge @(staff.IsActive == true ? "bg-success" : "bg-secondary")">
+                                @(staff.IsActive == true ? "Đang hoạt động" : "Bị khóa")
+                            </span>
+                        </td>
+                        <td>@(staff.CreatedAt?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a asp-page="/Admin/EditStaff" asp-route-id="@staff.StaffId" class="btn btn-sm btn-outline-primary py-1 px-2">
+                                    <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                </a>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@staff.StaffId" onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2">
+                                        <i class="fa-solid fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.StaffList.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Không tìm thấy nhân viên nào.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addStaffModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddStaff">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Thêm Nhân Viên Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Họ và tên</label>
+                        <input type="text" name="NewFullName" class="form-control" required placeholder="Nhập đầy đủ họ tên..." />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Số điện thoại (Dùng đăng nhập)</label>
+                        <input type="text" name="NewPhone" class="form-control" required placeholder="Ví dụ: 0912345678" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Mật khẩu ban đầu</label>
+                        <input type="password" name="NewPassword" class="form-control" required placeholder="Ít nhất 6 ký tự..." />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success fw-semibold">Thêm nhân viên</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

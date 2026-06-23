@@ -24,12 +24,43 @@ namespace Repositories.Implementations
         }
 
         public async Task<Staff?> GetStaffById(
-            int id,
+            long id,
             CancellationToken ct = default)
         {
             return await _context.Staffs
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.StaffId == id, ct);
+        }
+
+        public async Task<bool> AddStaffAsync(
+            Staff staff,
+            CancellationToken ct = default)
+        {
+            if (staff == null) return false;
+            await _context.Staffs.AddAsync(staff, ct);
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
+
+        public async Task<bool> UpdateStaffAsync(
+            Staff staff,
+            CancellationToken ct = default)
+        {
+            if (staff == null) return false;
+            _context.Staffs.Update(staff);
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
+
+        public async Task<bool> DeleteStaffAsync(
+            long id,
+            CancellationToken ct = default)
+        {
+            var staff = await _context.Staffs.FindAsync(new object[] { id }, ct);
+            if (staff == null) return false;
+            _context.Staffs.Remove(staff);
+            await _context.SaveChangesAsync(ct);
+            return true;
         }
     }
 }  

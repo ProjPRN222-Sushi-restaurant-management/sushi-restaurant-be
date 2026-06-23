@@ -80,11 +80,99 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             });
         }
 
-        public IActionResult OnPostRemove(long menuItemId)
+        public IActionResult OnPostUpdateQuantity(
+            long menuItemId,
+            string? note,
+            int quantity)
         {
             var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
 
-            cart.RemoveAll(x => x.MenuItemId == menuItemId);
+            var item = cart.FirstOrDefault(x =>
+                x.MenuItemId == menuItemId &&
+                x.Note == note);
+
+            if (item == null)
+            {
+                return RedirectToPage();
+            }
+
+            if (quantity <= 0)
+            {
+                cart.Remove(item);
+            }
+            else
+            {
+                item.Quantity = quantity;
+            }
+
+            HttpContext.Session.SetObject("CART", cart);
+
+            return RedirectToPage();
+        }
+
+        //public IActionResult OnPostRemove(long menuItemId)
+        //{
+        //    var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
+
+        //    cart.RemoveAll(x => x.MenuItemId == menuItemId);
+
+        //    HttpContext.Session.SetObject("CART", cart);
+
+        //    return RedirectToPage();
+        //}
+        public IActionResult OnPostRemove(long menuItemId, string? note)
+        {
+            var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
+
+            var item = cart.FirstOrDefault(x =>
+                x.MenuItemId == menuItemId &&
+                x.Note == note);
+
+            if (item != null)
+            {
+                cart.Remove(item);
+            }
+
+            HttpContext.Session.SetObject("CART", cart);
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostIncrease(long menuItemId, string? note)
+        {
+            var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
+
+            var item = cart.FirstOrDefault(x =>
+                x.MenuItemId == menuItemId &&
+                x.Note == note);
+
+            if (item != null)
+            {
+                item.Quantity += 1;
+            }
+
+            HttpContext.Session.SetObject("CART", cart);
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostDecrease(long menuItemId, string? note)
+        {
+            var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
+
+            var item = cart.FirstOrDefault(x =>
+                x.MenuItemId == menuItemId &&
+                x.Note == note);
+
+            if (item != null)
+            {
+                item.Quantity -= 1;
+
+                if (item.Quantity <= 0)
+                {
+                    cart.Remove(item);
+                }
+            }
 
             HttpContext.Session.SetObject("CART", cart);
 

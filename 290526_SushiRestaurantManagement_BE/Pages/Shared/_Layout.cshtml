@@ -2,6 +2,10 @@
 
 @{
     var isLoggedIn = Context.Session.GetString("StaffId") != null;
+    var staffPhone = Context.Session.GetString("StaffPhone") ?? "";
+
+    // Check acc admin
+    var isAdmin = isLoggedIn && staffPhone == "0999999999";
 }
 
 <!DOCTYPE html>
@@ -29,11 +33,15 @@
                         <a class="nav-link" asp-page="/Menu/Index">Menu</a>
                         <a class="nav-link" asp-page="/Cart/Index">Cart</a>
                         <a class="nav-link" asp-page="/Booking/Availability">Management status</a>
+                        @if (isAdmin)
+                        {
+                            <a class="nav-link fw-bold text-danger" asp-page="/Admin/Index">Dashboard</a>
+                        }
                     </div>
 
                     <div class="ms-auto">
                         <span class="me-2">
-                            Hello, @Context.Session.GetString("StaffName")
+                            Hello, @Context.Session.GetString("StaffName") @(isAdmin ? "(Admin)" : "")
                         </span>
 
                         <form method="post" asp-page="/Auth/Login" asp-page-handler="Logout" class="d-inline">

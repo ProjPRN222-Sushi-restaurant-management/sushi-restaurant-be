@@ -32,5 +32,27 @@ namespace Repositories.Implementations
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CategoryId == id, ct);
         }
+
+        public async Task<bool> AddMenuCategoryAsync(
+            MenuCategory category,
+            CancellationToken ct = default)
+        {
+            if (category == null || string.IsNullOrWhiteSpace(category.CategoryName))
+            {
+                return false;
+            }
+            category.CategoryName = category.CategoryName.Trim();
+            try
+            {
+                _context.MenuCategories.Add(category);
+                await _context.SaveChangesAsync(ct);
+                return true;
+            }
+            catch (Exception)
+            {
+                // Log the exception as needed
+                return false;
+            }
+        }
     }
 }

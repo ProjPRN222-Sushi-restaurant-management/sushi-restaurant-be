@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\cart\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\cart\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\admin\\editmenuitem.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\admin\\editmenuitem.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\cart\\index.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\cart\\index.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\admin\\editmenuitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\admin\\editmenuitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\menu\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\menu\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\admin\\menumanager.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\admin\\menumanager.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|c:\\users\\huong\\documents\\sushi_restaurant_project_prn222\\290526_sushirestaurantmanagement_be\\290526_sushirestaurantmanagement_be\\pages\\admin\\menumanager.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4AFD16FE-4C71-4DF3-B02B-878385E77B44}|290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj|solutionrelative:290526_sushirestaurantmanagement_be\\pages\\admin\\menumanager.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 594,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,42 +54,52 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml",
-              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml",
-              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAAIAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "EditMenuItem.cshtml",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAADgAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-17T14:39:32.803Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T15:41:55.425Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml.cs",
-              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml.cs",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml.cs",
-              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Cart\\Index.cshtml.cs",
-              "ViewState": "AgIAAEwAAAAAAAAAAAAwwE8AAAAPAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "EditMenuItem.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\EditMenuItem.cshtml.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAcwDgAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-17T14:39:27.462Z",
+              "WhenOpened": "2026-06-22T15:31:40.708Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Menu\\Index.cshtml",
-              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Menu\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Menu\\Index.cshtml",
-              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Menu\\Index.cshtml",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAYwBkAAAA6AAAAAAAAAA==",
+              "Title": "MenuManager.cshtml",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAG8AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-17T14:37:32.443Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T16:46:24.763Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MenuManager.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml.cs",
+              "RelativeDocumentMoniker": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml.cs",
+              "ToolTip": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml.cs",
+              "RelativeToolTip": "290526_SushiRestaurantManagement_BE\\Pages\\Admin\\MenuManager.cshtml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJkAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-22T15:31:46.332Z"
             }
           ]
         },

@@ -1,4 +1,5 @@
 using BusinessObjects.Models;
+using Repositories.Implementations;
 using Repositories.Interfaces;
 using Services.Interfaces;
 
@@ -7,10 +8,12 @@ namespace Services.Implementations;
 public class MenuCategoryService : IMenuCategoryService
 {
     private readonly IMenuCategoryRepository _menuCategoryRepository;
+    private readonly IMenuItemRepository _menuItemRepository;
 
-    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository)
+    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, IMenuItemRepository menuItemRepository)
     {
         _menuCategoryRepository = menuCategoryRepository;
+        _menuItemRepository = menuItemRepository;
     }
 
     public Task<IReadOnlyList<MenuCategory>> GetAllMenuCategoriesAsync(CancellationToken ct = default)
@@ -42,5 +45,10 @@ public class MenuCategoryService : IMenuCategoryService
             // Ghi nh?n log l?i h? th?ng n?u c?n thi?t ? ?ây
             return false;
         }
+    }
+
+    public async Task<bool> DeleteMenuCategoryAsync(long categoryId, CancellationToken ct = default)
+    {
+        return await _menuCategoryRepository.DeleteMenuCategoryAsync(categoryId, ct);
     }
 }

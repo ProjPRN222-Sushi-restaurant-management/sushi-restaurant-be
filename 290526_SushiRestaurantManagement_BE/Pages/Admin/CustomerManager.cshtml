@@ -56,7 +56,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var customer in Model.CustomerList)
+                @foreach (var customer in Model.CustomerList.Items)
                 {
                     <tr>
                         <td class="ps-3">#@customer.CustomerId</td>

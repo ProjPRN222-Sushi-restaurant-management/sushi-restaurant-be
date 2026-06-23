@@ -34,7 +34,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(bool IsAvailableInput)
         {
             var existingItem = await _context.MenuItems
                 .FirstOrDefaultAsync(m => m.MenuItemId == MenuItem.MenuItemId);
@@ -44,10 +44,14 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 return NotFound();
             }
 
-            existingItem.ItemName = MenuItem.ItemName.Trim();
+            existingItem.ItemName = MenuItem.ItemName?.Trim();
             existingItem.CategoryId = MenuItem.CategoryId;
             existingItem.Price = MenuItem.Price;
-            existingItem.IsAvailable = MenuItem.IsAvailable == true;
+
+            existingItem.IsAvailable = IsAvailableInput;
+
+            // H?t món không ph?i xóa
+            existingItem.DeletedAt = null;
 
             await _context.SaveChangesAsync();
 

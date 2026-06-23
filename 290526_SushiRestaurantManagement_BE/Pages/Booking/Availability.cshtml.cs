@@ -76,8 +76,9 @@ public class AvailabilityModel : PageModel
         }
 
         // Calculate overall occupancy for the day
-        var totalBookingsToday = Bookings.Count();
+        var totalBookingsToday = Bookings.Items.Count;
         BookedTablesCount = Bookings
+            .Items
             .Select(b => b.TableId)
             .Distinct()
             .Count();

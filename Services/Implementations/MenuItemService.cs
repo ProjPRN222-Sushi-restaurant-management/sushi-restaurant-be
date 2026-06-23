@@ -44,18 +44,46 @@ public class MenuItemService : IMenuItemService
         }
     }
 
-    public async Task<bool> DeleteMenuItemAsync(int id, CancellationToken ct = default)
+    public async Task<bool> DeleteMenuItemAsync(
+    long id,
+    CancellationToken ct = default)
     {
-        var menuItem = await _menuItemRepository.GetMenuItemByIdAsync(id, ct);
+        var menuItem =
+            await _menuItemRepository.GetMenuItemByIdAsync(id, ct);
 
         if (menuItem == null)
         {
-            throw new Exception("Món ?n không t?n t?i ho?c ?ã b? xóa tr??c ?ó.");
+            throw new Exception(
+                "Món ?n không t?n t?i ho?c ?ã b? xóa tr??c ?ó."
+            );
         }
 
+        // Không xóa d? li?u th?t
         menuItem.IsAvailable = false;
+
+        // Ch? ?ánh d?u ?ã xóa
         menuItem.DeletedAt = DateTime.Now;
 
-        return await _menuItemRepository.UpdateMenuItemAsync(menuItem, ct);
+        var result =
+            await _menuItemRepository
+            .UpdateMenuItemAsync(menuItem, ct);
+
+        if (!result)
+        {
+            throw new Exception(
+                "Không th? c?p nh?t tr?ng thái món ?n."
+            );
+        }
+
+        return true;
+    }
+
+    public async Task<bool> HasMenuItemsByCategoryAsync(long categoryId)
+    {
+        var items = await _menuItemRepository.GetAllMenuItemsAsync();
+
+        return items.Any(x =>
+            x.CategoryId == categoryId &&
+            x.DeletedAt == null);
     }
 }

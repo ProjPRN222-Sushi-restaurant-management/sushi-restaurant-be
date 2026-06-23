@@ -22,6 +22,9 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
         [BindProperty(SupportsGet = true)]
         public long? TableId { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public int? ScrollY { get; set; }
+
         public async Task OnGetAsync()
         {
             BookingId = BookingId;

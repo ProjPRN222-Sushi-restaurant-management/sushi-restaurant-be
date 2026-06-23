@@ -76,7 +76,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             return RedirectToPage("/Menu/Index", new
             {
                 bookingId = bookingId,
-                tableId = tableId
+                tableId = tableId,
+                scrollY = scrollY
             });
         }
 

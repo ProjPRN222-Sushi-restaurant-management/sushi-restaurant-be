@@ -1,3 +1,4 @@
+using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -26,9 +27,14 @@ public class AvailabilityModel : PageModel
     public int BookedTablesCount { get; set; }
     public int AvailableTablesCount { get; set; }
     public decimal OccupancyRate { get; set; }
-    public IEnumerable<BusinessObjects.Models.Booking> Bookings { get; set; }
-    = new List<BusinessObjects.Models.Booking>();
+    public PaginatedList<BusinessObjects.Models.Booking> Bookings { get; set; } = new(new List<BusinessObjects.Models.Booking>(), 0, 1, 10);
+    
     public List<TimeSlotInfo> TimeSlots { get; set; } = [];
+
+    [BindProperty(SupportsGet = true)]
+    public int PageNumber { get; set; } = 1;
+
+    public int PageSize { get; set; } = 10;
 
     public async Task OnGetAsync(DateOnly? selectedDate)
     {
@@ -39,7 +45,8 @@ public class AvailabilityModel : PageModel
         TotalTables = allTables.Count;
 
         // Load bookings for selected date
-        Bookings = (await _bookingService.GetByDateAsync(SelectedDate)).ToList();
+        var allBookings = (await _bookingService.GetByDateAsync(SelectedDate)).ToList();
+        Bookings = PaginatedList<BusinessObjects.Models.Booking>.Create(allBookings, PageNumber, PageSize);
 
         // Initialize time slots (typical restaurant hours: 11:00 - 22:00)
         var timeSlots = new List<TimeOnly>();

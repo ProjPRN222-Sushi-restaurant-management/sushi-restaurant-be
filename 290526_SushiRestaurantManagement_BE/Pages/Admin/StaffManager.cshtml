@@ -40,7 +40,13 @@
     </div>
 </div>
 
-<div class="card shadow-sm border-0">
+@{
+    ViewBag.PaginatedList = Model.StaffList;
+}
+
+<partial name="_Pagination"  />
+
+<div class="card shadow-sm border-0 mt-3">
     <div class="card-header bg-dark text-white fw-bold">Danh Sách Nhân Viên</div>
     <div class="card-body p-0">
         <table class="table table-hover align-middle mb-0">
@@ -55,7 +61,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var staff in Model.StaffList)
+                @foreach (var staff in Model.StaffList.Items)
                 {
                     <tr>
                         <td class="ps-3">#@staff.StaffId</td>
@@ -81,7 +87,7 @@
                         </td>
                     </tr>
                 }
-                @if (!Model.StaffList.Any())
+                @if (!Model.StaffList.Items.Any())
                 {
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">Không tìm thấy nhân viên nào.</td>

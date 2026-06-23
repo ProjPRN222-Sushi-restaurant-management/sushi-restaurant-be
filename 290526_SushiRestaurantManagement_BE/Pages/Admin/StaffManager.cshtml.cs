@@ -1,3 +1,4 @@
+using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Models;
 using DataAccessObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
 
-        public List<Staff> StaffList { get; set; } = new();
+        public PaginatedList<Staff> StaffList { get; set; } = new(new List<Staff>(), 0, 1, 10);
+
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
+
+        public int PageSize { get; set; } = 10;
 
         public async Task OnGetAsync()
         {
@@ -34,16 +40,17 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                     query = query.Where(s => s.FullName.Contains(SearchString.Trim(), StringComparison.OrdinalIgnoreCase)
                                           || s.Phone.Contains(SearchString.Trim()));
                 }
-                StaffList = query.OrderByDescending(s => s.StaffId).ToList();
+                var orderedStaff = query.OrderByDescending(s => s.StaffId).ToList();
+                StaffList = PaginatedList<Staff>.Create(orderedStaff, PageNumber, PageSize);
             }
         }
 
-        // HANDLER THÊM M?I STAFF
+        // HANDLER THï¿½M M?I STAFF
         public async Task<IActionResult> OnPostAddStaffAsync(string NewFullName, string NewPhone, string NewPassword)
         {
             if (string.IsNullOrWhiteSpace(NewFullName) || string.IsNullOrWhiteSpace(NewPhone) || string.IsNullOrWhiteSpace(NewPassword))
             {
-                TempData["Error"] = "Vui lòng ?i?n ??y ?? thông tin!";
+                TempData["Error"] = "Vui lï¿½ng ?i?n ??y ?? thï¿½ng tin!";
                 return RedirectToPage();
             }
 
@@ -57,41 +64,41 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             };
 
             var result = await _staffService.AddStaffAsync(staff);
-            if (result) TempData["Success"] = "Thêm nhân viên thành công!";
-            else TempData["Error"] = "Không th? thêm nhân viên (S? ?i?n tho?i có th? ?ã t?n t?i).";
+            if (result) TempData["Success"] = "Thï¿½m nhï¿½n viï¿½n thï¿½nh cï¿½ng!";
+            else TempData["Error"] = "Khï¿½ng th? thï¿½m nhï¿½n viï¿½n (S? ?i?n tho?i cï¿½ th? ?ï¿½ t?n t?i).";
 
             return RedirectToPage("/Admin/StaffManager");
         }
 
-        // HANDLER XÓA STAFF
+        // HANDLER Xï¿½A STAFF
         // Thay ??i tham s? id t? int sang long ?? kh?p ki?u d? li?u v?i Database
         public async Task<IActionResult> OnPostDeleteAsync(long id)
         {
-            // Tìm ki?m staff v?i khóa chính ki?u long
+            // Tï¿½m ki?m staff v?i khï¿½a chï¿½nh ki?u long
             var staff = await _context.Staffs.FindAsync(id);
 
             if (staff != null)
             {
                 try
                 {
-                    // TH?C HI?N XÓA M?M (SOFT DELETE):
-                    // C?p nh?t tr?ng thái ho?t ??ng v? false và l?u m?c th?i gian xóa
+                    // TH?C HI?N Xï¿½A M?M (SOFT DELETE):
+                    // C?p nh?t tr?ng thï¿½i ho?t ??ng v? false vï¿½ l?u m?c th?i gian xï¿½a
                     staff.IsActive = false;
                     staff.DeletedAt = DateTime.Now;
 
                     _context.Staffs.Update(staff);
                     await _context.SaveChangesAsync();
 
-                    TempData["Success"] = $"?ã xóa m?m tài kho?n nhân viên {staff.FullName} thành công!";
+                    TempData["Success"] = $"?ï¿½ xï¿½a m?m tï¿½i kho?n nhï¿½n viï¿½n {staff.FullName} thï¿½nh cï¿½ng!";
                 }
                 catch (Exception ex)
                 {
-                    TempData["Error"] = "L?i h? th?ng khi xóa: " + ex.Message;
+                    TempData["Error"] = "L?i h? th?ng khi xï¿½a: " + ex.Message;
                 }
             }
             else
             {
-                TempData["Error"] = "Không tìm th?y nhân viên c?n xóa.";
+                TempData["Error"] = "Khï¿½ng tï¿½m th?y nhï¿½n viï¿½n c?n xï¿½a.";
             }
 
             return RedirectToPage("/Admin/StaffManager");

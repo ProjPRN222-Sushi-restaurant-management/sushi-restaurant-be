@@ -109,7 +109,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var booking in Model.Bookings)
+                    @foreach (var booking in Model.Bookings.Items)
                     {
                         <tr>
                             <td>#@booking.BookingId</td>
@@ -212,7 +212,13 @@
                 </tbody>
             </table>
 
-            @if (!Model.Bookings.Any())
+            @{
+                ViewBag.PaginatedList = Model.Bookings;
+            }
+
+            <partial name=\"_Pagination\"  />
+
+            @if (!Model.Bookings.Items.Any())
             {
                 <div class="alert alert-info">
                     Không có đặt bàn nào trong ngày này.

@@ -90,15 +90,15 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.FilteredBookings == null || !Model.FilteredBookings.Any())
+                @if (Model.FilteredBookings == null || !Model.FilteredBookings.Items.Any())
                 {
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">Không có lượt đặt bàn nào trong thời gian này.</td>
+                        <td colspan=\"7\" class=\"text-center py-4 text-muted\">Không có lượt đặt bàn nào trong thời gian này.</td>
                     </tr>
                 }
                 else
                 {
-                    @foreach (var b in Model.FilteredBookings)
+                    @foreach (var b in Model.FilteredBookings.Items)
                     {
                         <tr>
                             <td class="ps-3">#@b.BookingId</td>
@@ -119,3 +119,9 @@
         </table>
     </div>
 </div>
+
+@{
+    ViewBag.PaginatedList = Model.FilteredBookings;
+}
+
+<partial name=\"_Pagination\"  />

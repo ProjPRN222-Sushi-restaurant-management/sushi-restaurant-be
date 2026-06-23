@@ -82,7 +82,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var dish in Model.DishList)
+                        @foreach (var dish in Model.DishList.Items)
                         {
                             <tr>
                                 <td class="ps-3">#@dish.MenuItemId</td>
@@ -117,6 +117,12 @@
                 </table>
             </div>
         </div>
+
+        @{
+            ViewBag.PaginatedList = Model.DishList;
+        }
+
+        <partial name=\"_Pagination\"  />
     </div>
 </div>
 

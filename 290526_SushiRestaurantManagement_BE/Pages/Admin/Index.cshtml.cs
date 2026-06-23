@@ -1,3 +1,4 @@
+using _290526_SushiRestaurantManagement_BE.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 
@@ -24,62 +25,60 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         public int AvailableTablesCount { get; set; }
         public decimal MonthlyRevenue { get; set; }
 
-        // Luôn kh?i t?o danh sách r?ng ?? tránh l?i Null ? giao di?n .cshtml
-        public List<BusinessObjects.Models.Booking> FilteredBookings { get; set; } = new List<BusinessObjects.Models.Booking>();
+        public PaginatedList<BusinessObjects.Models.Booking> FilteredBookings { get; set; } = new(new List<BusinessObjects.Models.Booking>(), 0, 1, 10);
+
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
+
+        public int PageSize { get; set; } = 10;
 
         public async Task OnGetAsync()
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
             var nowTime = TimeOnly.FromDateTime(DateTime.Now);
 
-            // N?u ch?a ch?n ngày, m?c ??nh l?y t? ??u tháng hi?n t?i ??n hôm nay
+            // N?u ch?a ch?n ngï¿½y, m?c ??nh l?y t? ??u thï¿½ng hi?n t?i ??n hï¿½m nay
             if (StartDate == null) StartDate = new DateOnly(today.Year, today.Month, 1);
             if (EndDate == null) EndDate = today;
 
-            // Ki?m tra an toàn h? th?ng d?ch v?
+            // Ki?m tra an toï¿½n h? th?ng d?ch v?
             if (_bookingService == null || _tableAvailabilityService == null) return;
 
-            // 1. L?y danh sách t?ng an toàn
+            // 1. L?y danh sï¿½ch t?ng an toï¿½n
             var allBookings = await _bookingService.GetAllBookingsAsync();
 
-            // Kh?i t?o danh sách s?ch ?? l?u các booking h?p l?
-            FilteredBookings = new List<BusinessObjects.Models.Booking>();
-
+            // Kh?i t?o danh sï¿½ch s?ch ?? l?u cï¿½c booking h?p l?
             if (allBookings != null)
             {
-                // Th?c hi?n l?c theo kho?ng ngày ?ã ch?n
+                // Th?c hi?n l?c theo kho?ng ngï¿½y ?ï¿½ ch?n
                 var tempBookings = allBookings
                     .Where(b => b.BookingDate >= StartDate.Value && b.BookingDate <= EndDate.Value)
                     .OrderByDescending(b => b.BookingDate)
-                    .ThenByDescending(b => b.BookingTime);
+                    .ThenByDescending(b => b.BookingTime)
+                    .ToList();
 
-                foreach (var b in tempBookings)
-                {
-                    // N?u b?n ghi trong DB b? l?i hoàn toàn d?n ??n object null, b? qua ngay
-                    if (b == null) continue;
-
-                    FilteredBookings.Add(b);
-                }
+                FilteredBookings = PaginatedList<BusinessObjects.Models.Booking>.Create(tempBookings, PageNumber, PageSize);
             }
 
-            // Gán s? l??ng ph?n t? ??m ???c
-            TotalBookingsCount = FilteredBookings.Count;
+            // Gï¿½n s? l??ng ph?n t? ??m ???c
+            TotalBookingsCount = FilteredBookings.TotalItems;
 
-            // 2. Tính s? l??ng bàn tr?ng hi?n t?i
+            // 2. Tï¿½nh s? l??ng bï¿½n tr?ng hi?n t?i
             try
             {
                 AvailableTablesCount = await _tableAvailabilityService.GetAvailableTableCountAsync(today, nowTime);
             }
             catch
             {
-                AvailableTablesCount = 0; // Tránh s?p n?u service bàn tr?ng l?i
+                AvailableTablesCount = 0; // Trï¿½nh s?p n?u service bï¿½n tr?ng l?i
             }
 
-            // 3. Tính toán doanh thu tích l?y - B?O V? TUY?T ??I KH?I BOOKING L?I
+            // 3. Tï¿½nh toï¿½n doanh thu tï¿½ch l?y - B?O V? TUY?T ??I KH?I BOOKING L?I
             decimal revenueSum = 0;
-            foreach (var booking in FilteredBookings)
+            var allFilteredBookings = FilteredBookings.Items;
+            foreach (var booking in allFilteredBookings)
             {
-                // ??t toàn b? block x? lý 1 dòng booking vào try-catch ??c l?p
+                // ??t toï¿½n b? block x? lï¿½ 1 dï¿½ng booking vï¿½o try-catch ??c l?p
                 try
                 {
                     if (booking != null)
@@ -93,8 +92,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 }
                 catch (Exception ex)
                 {
-                    // Khi booking này b? l?i c? s? d? li?u ho?c không tìm th?y orderhistory,
-                    // L?nh 'continue' s? kích ho?t ?? b? qua dòng l?i này và nh?y sang booking ti?p theo ngay l?p t?c.
+                    // Khi booking nï¿½y b? l?i c? s? d? li?u ho?c khï¿½ng tï¿½m th?y orderhistory,
+                    // L?nh 'continue' s? kï¿½ch ho?t ?? b? qua dï¿½ng l?i nï¿½y vï¿½ nh?y sang booking ti?p theo ngay l?p t?c.
                     System.Diagnostics.Debug.WriteLine($"L?i t?i booking #{booking?.BookingId}: {ex.Message}");
                     continue;
                 }

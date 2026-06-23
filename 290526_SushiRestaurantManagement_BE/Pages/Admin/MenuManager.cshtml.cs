@@ -1,3 +1,4 @@
+using _290526_SushiRestaurantManagement_BE.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BusinessObjects.Models;
@@ -23,7 +24,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         public string? SearchString { get; set; }
 
         public List<MenuCategory> Categories { get; set; } = new List<MenuCategory>();
-        public List<MenuItem> DishList { get; set; } = new List<MenuItem>();
+        public PaginatedList<MenuItem> DishList { get; set; } = new(new List<MenuItem>(), 0, 1, 15);
+
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
+
+        public int PageSize { get; set; } = 15;
 
         public async Task OnGetAsync(int? selectedCategoryId, string? searchString)
         {
@@ -51,7 +57,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                     query = query.Where(d => d.ItemName.Contains(SearchString.Trim(), StringComparison.OrdinalIgnoreCase));
                 }
 
-                DishList = query.OrderBy(d => d.MenuItemId).ToList();
+                var orderedDishes = query.OrderBy(d => d.MenuItemId).ToList();
+                DishList = PaginatedList<MenuItem>.Create(orderedDishes, PageNumber, PageSize);
             }
         }
 
@@ -59,7 +66,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         {
             if (string.IsNullOrWhiteSpace(NewCategoryName))
             {
-                TempData["Error"] = "Tên nhóm danh m?c không ???c ?? tr?ng.";
+                TempData["Error"] = "Tï¿½n nhï¿½m danh m?c khï¿½ng ???c ?? tr?ng.";
                 return RedirectToPage("/Admin/MenuManager");
             }
 
@@ -73,11 +80,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 var result = await _categoryService.AddMenuCategoryAsync(newCat);
                 if (result)
                 {
-                    TempData["Success"] = "Thêm nhóm danh m?c m?i thành công!";
+                    TempData["Success"] = "Thï¿½m nhï¿½m danh m?c m?i thï¿½nh cï¿½ng!";
                 }
                 else
                 {
-                    TempData["Error"] = "Thêm danh m?c th?t b?i. Vui lòng ki?m tra l?i.";
+                    TempData["Error"] = "Thï¿½m danh m?c th?t b?i. Vui lï¿½ng ki?m tra l?i.";
                 }
             }
             catch (Exception ex)
@@ -97,7 +104,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         {
             if (string.IsNullOrWhiteSpace(NewDishName) || NewDishPrice < 0)
             {
-                TempData["Error"] = "Thông tin tên món ho?c giá bán nh?p vào không h?p l?.";
+                TempData["Error"] = "Thï¿½ng tin tï¿½n mï¿½n ho?c giï¿½ bï¿½n nh?p vï¿½o khï¿½ng h?p l?.";
                 return RedirectToPage("/Admin/MenuManager", new { selectedCategoryId = SelectedCategoryId });
             }
 
@@ -116,11 +123,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 var result = await _itemService.AddMenuItemAsync(newItem);
                 if (result)
                 {
-                    TempData["Success"] = "Thêm món ?n m?i kèm hình ?nh và mô t? thành công!";
+                    TempData["Success"] = "Thï¿½m mï¿½n ?n m?i kï¿½m hï¿½nh ?nh vï¿½ mï¿½ t? thï¿½nh cï¿½ng!";
                 }
                 else
                 {
-                    TempData["Error"] = "Không th? thêm món ?n. Vui lòng th? l?i.";
+                    TempData["Error"] = "Khï¿½ng th? thï¿½m mï¿½n ?n. Vui lï¿½ng th? l?i.";
                 }
             }
             catch (Exception ex)
@@ -139,11 +146,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 
                 if (result)
                 {
-                    TempData["Success"] = "?ã ng?ng bán món ?n thành công!";
+                    TempData["Success"] = "?ï¿½ ng?ng bï¿½n mï¿½n ?n thï¿½nh cï¿½ng!";
                 }
                 else
                 {
-                    TempData["Error"] = "Không th? ng?ng bán món ?n này.";
+                    TempData["Error"] = "Khï¿½ng th? ng?ng bï¿½n mï¿½n ?n nï¿½y.";
                 }
             }
             catch (Exception ex)

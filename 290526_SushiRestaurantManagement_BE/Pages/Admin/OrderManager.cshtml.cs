@@ -1,3 +1,4 @@
+using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Enums;
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public OrderStatusEnum? StatusFilter { get; set; }
 
-        public List<Order> Orders { get; set; } = new();
+        public PaginatedList<Order> Orders { get; set; } = new(new List<Order>(), 0, 1, 10);
+
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
+
+        public int PageSize { get; set; } = 10;
 
         public async Task OnGetAsync()
         {
@@ -44,7 +50,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 query = query.Where(o => o.OrderStatus == StatusFilter.Value);
             }
 
-            Orders = query.OrderByDescending(o => o.OrderId).ToList();
+            var orderedOrders = query.OrderByDescending(o => o.OrderId).ToList();
+            Orders = PaginatedList<Order>.Create(orderedOrders, PageNumber, PageSize);
         }
 
         public async Task<IActionResult> OnPostUpdateStatusAsync(int orderId, OrderStatusEnum status)

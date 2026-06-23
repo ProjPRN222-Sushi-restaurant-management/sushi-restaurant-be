@@ -1,3 +1,4 @@
+using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,7 +18,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
 
-        public List<Customer> CustomerList { get; set; } = new();
+        public PaginatedList<Customer> CustomerList { get; set; } = new(new List<Customer>(), 0, 1, 10);
+
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
+
+        public int PageSize { get; set; } = 10;
 
         public async Task OnGetAsync()
         {
@@ -31,7 +37,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                     (c.Phone != null && c.Phone.Contains(SearchString.Trim(), StringComparison.OrdinalIgnoreCase)));
             }
 
-            CustomerList = query.OrderByDescending(c => c.CustomerId).ToList();
+            var orderedCustomers = query.OrderByDescending(c => c.CustomerId).ToList();
+            CustomerList = PaginatedList<Customer>.Create(orderedCustomers, PageNumber, PageSize);
         }
 
         public async Task<IActionResult> OnPostAddCustomerAsync(string NewFullName, string NewPhone)

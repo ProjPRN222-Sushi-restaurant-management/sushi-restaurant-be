@@ -8,6 +8,7 @@ namespace Repositories.Interfaces
         Task<Order> GetOrderById(int id, CancellationToken ct = default);
 
         Task AddOrderAsync(Order order, CancellationToken ct = default);
+        Task<bool> UpdateOrderAsync(Order order, CancellationToken ct = default);
         Task SaveChangesAsync(CancellationToken ct = default);
         Task<IEnumerable<Order>> GetOrdersByBookingIdAsync(long bookingId);
     }

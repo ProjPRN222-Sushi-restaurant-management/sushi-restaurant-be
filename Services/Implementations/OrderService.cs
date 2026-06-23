@@ -22,6 +22,9 @@ public class OrderService : IOrderService
     public Task AddOrderAsync(Order order, CancellationToken ct = default)
         => _orderRepository.AddOrderAsync(order, ct);
 
+    public Task<bool> UpdateOrderAsync(Order order, CancellationToken ct = default)
+        => _orderRepository.UpdateOrderAsync(order, ct);
+
     public Task SaveChangesAsync(CancellationToken ct = default)
         => _orderRepository.SaveChangesAsync(ct);
 

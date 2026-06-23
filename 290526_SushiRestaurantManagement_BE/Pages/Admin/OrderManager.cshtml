@@ -1,0 +1,94 @@
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.OrderManagerModel
+@using BusinessObjects.Enums
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản Lý Orders";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="h3 mb-0">Quản Lý Orders</h2>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-sm-5">
+                <label class="form-label">Tìm kiếm</label>
+                <input type="text" name="SearchString" class="form-control" placeholder="Nhập ID, số điện thoại, booking, table" value="@Model.SearchString" />
+            </div>
+            <div class="col-sm-3">
+                <label class="form-label">Trạng thái</label>
+                <select name="StatusFilter" class="form-select">
+                    <option value="">Tất cả</option>
+                    @foreach (var status in Enum.GetValues<OrderStatusEnum>())
+                    {
+                        <option value="@status" @(Model.StatusFilter == status ? "selected" : "")>@status</option>
+                    }
+                </select>
+            </div>
+            <div class="col-sm-4 d-grid">
+                <button type="submit" class="btn btn-dark">Lọc orders</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-dark text-white fw-bold">Danh sách orders</div>
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">Order ID</th>
+                    <th>Booking</th>
+                    <th>Table</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td class="ps-3">#@order.OrderId</td>
+                        <td>@(order.BookingId.HasValue ? "#" + order.BookingId.Value : "-")</td>
+                        <td>@(order.TableId.HasValue ? order.TableId.Value.ToString() : "-")</td>
+                        <td>@(order.Customer?.FullName ?? "-")<br /><small>@(order.Customer?.Phone ?? "-")</small></td>
+                        <td>@order.TotalAmount.ToString("N0") đ</td>
+                        <td>
+                            <span class="badge @(order.OrderStatus == OrderStatusEnum.PENDING ? "bg-warning text-dark" : order.OrderStatus == OrderStatusEnum.COMPLETED ? "bg-success" : "bg-danger")">
+                                @order.OrderStatus
+                            </span>
+                        </td>
+                        <td>@order.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a asp-page="/Admin/OrderDetails" asp-route-id="@order.OrderId" class="btn btn-sm btn-outline-primary py-1 px-2">Xem</a>
+                                <form method="post" asp-page-handler="UpdateStatus" class="d-inline">
+                                    <input type="hidden" name="orderId" value="@order.OrderId" />
+                                    <select name="status" class="form-select form-select-sm d-inline" style="width: 130px;">
+                                        @foreach (var status in Enum.GetValues<OrderStatusEnum>())
+                                        {
+                                            <option value="@status" @(order.OrderStatus == status ? "selected" : "")>@status</option>
+                                        }
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2">Cập nhật</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Orders.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">Không tìm thấy order nào.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

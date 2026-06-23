@@ -47,6 +47,13 @@ namespace Repositories.Implementations
             await _context.Orders.AddAsync(order, ct);
         }
 
+        public async Task<bool> UpdateOrderAsync(Order order, CancellationToken ct = default)
+        {
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
+
         public async Task SaveChangesAsync(CancellationToken ct = default)
         {
             await _context.SaveChangesAsync(ct);

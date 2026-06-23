@@ -23,28 +23,32 @@ namespace Repositories.Implementations
         }
 
         public async Task<MenuItem> GetMenuItemByIdAsync(
-            int id,
+            long id,
             CancellationToken ct = default)
         {
             var menuItem = await _context.MenuItems
-                .AsNoTracking()
                 .Include(mi => mi.Category)
                 .FirstOrDefaultAsync(mi => mi.MenuItemId == id, ct);
 
             return menuItem ?? throw new KeyNotFoundException($"Menu item {id} not found.");
         }
 
-        public async Task<bool> DeleteMenuItemAsync(
-            int MenuItemId,
-            CancellationToken ct = default)
+        public async Task<bool> DeleteMenuItemAsync(long menuItemId, CancellationToken ct = default)
         {
-            var menuItem = await _context.MenuItems.FindAsync(new object[] { MenuItemId }, ct);
+            var menuItem = await _context.MenuItems
+                .FirstOrDefaultAsync(
+                    x => x.MenuItemId == menuItemId, ct
+                );
+
             if (menuItem == null)
-            {
-                return false; // Not found
-            }
-            _context.MenuItems.Remove(menuItem);
+                return false;
+
+            menuItem.IsAvailable = false;
+
+            menuItem.DeletedAt = DateTime.Now;
+
             await _context.SaveChangesAsync(ct);
+
             return true;
         }
 

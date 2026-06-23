@@ -164,5 +164,31 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 searchString = SearchString
             });
         }
+
+        //public async Task<IActionResult> OnPostDeleteCategoryAsync(long categoryId)
+        //{
+        //    try
+        //    {
+        //        var hasItems = await _itemService.HasMenuItemsByCategoryAsync(categoryId);
+
+        //        if (hasItems)
+        //        {
+        //            TempData["Error"] = "Không thể xóa danh mục này vì vẫn còn món ăn thuộc danh mục.";
+        //            return RedirectToPage("/Admin/MenuManager");
+        //        }
+
+        //        var result = await _categoryService.DeleteMenuCategoryAsync(categoryId);
+
+        //        TempData[result ? "Success" : "Error"] =
+        //            result ? "Xóa danh mục thành công!" : "Không thể xóa danh mục.";
+
+        //        return RedirectToPage("/Admin/MenuManager");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["Error"] = "Lỗi khi xóa danh mục: " + ex.Message;
+        //        return RedirectToPage("/Admin/MenuManager");
+        //    }
+        //}
     }
 }

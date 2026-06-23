@@ -54,5 +54,19 @@ namespace Repositories.Implementations
                 return false;
             }
         }
+
+        public async Task<bool> DeleteMenuCategoryAsync(long categoryId, CancellationToken ct = default)
+        {
+            var category = await _context.MenuCategories
+                .FirstOrDefaultAsync(c => c.CategoryId == categoryId);
+
+            if (category == null)
+                return false;
+
+            _context.MenuCategories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

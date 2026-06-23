@@ -23,7 +23,8 @@
                     <option value="">Tất cả</option>
                     @foreach (var status in Enum.GetValues<OrderStatusEnum>())
                     {
-                        <option value="@status" @(Model.StatusFilter == status ? "selected" : "")>@status</option>
+                        var selected = Model.StatusFilter == status ? "selected" : "";
+                        <option value="@status" selected="@selected">@status</option>
                     }
                 </select>
             </div>
@@ -51,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var order in Model.Orders)
+                @foreach (var order in Model.Orders.Items)
                 {
                     <tr>
                         <td class="ps-3">#@order.OrderId</td>
@@ -73,7 +74,8 @@
                                     <select name="status" class="form-select form-select-sm d-inline" style="width: 130px;">
                                         @foreach (var status in Enum.GetValues<OrderStatusEnum>())
                                         {
-                                            <option value="@status" @(order.OrderStatus == status ? "selected" : "")>@status</option>
+                                            var selected = order.OrderStatus == status ? "selected" : "";
+                                            <option value="@status" selected="@selected">@status</option>
                                         }
                                     </select>
                                     <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2">Cập nhật</button>

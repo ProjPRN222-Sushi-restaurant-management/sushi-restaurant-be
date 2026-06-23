@@ -1,7 +1,6 @@
-using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Interfaces;
+using BusinessObjects.Models;
 
 namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 {
@@ -14,7 +13,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             _orderService = orderService;
         }
 
-        public Order? Order { get; set; }
+        public BusinessObjects.Models.Order? Order { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {

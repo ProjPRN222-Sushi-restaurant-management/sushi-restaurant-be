@@ -1,0 +1,122 @@
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.CustomerManagerModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản Lý Khách Hàng";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="h3 mb-0">Quản Lý Khách Hàng</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+        <i class="fa-solid fa-user-plus me-1"></i> Thêm khách hàng
+    </button>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2">
+            <div class="col-sm-9">
+                <input type="text" name="SearchString" class="form-control" placeholder="Tìm theo tên hoặc số điện thoại" value="@Model.SearchString" />
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" class="btn btn-dark w-100">Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-dark text-white fw-bold">Danh sách khách hàng</div>
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">Mã KH</th>
+                    <th>Họ và Tên</th>
+                    <th>Số điện thoại</th>
+                    <th>Hạng thành viên</th>
+                    <th>Điểm</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in Model.CustomerList)
+                {
+                    <tr>
+                        <td class="ps-3">#@customer.CustomerId</td>
+                        <td><strong>@customer.FullName</strong></td>
+                        <td>@customer.Phone</td>
+                        <td>@customer.MembershipLevel</td>
+                        <td>@customer.LoyaltyPoints</td>
+                        <td>
+                            <span class="badge @(customer.DeletedAt == null ? "bg-success" : "bg-secondary")">
+                                @(customer.DeletedAt == null ? "Active" : "Deleted")
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a asp-page="/Admin/EditCustomer" asp-route-id="@customer.CustomerId" class="btn btn-sm btn-outline-primary py-1 px-2">
+                                    Sửa
+                                </a>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@customer.CustomerId" onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2">
+                                        Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.CustomerList.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">Không tìm thấy khách hàng nào.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddCustomer">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Thêm khách hàng mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Họ và tên</label>
+                        <input type="text" name="NewFullName" class="form-control" required placeholder="Nhập họ và tên" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" name="NewPhone" class="form-control" required placeholder="Nhập số điện thoại" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Tạo khách hàng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

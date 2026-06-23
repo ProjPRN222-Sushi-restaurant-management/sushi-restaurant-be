@@ -41,6 +41,24 @@ namespace Repositories.Implementations
         public async Task AddCustomerAsync(Customer customer, CancellationToken ct = default)
         {
             await _context.Customers.AddAsync(customer, ct);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        public async Task UpdateCustomerAsync(Customer customer, CancellationToken ct = default)
+        {
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        public async Task DeleteCustomerAsync(long customerId, CancellationToken ct = default)
+        {
+            var customer = await _context.Customers.FindAsync(new object[] { customerId }, ct);
+            if (customer == null)
+                return;
+
+            customer.DeletedAt = DateTime.Now;
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync(ct);
         }
     }
 }

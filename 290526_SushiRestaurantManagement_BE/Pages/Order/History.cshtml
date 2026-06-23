@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model _290526_SushiRestaurantManagement_BE.Pages.Order.HistoryModel
 
 <h2>Lịch sử order</h2>
@@ -72,4 +72,262 @@ else
 <a asp-page="/Booking/Availability"
    class="btn btn-secondary">
     Quay lại
-</a>
+</a> *@
+
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Order.HistoryModel
+
+<style>
+    .order-history-page {
+        padding: 10px 0 30px;
+    }
+
+    .page-title {
+        font-weight: 800;
+        color: #991b1b;
+        margin-bottom: 22px;
+    }
+
+    .booking-card,
+    .order-card {
+        border: none;
+        border-radius: 22px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+    }
+
+    .booking-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+        padding: 18px 22px;
+    }
+
+        .booking-header h5 {
+            margin: 0;
+            font-weight: 800;
+        }
+
+    .booking-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+    }
+
+    .info-box {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 14px 16px;
+    }
+
+    .info-label {
+        font-size: 0.82rem;
+        color: #64748b;
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .info-value {
+        color: #1f2937;
+        font-weight: 700;
+    }
+
+    .order-card .card-header {
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 800;
+        padding: 16px 20px;
+    }
+
+    .order-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .order-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .order-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .money {
+        font-weight: 800;
+        color: #dc2626;
+    }
+
+    .total-box {
+        margin-top: 18px;
+        border: none;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #ecfeff, #eff6ff);
+        color: #0f172a;
+        padding: 18px 22px;
+        font-size: 1.05rem;
+    }
+
+    .empty-order {
+        border: none;
+        border-radius: 18px;
+        background: #fff7ed;
+        color: #9a3412;
+        padding: 18px 22px;
+        font-weight: 700;
+    }
+
+    .action-bar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+    }
+
+    .btn-order-more,
+    .btn-back {
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-weight: 700;
+    }
+
+    .btn-order-more {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        border: none;
+    }
+
+    .btn-back {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+    }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+</style>
+
+<div class="order-history-page">
+
+    <h2 class="page-title">Lịch sử order</h2>
+
+    @if (Model.Booking != null)
+    {
+        <div class="card booking-card mb-4">
+            <div class="booking-header">
+                <h5>Booking #@Model.Booking.BookingId</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="booking-info">
+                    <div class="info-box">
+                        <div class="info-label">Khách hàng</div>
+                        <div class="info-value">@Model.Booking.GuestName</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Số điện thoại</div>
+                        <div class="info-value">@Model.Booking.GuestPhone</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Ngày booking</div>
+                        <div class="info-value">@Model.Booking.BookingDate</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Giờ booking</div>
+                        <div class="info-value">@Model.Booking.BookingTime</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Bàn</div>
+                        <div class="info-value">@Model.Booking.TableId</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Ghi chú</div>
+                        <div class="info-value">@Model.Booking.Note</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!Model.Orders.Any())
+    {
+        <div class="empty-order">
+            Booking này chưa có món nào được order.
+        </div>
+    }
+    else
+    {
+        <div class="card order-card mb-3">
+            <div class="card-header">
+                Danh sách món đã order
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table order-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Món</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detail in Model.Orders.SelectMany(o => o.OrderItems))
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@detail.MenuItem.ItemName</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill text-bg-light px-3 py-2">
+                                            @detail.Quantity
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        @detail.UnitPrice.ToString("N0") đ
+                                    </td>
+                                    <td class="text-end money">
+                                        @((detail.Quantity * detail.UnitPrice).ToString("N0")) đ
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="total-box text-end">
+                    <strong>Tổng thanh toán tạm thời:</strong>
+                    <span class="money ms-2">@Model.TemporaryTotal.ToString("N0") đ</span>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="action-bar">
+        <a asp-page="/Menu/Index"
+           asp-route-bookingId="@Model.Booking?.BookingId"
+           asp-route-tableId="@Model.Booking?.TableId"
+           class="btn btn-success btn-order-more">
+            Order thêm
+        </a>
+
+        <a asp-page="/Booking/Availability"
+           class="btn btn-back">
+            Quay lại
+        </a>
+    </div>
+
+</div>

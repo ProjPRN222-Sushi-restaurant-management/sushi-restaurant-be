@@ -1,4 +1,4 @@
-@page "{id:int}"
+@* @page "{id:int}"
 @model _290526_SushiRestaurantManagement_BE.Pages.Admin.OrderDetailsModel
 @{
     Layout = "_AdminLayout";
@@ -67,4 +67,385 @@
             </table>
         </div>
     </div>
+} *@
+@page "{id:int}"
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.OrderDetailsModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chi tiết Order";
 }
+
+<style>
+    .order-detail-page {
+        padding: 4px 0 30px;
+    }
+
+    .order-detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .order-title {
+        margin: 0;
+        color: #991b1b;
+        font-weight: 900;
+    }
+
+    .order-subtitle {
+        margin-top: 4px;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .btn-back {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 22px;
+        background: #f1f5f9;
+        color: #334155;
+        font-weight: 900;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateY(-2px);
+        }
+
+    .detail-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+        height: 100%;
+    }
+
+    .detail-card-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+    }
+
+    .detail-card-body {
+        padding: 22px;
+    }
+
+    .info-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 11px 0;
+        border-bottom: 1px dashed #e5e7eb;
+    }
+
+        .info-line:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        color: #64748b;
+        font-weight: 800;
+    }
+
+    .info-value {
+        color: #1f2937;
+        font-weight: 900;
+        text-align: right;
+    }
+
+    .money-value {
+        color: #dc2626;
+        font-weight: 950;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 13px;
+        background: #fff7ed;
+        color: #9a3412;
+        font-weight: 900;
+        font-size: .86rem;
+    }
+
+    .order-items-card {
+        margin-top: 24px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+    }
+
+    .order-items-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .item-count-badge {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+        font-size: .85rem;
+    }
+
+    .detail-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .detail-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: .86rem;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .detail-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .detail-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .dish-name {
+        color: #1f2937;
+        font-weight: 900;
+    }
+
+    .qty-pill,
+    .price-pill,
+    .note-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: .84rem;
+        font-weight: 800;
+    }
+
+    .qty-pill {
+        background: #f8fafc;
+        color: #334155;
+        border: 1px solid #e5e7eb;
+    }
+
+    .price-pill {
+        background: #fff7ed;
+        color: #dc2626;
+    }
+
+    .note-tag {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .empty-order {
+        padding: 28px;
+        color: #64748b;
+        font-weight: 800;
+        text-align: center;
+    }
+</style>
+
+<div class="order-detail-page">
+
+    @if (Model.Order != null)
+    {
+        <div class="order-detail-header">
+            <div>
+                <h2 class="order-title">
+                    Order #@Model.Order.OrderId
+                </h2>
+
+                <div class="order-subtitle">
+                    Trạng thái:
+                    <span class="status-pill">
+                        @Model.Order.OrderStatus
+                    </span>
+                </div>
+            </div>
+
+            <a asp-page="/Admin/OrderManager" class="btn-back">
+                Quay lại danh sách
+            </a>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        Thông tin cơ bản
+                    </div>
+
+                    <div class="detail-card-body">
+                        <div class="info-line">
+                            <span class="info-label">Booking</span>
+                            <span class="info-value">
+                                @(Model.Order.BookingId.HasValue ? "#" + Model.Order.BookingId.Value : "-")
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Table</span>
+                            <span class="info-value">
+                                @(Model.Order.TableId.HasValue? Model.Order.TableId.Value.ToString() : "-")
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Ngày tạo</span>
+                            <span class="info-value">
+                                @Model.Order.CreatedAt?.ToString("dd/MM/yyyy HH:mm")
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Hoàn thành</span>
+                            <span class="info-value">
+                                @Model.Order.CompletedAt?.ToString("dd/MM/yyyy HH:mm")
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Tổng tiền</span>
+                            <span class="info-value money-value">
+                                @Model.Order.TotalAmount.ToString("N0") đ
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        Thông tin khách hàng
+                    </div>
+
+                    <div class="detail-card-body">
+                        <div class="info-line">
+                            <span class="info-label">Tên</span>
+                            <span class="info-value">
+                                @(Model.Order.Customer?.FullName ?? "-")
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">SĐT</span>
+                            <span class="info-value">
+                                @(Model.Order.Customer?.Phone ?? "-")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-items-card">
+            <div class="order-items-header">
+                <span>Chi tiết món ăn</span>
+
+                <span class="item-count-badge">
+                    @Model.Order.OrderItems.Count món
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table detail-table">
+                    <thead>
+                        <tr>
+                            <th>Món</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Đơn giá</th>
+                            <th class="text-end">Tổng</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var detail in Model.Order.OrderItems)
+                        {
+                            <tr>
+                                <td class="dish-name">
+                                    @detail.MenuItem?.ItemName
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="qty-pill">
+                                        @detail.Quantity
+                                    </span>
+                                </td>
+
+                                <td class="text-end">
+                                    <span class="price-pill">
+                                        @detail.UnitPrice.ToString("N0") đ
+                                    </span>
+                                </td>
+
+                                <td class="text-end">
+                                    <span class="price-pill">
+                                        @detail.TotalPrice.ToString("N0") đ
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(detail.Note))
+                                    {
+                                        <span class="text-muted fst-italic">
+                                            Không có
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="note-tag">
+                                            @detail.Note
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!Model.Order.OrderItems.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="empty-order">
+                                    Order này chưa có món nào.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+</div>

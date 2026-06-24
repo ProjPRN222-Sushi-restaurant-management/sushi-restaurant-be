@@ -1,82 +1,428 @@
 @page
 @model _290526_SushiRestaurantManagement_BE.Pages.Booking.AvailabilityModel
 
-<div class="container mt-4">
-    <h2>Quản lý đặt bàn & Tình trạng bàn</h2>
+@{
+    ViewData["Title"] = "Quản lý tình trạng bàn";
+    ViewBag.PaginatedList = Model.Bookings;
+}
 
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <form method="get" class="form-inline">
-                <div class="form-group mr-2">
-                    <label for="selectedDate">Chọn ngày:</label>
-                    <input type="date" id="selectedDate" name="selectedDate" class="form-control" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
-                </div>
-                <button type="submit" class="btn btn-primary">Xem</button>
-            </form>
+<style>
+    .availability-page {
+        padding: 10px 0 35px;
+    }
+
+    .availability-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .availability-title {
+        font-weight: 900;
+        color: #991b1b;
+        margin: 0;
+    }
+
+    .availability-subtitle {
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 4px;
+    }
+
+    .availability-badge {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 800;
+        box-shadow: 0 12px 24px rgba(220, 38, 38, 0.22);
+    }
+
+    .filter-card,
+    .summary-card,
+    .section-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+    }
+
+    .filter-card {
+        border-radius: 22px;
+        padding: 22px;
+        margin-bottom: 24px;
+    }
+
+    .filter-form {
+        display: flex;
+        align-items: end;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .form-label-custom {
+        color: #475569;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .filter-form .form-control {
+        min-width: 240px;
+        border-radius: 14px;
+        border: 1px solid #dbe3ef;
+        padding: 10px 12px;
+        font-weight: 600;
+    }
+
+    .btn-filter {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 24px;
+        color: #fff;
+        font-weight: 900;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .summary-card {
+        border-radius: 24px;
+        padding: 26px;
+        text-align: center;
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-weight: 800;
+    }
+
+    .summary-value {
+        margin-top: 10px;
+        font-size: 2rem;
+        font-weight: 950;
+    }
+
+    .total-color {
+        color: #2563eb;
+    }
+
+    .booked-color {
+        color: #dc2626;
+    }
+
+    .available-color {
+        color: #16a34a;
+    }
+
+    .occupancy-color {
+        color: #f59e0b;
+    }
+
+    .section-card {
+        border-radius: 24px;
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+
+    .section-card-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+    }
+
+    .availability-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .availability-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.86rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .availability-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .availability-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .status-pill {
+        display: inline-flex;
+        min-width: 42px;
+        height: 32px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 999px;
+        color: #fff;
+        font-weight: 900;
+    }
+
+    .danger-pill {
+        background: #dc2626;
+    }
+
+    .success-pill {
+        background: #16a34a;
+    }
+
+    .custom-progress {
+        height: 24px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        overflow: hidden;
+    }
+
+    .custom-progress-bar {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        font-weight: 900;
+    }
+
+    .booking-count-badge {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+    }
+
+    .booking-status {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 900;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-completed {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-other {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .note-tag {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 700;
+        max-width: 220px;
+    }
+
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn-action {
+        border: none;
+        border-radius: 999px;
+        padding: 8px 14px;
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-history {
+        background: linear-gradient(135deg, #0891b2, #06b6d4);
+    }
+
+    .btn-order {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+    }
+
+    .status-form {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .status-select {
+        width: 135px;
+        border-radius: 999px;
+        font-weight: 700;
+    }
+
+    .empty-booking {
+        margin: 22px;
+        padding: 18px 22px;
+        border-radius: 18px;
+        background: #ecfeff;
+        color: #155e75;
+        font-weight: 800;
+    }
+
+    @@media (max-width: 992px) {
+        .summary-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .status-form {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-form {
+            display: block;
+        }
+
+            .filter-form .form-control,
+            .btn-filter {
+                width: 100%;
+            }
+
+        .btn-filter {
+            margin-top: 12px;
+        }
+    }
+</style>
+
+<div class="availability-page">
+
+    <div class="availability-header">
+        <div>
+            <h2 class="availability-title">Quản lý đặt bàn & Tình trạng bàn</h2>
+            <div class="availability-subtitle">
+                Theo dõi số bàn, khung giờ và danh sách booking theo ngày
+            </div>
+        </div>
+
+        <div class="availability-badge">
+            🍣 Live Status
         </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Tổng bàn</h5>
-                    <h2 class="text-primary">@Model.TotalTables</h2>
-                </div>
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            <div>
+                <label for="selectedDate" class="form-label-custom">
+                    Chọn ngày
+                </label>
+
+                <input type="date"
+                       id="selectedDate"
+                       name="selectedDate"
+                       class="form-control"
+                       value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
             </div>
+
+            <button type="submit" class="btn-filter">
+                Xem
+            </button>
+        </form>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Tổng bàn</div>
+            <div class="summary-value total-color">@Model.TotalTables</div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Bàn được đặt</h5>
-                    <h2 class="text-danger">@Model.BookedTablesCount</h2>
-                </div>
-            </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Bàn được đặt</div>
+            <div class="summary-value booked-color">@Model.BookedTablesCount</div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Bàn trống</h5>
-                    <h2 class="text-success">@Model.AvailableTablesCount</h2>
-                </div>
-            </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Bàn trống</div>
+            <div class="summary-value available-color">@Model.AvailableTablesCount</div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Tỉ lệ chiếm</h5>
-                    <h2 class="text-warning">@Model.OccupancyRate%</h2>
-                </div>
-            </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Tỉ lệ chiếm</div>
+            <div class="summary-value occupancy-color">@Model.OccupancyRate%</div>
         </div>
     </div>
 
-    <!-- Time Slots -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h4>Tình trạng theo khung giờ</h4>
-            <table class="table table-striped">
+    <div class="section-card">
+        <div class="section-card-header">
+            Tình trạng theo khung giờ
+        </div>
+
+        <div class="table-responsive">
+            <table class="table availability-table">
                 <thead>
                     <tr>
                         <th>Khung giờ</th>
-                        <th>Bàn được đặt</th>
-                        <th>Bàn trống</th>
+                        <th class="text-center">Bàn được đặt</th>
+                        <th class="text-center">Bàn trống</th>
                         <th>Tỉ lệ</th>
                     </tr>
                 </thead>
-                <tbody style="color: darkgreen">
+
+                <tbody>
                     @foreach (var timeSlot in Model.TimeSlots)
                     {
                         <tr>
-                            <td>@timeSlot.Time.ToString("HH:mm")</td>
-                            <td><span class="badge bg-danger">@timeSlot.BookedCount</span></td>
-                            <td><span class="badge bg-success">@timeSlot.AvailableCount</span></td>
+                            <td class="fw-bold">@timeSlot.Time.ToString("HH:mm")</td>
+
+                            <td class="text-center">
+                                <span class="status-pill danger-pill">
+                                    @timeSlot.BookedCount
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+                                <span class="status-pill success-pill">
+                                    @timeSlot.AvailableCount
+                                </span>
+                            </td>
+
                             <td>
-                                <div class="progress" style="height: 20px;">
+                                <div class="progress custom-progress">
                                     @if (timeSlot.OccupancyPercentage > 0)
                                     {
-                                        <div class="progress-bar bg-danger" role="progressbar" 
+                                        <div class="progress-bar custom-progress-bar"
+                                             role="progressbar"
                                              style="width: @timeSlot.OccupancyPercentage%;">
                                             @timeSlot.OccupancyPercentage%
                                         </div>
@@ -90,155 +436,155 @@
         </div>
     </div>
 
-    <!-- Bookings for Selected Date -->
-    <div class="row">
-        <div class="col-12">
-            <h4>Danh sách đặt bàn - @Model.SelectedDate.ToString("dd/MM/yyyy")</h4>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Mã đặt</th>
-                        <th>Khách hàng</th>
-                        <th>SĐT</th>
-                        <th>Giờ</th>
-                        <th>Số khách</th>
-                        <th>Bàn</th>
-                        <th>Trạng thái</th>
-                        <th>Ghi chú</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var booking in Model.Bookings.Items)
-                    {
-                        <tr>
-                            <td>#@booking.BookingId</td>
-                            <td>@booking.GuestName</td>
-                            <td>@booking.GuestPhone</td>
-                            <td>@booking.BookingTime.ToString("HH:mm")</td>
-                            <td>@booking.GuestCount</td>
-                            <td>@booking.TableId</td>
+    <div class="section-card">
+        <div class="section-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>
+                Danh sách đặt bàn - @Model.SelectedDate.ToString("dd/MM/yyyy")
+            </span>
 
-                            <td>
-                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
-                                {
-                                    <span class="badge bg-warning text-dark">PENDING</span>
-                                }
-                                else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
-                                {
-                                    <span class="badge bg-success">COMPLETED</span>
-                                }
-                                else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
-                                {
-                                    <span class="badge bg-danger">CANCELLED</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">@booking.BookingStatus</span>
-                                }
-                            </td>
-
-                            <td>@booking.Note</td>
-
-                            <td style="white-space: nowrap;">
-                                <a asp-page="/Order/History"
-                                   asp-route-bookingId="@booking.BookingId"
-                                   class="btn btn-info btn-sm">
-                                    Xem order
-                                </a>
-
-                                <a asp-page="/Menu/Index"
-                                   asp-route-bookingId="@booking.BookingId"
-                                   asp-route-tableId="@booking.TableId"
-                                   class="btn btn-success btn-sm">
-                                    Order thêm
-                                </a>
-
-                                <form method="post"
-                                      asp-page-handler="UpdateStatus"
-                                      class="d-inline">
-
-                                    <input type="hidden"
-                                           name="bookingId"
-                                           value="@booking.BookingId" />
-
-                                    <input type="hidden"
-                                           name="selectedDate"
-                                           value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
-
-                                    <select name="status"
-                                            class="form-select form-select-sm d-inline"
-                                            style="width:140px">
-
-                                        @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
-                                        {
-                                            <option value="PENDING" selected>Pending</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="PENDING">Pending</option>
-                                        }
-
-                                        @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
-                                        {
-                                            <option value="COMPLETED" selected>Completed</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="COMPLETED">Completed</option>
-                                        }
-
-                                        @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
-                                        {
-                                            <option value="CANCELLED" selected>Cancelled</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="CANCELLED">Cancelled</option>
-                                        }
-
-                                    </select>
-
-                                    <button type="submit"
-                                            class="btn btn-primary btn-sm">
-                                        Update
-                                    </button>
-
-                                </form>
-
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-            @{
-                ViewBag.PaginatedList = Model.Bookings;
-            }
-
-            <partial name="_Pagination"  />
-
-            @if (!Model.Bookings.Items.Any())
-            {
-                <div class="alert alert-info">
-                    Không có đặt bàn nào trong ngày này.
-                </div>
-            }
+            <span class="booking-count-badge">
+                @Model.Bookings.Items.Count booking
+            </span>
         </div>
+
+        @if (!Model.Bookings.Items.Any())
+        {
+            <div class="empty-booking">
+                Không có đặt bàn nào trong ngày này.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table availability-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đặt</th>
+                            <th>Khách hàng</th>
+                            <th>SĐT</th>
+                            <th>Giờ</th>
+                            <th>Số khách</th>
+                            <th>Bàn</th>
+                            <th>Trạng thái</th>
+                            <th>Ghi chú</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var booking in Model.Bookings.Items)
+                        {
+                            <tr>
+                                <td class="fw-bold text-danger">#@booking.BookingId</td>
+                                <td class="fw-bold">@booking.GuestName</td>
+                                <td>@booking.GuestPhone</td>
+                                <td>@booking.BookingTime.ToString("HH:mm")</td>
+                                <td>@booking.GuestCount</td>
+                                <td>@booking.TableId</td>
+
+                                <td>
+                                    @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
+                                    {
+                                        <span class="booking-status status-pending">PENDING</span>
+                                    }
+                                    else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
+                                    {
+                                        <span class="booking-status status-completed">COMPLETED</span>
+                                    }
+                                    else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
+                                    {
+                                        <span class="booking-status status-cancelled">CANCELLED</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="booking-status status-other">@booking.BookingStatus</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(booking.Note))
+                                    {
+                                        <span class="text-muted fst-italic">Không có</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="note-tag">@booking.Note</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="action-group">
+                                        <a asp-page="/Order/History"
+                                           asp-route-bookingId="@booking.BookingId"
+                                           class="btn-action btn-history">
+                                            Xem order
+                                        </a>
+
+                                        <a asp-page="/Menu/Index"
+                                           asp-route-bookingId="@booking.BookingId"
+                                           asp-route-tableId="@booking.TableId"
+                                           class="btn-action btn-order">
+                                            Order thêm
+                                        </a>
+
+                                        <form method="post"
+                                              asp-page-handler="UpdateStatus"
+                                              class="status-form">
+
+                                            <input type="hidden"
+                                                   name="bookingId"
+                                                   value="@booking.BookingId" />
+
+                                            <input type="hidden"
+                                                   name="selectedDate"
+                                                   value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+
+                                            <select name="status"
+                                                    class="form-select form-select-sm status-select">
+
+                                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
+                                                {
+                                                    <option value="PENDING" selected>Pending</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="PENDING">Pending</option>
+                                                }
+
+                                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
+                                                {
+                                                    <option value="COMPLETED" selected>Completed</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="COMPLETED">Completed</option>
+                                                }
+
+                                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
+                                                {
+                                                    <option value="CANCELLED" selected>Cancelled</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="CANCELLED">Cancelled</option>
+                                                }
+
+                                            </select>
+
+                                            <button type="submit" class="btn-action btn-update">
+                                                Update
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <partial name="_Pagination" />
+        }
     </div>
+
 </div>
-
-<style>
-    .card {
-        border: none;
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
-    .card-body {
-        padding: 1.5rem;
-    }
-
-    .table {
-        margin-bottom: 0;
-    }
-</style>

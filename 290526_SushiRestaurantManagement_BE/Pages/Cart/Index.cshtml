@@ -1,85 +1,4 @@
-﻿@* @page
-@model _290526_SushiRestaurantManagement_BE.Pages.Cart.IndexModel
-
-<h2>Giỏ hàng</h2>
-
-@if (!Model.CartItems.Any())
-{
-    <p>Giỏ hàng đang trống.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Món</th>
-                <th>Ghi chú / tùy biến</th>
-                <th>Giá</th>
-                <th>Số lượng</th>
-                <th>Tổng</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.CartItems)
-        {
-            <tr>
-                <td>@item.ItemName</td>
-                <td>@item.Note</td>
-                <td>@item.UnitPrice.ToString("N0") đ</td>
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-
-                            <form method="post"
-                                  asp-page-handler="Decrease"
-                                  class="d-inline">
-                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
-                                <input type="hidden" name="note" value="@item.Note" />
-
-                                <button type="submit" class="btn btn-outline-secondary btn-sm">
-                                    -
-                                </button>
-                            </form>
-
-                            <span class="fw-bold text-center" style="min-width: 30px;">
-                                @item.Quantity
-                            </span>
-
-                            <form method="post"
-                                  asp-page-handler="Increase"
-                                  class="d-inline">
-                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
-                                <input type="hidden" name="note" value="@item.Note" />
-
-                                <button type="submit" class="btn btn-outline-secondary btn-sm">
-                                    +
-                                </button>
-                            </form>
-
-                        </div>
-                    </td>
-                <td>@item.Total.ToString("N0") đ</td>
-                <td>
-                        <form method="post" asp-page-handler="Remove">
-                            <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
-                            <input type="hidden" name="note" value="@item.Note" />
-                            <button class="btn btn-danger btn-sm">Xóa</button>
-                        </form>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-
-    <h4>Tổng tiền dự kiến: @Model.TotalAmount.ToString("N0") đ</h4>
-
-    <a asp-page="/Cart/Checkout" class="btn btn-success">
-        Gửi order
-    </a>
-} *@
-
-
-@page
+﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Cart.IndexModel
 
 <style>
@@ -162,9 +81,14 @@ else
         color: #1f2937;
     }
 
-    .note-text {
-        color: #64748b;
-        font-size: 0.92rem;
+    .note-tag {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #fff7ed;
+        color: #9a3412;
+        font-size: 0.9rem;
+        font-weight: 700;
         max-width: 280px;
     }
 
@@ -249,20 +173,40 @@ else
 
     .checkout-area {
         margin-top: 22px;
-        text-align: right;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
+    .btn-back-menu,
     .btn-checkout {
         border: none;
         border-radius: 999px;
-        padding: 12px 26px;
+        padding: 12px 24px;
         font-weight: 900;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .btn-back-menu {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+        .btn-back-menu:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateY(-2px);
+        }
+
+    .btn-checkout {
         background: linear-gradient(135deg, #16a34a, #22c55e);
         color: #ffffff;
         box-shadow: 0 14px 28px rgba(22, 163, 74, 0.24);
-        transition: all 0.2s ease;
-        text-decoration: none;
-        display: inline-block;
     }
 
         .btn-checkout:hover {
@@ -280,18 +224,39 @@ else
         font-weight: 800;
         box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
     }
+
+    @@media (max-width: 768px) {
+        .checkout-area {
+            justify-content: stretch;
+        }
+
+        .btn-back-menu,
+        .btn-checkout {
+            width: 100%;
+        }
+
+        .total-amount {
+            font-size: 1.25rem;
+        }
+    }
 </style>
 
 <div class="cart-page">
 
     <div class="cart-header">
         <div>
-            <h2 class="cart-title">Giỏ hàng</h2>
-            <div class="cart-subtitle">Kiểm tra và điều chỉnh món trước khi gửi order</div>
+            <h2 class="cart-title">
+                <i class="fa-solid fa-cart-shopping me-2"></i>
+                Giỏ hàng
+            </h2>
+
+            <div class="cart-subtitle">
+                Kiểm tra và điều chỉnh món trước khi gửi order
+            </div>
         </div>
 
         <div class="cart-badge">
-            🛒 Current Cart
+            🛒 @Model.CartItems.Count món
         </div>
     </div>
 
@@ -327,15 +292,23 @@ else
                             <tr>
                                 <td class="item-name">@item.ItemName</td>
 
-                                <td class="note-text">@item.Note</td>
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(item.Note))
+                                    {
+                                        <span class="text-muted fst-italic">Không có</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="note-tag">@item.Note</span>
+                                    }
+                                </td>
 
-                                <td class="text-end">
+                                <td class="text-end money">
                                     @item.UnitPrice.ToString("N0") đ
                                 </td>
 
                                 <td class="text-center">
                                     <div class="quantity-control">
-
                                         <form method="post"
                                               asp-page-handler="Decrease"
                                               class="d-inline">
@@ -361,7 +334,6 @@ else
                                                 +
                                             </button>
                                         </form>
-
                                     </div>
                                 </td>
 
@@ -398,7 +370,13 @@ else
         </div>
 
         <div class="checkout-area">
+            <a asp-page="/Menu/Index" class="btn-back-menu">
+                <i class="fa-solid fa-arrow-left me-2"></i>
+                Quay lại Menu
+            </a>
+
             <a asp-page="/Cart/Checkout" class="btn-checkout">
+                <i class="fa-solid fa-paper-plane me-2"></i>
                 Gửi order
             </a>
         </div>

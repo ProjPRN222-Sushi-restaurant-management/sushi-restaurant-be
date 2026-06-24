@@ -1,4 +1,4 @@
-﻿@page "{id:int}"
+﻿@* @page "{id:int}"
 @model _290526_SushiRestaurantManagement_BE.Pages.Admin.EditStaffModel
 @{
     Layout = "_AdminLayout";
@@ -92,4 +92,301 @@
 
     </div>
 
-</form>
+</form> *@
+
+@page "{id:int}"
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.EditStaffModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chỉnh Sửa Nhân Viên";
+}
+
+<style>
+    .edit-staff-page {
+        padding: 8px 0 32px;
+    }
+
+    .edit-staff-wrapper {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .edit-header {
+        margin-bottom: 24px;
+    }
+
+    .edit-title {
+        color: #991b1b;
+        font-weight: 900;
+        margin: 0;
+    }
+
+    .edit-subtitle {
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 4px;
+    }
+
+    .edit-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 26px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, .1);
+    }
+
+    .edit-card-header {
+        padding: 28px 26px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+    }
+
+    .edit-card-title {
+        font-weight: 900;
+        margin: 0;
+    }
+
+    .edit-card-subtitle {
+        opacity: .95;
+        margin-top: 6px;
+        font-weight: 500;
+    }
+
+    .edit-card-body {
+        padding: 28px;
+    }
+
+    .form-label-custom {
+        color: #475569;
+        font-size: .9rem;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .password-label {
+        color: #dc2626;
+        font-size: .9rem;
+        font-weight: 900;
+        margin-bottom: 7px;
+    }
+
+    .edit-form .form-control {
+        border-radius: 16px;
+        border: 1px solid #dbe3ef;
+        padding: 12px 14px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+        .edit-form .form-control:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .password-box,
+    .active-box {
+        margin-top: 20px;
+        padding: 18px 20px;
+        border-radius: 20px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+    }
+
+    .box-title {
+        color: #1f2937;
+        font-weight: 900;
+    }
+
+    .box-subtitle {
+        color: #64748b;
+        font-size: .9rem;
+        font-weight: 500;
+        margin-top: 3px;
+    }
+
+    .active-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .form-switch .form-check-input {
+        width: 3.1em;
+        height: 1.6em;
+        cursor: pointer;
+    }
+
+        .form-switch .form-check-input:checked {
+            background-color: #16a34a;
+            border-color: #16a34a;
+        }
+
+    .form-switch .form-check-label {
+        color: #166534;
+        font-weight: 900;
+    }
+
+    .action-area {
+        display: grid;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .btn-save,
+    .btn-back {
+        border: none;
+        border-radius: 999px;
+        padding: 13px 24px;
+        font-weight: 900;
+        text-align: center;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+    .btn-save {
+        color: #ffffff;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        box-shadow: 0 14px 28px rgba(220, 38, 38, .25);
+    }
+
+        .btn-save:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(220, 38, 38, .34);
+        }
+
+    .btn-back {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 576px) {
+        .edit-card-body {
+            padding: 22px;
+        }
+    }
+</style>
+
+<div class="edit-staff-page">
+    <div class="edit-staff-wrapper">
+
+        <div class="edit-header">
+            <h2 class="edit-title">
+                Chỉnh Sửa Nhân Viên
+            </h2>
+            <div class="edit-subtitle">
+                Cập nhật thông tin nhân viên, mật khẩu và trạng thái tài khoản
+            </div>
+        </div>
+
+        <div class="edit-card">
+            <div class="edit-card-header">
+                <h5 class="edit-card-title">
+                    <i class="fa-solid fa-user-pen me-2"></i>
+                    Nhân viên #@Model.StaffInfo.StaffId
+                </h5>
+
+                <div class="edit-card-subtitle">
+                    Thông tin chi tiết tài khoản nhân viên
+                </div>
+            </div>
+
+            <div class="edit-card-body">
+                <form method="post" class="edit-form">
+
+                    <input type="hidden" asp-for="StaffInfo.StaffId" />
+
+                    <input type="hidden" asp-for="StaffInfo.PasswordHash" />
+
+                    <input type="hidden" asp-for="StaffInfo.CreatedAt" />
+
+                    <div class="mb-3">
+                        <label asp-for="StaffInfo.FullName"
+                               class="form-label-custom">
+                        </label>
+
+                        <input asp-for="StaffInfo.FullName"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="StaffInfo.Phone"
+                               class="form-label-custom">
+                        </label>
+
+                        <input asp-for="StaffInfo.Phone"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="password-box">
+                        <label class="password-label">
+                            Đổi mật khẩu mới
+                        </label>
+
+                        <input type="password"
+                               name="NewPassword"
+                               class="form-control"
+                               placeholder="Nhập mật khẩu mới..." />
+
+                        <div class="box-subtitle">
+                            Để trống nếu muốn giữ nguyên mật khẩu hiện tại
+                        </div>
+                    </div>
+
+                    <div class="active-box">
+                        <div>
+                            <div class="box-title">
+                                Trạng thái tài khoản
+                            </div>
+                            <div class="box-subtitle">
+                                Bật nếu nhân viên còn đang làm việc
+                            </div>
+                        </div>
+
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="IsActiveSwitch"
+                                   name="StaffInfo.IsActive"
+                                   value="true"
+                                   @(Model.StaffInfo.IsActive == true ? "checked" : "") />
+
+                            <input type="hidden"
+                                   name="StaffInfo.IsActive"
+                                   value="false" />
+
+                            <label class="form-check-label ms-2"
+                                   for="IsActiveSwitch">
+                                Kích hoạt tài khoản
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="action-area">
+                        <button type="submit" class="btn-save">
+                            Lưu thay đổi
+                        </button>
+
+                        <a asp-page="/Admin/StaffManager"
+                           class="btn-back">
+                            Quay lại
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

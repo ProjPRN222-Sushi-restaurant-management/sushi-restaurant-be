@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("290526_SushiRestaurantManagement_BE")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a79694c5361e1900a632c5e8dcccc94a0fb02e2f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+991ea94235c51558306e885565ed1f64fbd360c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("290526_SushiRestaurantManagement_BE")]
 [assembly: System.Reflection.AssemblyTitleAttribute("290526_SushiRestaurantManagement_BE")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

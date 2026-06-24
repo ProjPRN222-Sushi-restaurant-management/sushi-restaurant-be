@@ -1,16 +1,235 @@
 ﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Booking.SuccessModel
 
-<h2>Đặt bàn thành công</h2>
+<style>
 
-<div class="alert alert-success">
-    @TempData["BookingSuccess"]
+    .success-page {
+        min-height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 0;
+    }
+
+    .success-card {
+        width: 100%;
+        max-width: 800px;
+        background: #ffffff;
+        border: none;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: 0 25px 60px rgba(15,23,42,.12);
+    }
+
+    .success-header {
+        background: linear-gradient( 135deg, #dc2626, #f97316);
+        color: white;
+        text-align: center;
+        padding: 45px 30px;
+    }
+
+    .success-icon {
+        width: 90px;
+        height: 90px;
+        margin: auto auto 22px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.18);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 42px;
+    }
+
+    .success-title {
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 10px;
+    }
+
+    .success-subtitle {
+        opacity: .95;
+        font-size: 1rem;
+    }
+
+    .success-body {
+        padding: 35px;
+    }
+
+    .success-alert {
+        border: none;
+        border-radius: 20px;
+        padding: 22px;
+        background: linear-gradient( 135deg, #ecfdf5, #ffffff);
+        border: 1px solid #bbf7d0;
+        color: #166534;
+        font-weight: 800;
+        font-size: 1.05rem;
+        text-align: center;
+    }
+
+    .booking-id-card {
+        margin-top: 22px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .booking-id-label {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .booking-id-value {
+        font-size: 2rem;
+        font-weight: 950;
+        color: #dc2626;
+        margin-top: 6px;
+    }
+
+    .action-area {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 32px;
+    }
+
+    .btn-order-food,
+    .btn-home {
+        border: none;
+        border-radius: 999px;
+        padding: 14px 28px;
+        font-weight: 900;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .2s ease;
+    }
+
+    .btn-order-food {
+        background: linear-gradient( 135deg, #16a34a, #22c55e);
+        color: white;
+        box-shadow: 0 14px 28px rgba(22,163,74,.25);
+    }
+
+        .btn-order-food:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 36px rgba(22,163,74,.35);
+        }
+
+    .btn-home {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+        .btn-home:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateY(-2px);
+        }
+
+    @@media(max-width:768px) {
+
+        .success-header {
+            padding: 35px 20px;
+        }
+
+        .success-body {
+            padding: 24px;
+        }
+
+        .action-area {
+            flex-direction: column;
+        }
+
+        .btn-order-food,
+        .btn-home {
+            width: 100%;
+        }
+
+        .booking-id-value {
+            font-size: 1.6rem;
+        }
+    }
+
+</style>
+
+
+<div class="success-page">
+
+    <div class="success-card">
+
+        <div class="success-header">
+
+            <div class="success-icon">
+                ✅
+            </div>
+
+            <div class="success-title">
+
+                Đặt bàn thành công
+
+            </div>
+
+            <div class="success-subtitle">
+
+                Nhà hàng đã ghi nhận thông tin đặt bàn của khách hàng.
+
+            </div>
+
+        </div>
+
+
+        <div class="success-body">
+
+            <div class="success-alert">
+
+                @TempData["BookingSuccess"]
+
+            </div>
+
+
+            <div class="booking-id-card">
+
+                <div class="booking-id-label">
+
+                    Mã Booking
+
+                </div>
+
+                <div class="booking-id-value">
+
+                    #@Model.BookingId
+
+                </div>
+
+            </div>
+
+            <div class="action-area">
+
+                <a asp-page="/Menu/Index"
+                   asp-route-bookingId="@Model.BookingId"
+                   class="btn-order-food">
+
+                    🍣 Order món trước khi đến nhà hàng
+
+                </a>
+
+                <a asp-page="/Index"
+                   class="btn-home">
+
+                    🏠 Về trang chủ
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
-
-<a asp-page="/Menu/Index" asp-route-bookingId="@Model.BookingId" class="btn btn-success">
-    Order món trước khi đến nhà hàng
-</a>
-
-<a asp-page="/Index" class="btn btn-secondary">
-    Về trang chủ
-</a>

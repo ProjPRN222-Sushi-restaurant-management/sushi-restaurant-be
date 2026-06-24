@@ -1,82 +1,278 @@
 ﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Auth.RegisterModel
+
 @{
     ViewData["Title"] = "Đăng ký Nhân viên";
-    // Lấy Role từ Session để kiểm tra quyền Admin đăng nhập
     var currentRole = HttpContext.Session.GetString("StaffRole");
 }
 
-<div class="container mt-5" style="max-width: 600px;">
-    @if (currentRole == "Admin")
-    {
-        <div class="card border-0 shadow-sm mb-4 bg-dark text-white rounded-3">
-            <div class="card-body d-flex justify-content-between align-items-center py-2.5 px-3">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-user-shield text-warning"></i>
-                    <span class="small fw-semibold text-light">Chế độ: Quản trị viên</span>
-                </div>
-                <div class="d-flex gap-2">
-                    <a asp-page="/Admin/Index" class="btn btn-sm btn-outline-warning">
-                        <i class="fa-solid fa-chart-line me-1"></i> Dashboard Admin
-                    </a>
-                    <a asp-page="/Booking/Create" class="btn btn-sm btn-outline-light">
-                        <i class="fa-solid fa-house-user me-1"></i> Màn hình Staff (Home)
-                    </a>
-                </div>
-            </div>
-        </div>
+<style>
+    .register-page {
+        min-height: 75vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 32px 0;
     }
 
-    <div class="card shadow border-0 rounded-3">
-        <div class="card-header bg-primary text-white text-center py-3">
-            <h3 class="m-0 h5 fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Register Staff Account</h3>
-        </div>
-        <div class="card-body p-4">
-            @if (TempData["Success"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
+    .register-wrapper {
+        width: 100%;
+        max-width: 680px;
+    }
 
-            <form method="post">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Full name</label>
-                    <input asp-for="Input.FullName" class="form-control ps-3" placeholder="Nhập họ và tên nhân viên..." />
-                    <span asp-validation-for="Input.FullName" class="text-danger small"></span>
-                </div>
+    .admin-mode-card,
+    .register-card {
+        border: none;
+        border-radius: 26px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+    }
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Phone number</label>
-                    <input asp-for="Input.Phone" class="form-control ps-3" placeholder="Nhập số điện thoại đăng nhập..." />
-                    <span asp-validation-for="Input.Phone" class="text-danger small"></span>
-                </div>
+    .admin-mode-card {
+        background: linear-gradient(135deg, #111827, #1f2937);
+        color: white;
+        padding: 16px 20px;
+        margin-bottom: 22px;
+    }
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Password</label>
-                    <input asp-for="Input.Password" type="password" class="form-control ps-3" placeholder="Tối thiểu 6 ký tự..." />
-                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                </div>
+    .admin-mode-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Confirm Password</label>
-                    <input asp-for="Input.ConfirmPassword" type="password" class="form-control ps-3" placeholder="Xác nhận lại mật khẩu..." />
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
-                </div>
+    .admin-mode-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+    }
 
-                <div class="d-grid gap-2 mt-4">
-                    <button class="btn btn-primary py-2 fw-semibold"><i class="fa-solid fa-floppy-disk me-1"></i> Register Staff</button>
+    .admin-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
 
-                    @if (currentRole != "Admin")
-                    {
-                        <a asp-page="/Auth/Login" class="btn btn-link text-decoration-none text-muted small text-center">
-                            Already have an account? Login here
+        .admin-actions a {
+            border-radius: 999px;
+            font-weight: 800;
+            padding: 8px 14px;
+        }
+
+    .register-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+    }
+
+    .register-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: white;
+        text-align: center;
+        padding: 34px 24px;
+    }
+
+    .register-icon {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 16px;
+        border-radius: 24px;
+        background: rgba(255,255,255,.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+    }
+
+    .register-title {
+        margin: 0;
+        font-weight: 900;
+    }
+
+    .register-subtitle {
+        margin-top: 6px;
+        opacity: .95;
+        font-weight: 500;
+    }
+
+    .register-body {
+        padding: 30px;
+    }
+
+    .success-alert {
+        border: none;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        color: #166534;
+        font-weight: 700;
+        padding: 16px 18px;
+    }
+
+    .form-label-custom {
+        color: #475569;
+        font-size: .9rem;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .register-form .form-control {
+        border-radius: 16px;
+        border: 1px solid #dbe3ef;
+        padding: 12px 14px;
+        font-weight: 600;
+    }
+
+        .register-form .form-control:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .btn-register {
+        border: none;
+        border-radius: 999px;
+        padding: 13px 24px;
+        font-weight: 900;
+        color: #fff;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        box-shadow: 0 14px 28px rgba(220, 38, 38, .25);
+        transition: all .2s ease;
+    }
+
+        .btn-register:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(220, 38, 38, .34);
+        }
+
+    .login-link {
+        color: #64748b;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+        .login-link:hover {
+            color: #dc2626;
+        }
+
+    @@media (max-width: 576px) {
+        .register-body {
+            padding: 22px;
+        }
+
+        .admin-actions a {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="register-page">
+    <div class="register-wrapper">
+
+        @if (currentRole == "Admin")
+        {
+            <div class="admin-mode-card">
+                <div class="admin-mode-content">
+                    <div class="admin-mode-title">
+                        <i class="fa-solid fa-user-shield text-warning"></i>
+                        <span>Chế độ: Quản trị viên</span>
+                    </div>
+
+                    <div class="admin-actions">
+                        <a asp-page="/Admin/Index" class="btn btn-sm btn-outline-warning">
+                            <i class="fa-solid fa-chart-line me-1"></i>
+                            Dashboard Admin
                         </a>
-                    }
+
+                        <a asp-page="/Booking/Create" class="btn btn-sm btn-outline-light">
+                            <i class="fa-solid fa-house-user me-1"></i>
+                            Màn hình Staff
+                        </a>
+                    </div>
                 </div>
-            </form>
+            </div>
+        }
+
+        <div class="register-card">
+            <div class="register-header">
+                <div class="register-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+
+                <h3 class="register-title">Register Staff Account</h3>
+                <div class="register-subtitle">
+                    Tạo tài khoản nhân viên cho hệ thống Sushi Restaurant
+                </div>
+            </div>
+
+            <div class="register-body">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert success-alert alert-dismissible fade show" role="alert">
+                        <i class="fa-solid fa-circle-check me-2"></i>
+                        @TempData["Success"]
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                    </div>
+                }
+
+                <form method="post" class="register-form">
+                    <div class="mb-3">
+                        <label class="form-label-custom">Full name</label>
+                        <input asp-for="Input.FullName"
+                               class="form-control"
+                               placeholder="Nhập họ và tên nhân viên..." />
+                        <span asp-validation-for="Input.FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Phone number</label>
+                        <input asp-for="Input.Phone"
+                               class="form-control"
+                               placeholder="Nhập số điện thoại đăng nhập..." />
+                        <span asp-validation-for="Input.Phone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Password</label>
+                        <input asp-for="Input.Password"
+                               type="password"
+                               class="form-control"
+                               placeholder="Tối thiểu 6 ký tự..." />
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Confirm Password</label>
+                        <input asp-for="Input.ConfirmPassword"
+                               type="password"
+                               class="form-control"
+                               placeholder="Xác nhận lại mật khẩu..." />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button class="btn-register">
+                            <i class="fa-solid fa-floppy-disk me-1"></i>
+                            Register Staff
+                        </button>
+
+                        @if (currentRole != "Admin")
+                        {
+                            <a asp-page="/Auth/Login"
+                               class="login-link text-center small mt-2">
+                                Already have an account? Login here
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
         </div>
+
     </div>
 </div>
 

@@ -1,77 +1,4 @@
-﻿@* @using Microsoft.AspNetCore.Http
-
-@{
-    var isLoggedIn = Context.Session.GetString("StaffId") != null;
-    var staffPhone = Context.Session.GetString("StaffPhone") ?? "";
-
-    // Check acc admin
-    var isAdmin = isLoggedIn && staffPhone == "0999999999";
-}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Sushi Restaurant</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-</head>
-<body>
-
-    @if (isLoggedIn)
-    {
-        <header>
-            <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container">
-                    <div class="navbar-brand">
-                        Sushi Restaurant
-                    </div>
-
-                    <div class="navbar-nav">
-                        <a class="nav-link" asp-page="/Booking/Create">Booking</a>
-                        <a class="nav-link" asp-page="/Menu/Index">Menu</a>
-                        <a class="nav-link" asp-page="/Cart/Index">Cart</a>
-                        <a class="nav-link" asp-page="/Booking/Availability">Management status</a>
-                        @if (isAdmin)
-                        {
-                            <a class="nav-link fw-bold text-danger" asp-page="/Admin/Index">Dashboard</a>
-                        }
-                    </div>
-
-                    <div class="ms-auto">
-                        <span class="me-2">
-                            Hello, @Context.Session.GetString("StaffName") @(isAdmin ? "(Admin)" : "")
-                        </span>
-
-                        <form method="post" asp-page="/Auth/Login" asp-page-handler="Logout" class="d-inline">
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
-                        </form>
-                    </div>
-                </div>
-            </nav>
-        </header>
-    }
-
-    <main role="main" class="container pb-3">
-        @RenderBody()
-    </main>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Sushi Restaurant
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html> *@
-
-@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http
 
 @{
     var isLoggedIn = Context.Session.GetString("StaffId") != null;
@@ -90,6 +17,8 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
 
     <style>
         body {

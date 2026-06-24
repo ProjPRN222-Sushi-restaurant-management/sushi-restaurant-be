@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model _290526_SushiRestaurantManagement_BE.Pages.Admin.MenuManagerModel
 @{
     Layout = "_AdminLayout";
@@ -54,19 +54,6 @@
                            class="text-decoration-none flex-grow-1 @(isActive ? "text-white" : "text-dark")">
                             @cat.CategoryName
                         </a>
-
-                        @* <form method="post"
-                              asp-page-handler="DeleteCategory"
-                              class="m-0 ms-2"
-                              onsubmit="return confirm('Bạn có chắc muốn xóa danh mục @cat.CategoryName không?');">
-
-                            <input type="hidden" name="categoryId" value="@cat.CategoryId" />
-
-                            <button type="submit"
-                                    class="btn btn-sm @(isActive ? "btn-light text-danger" : "btn-outline-danger")">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form> *@
 
                     </div>
                 }
@@ -208,6 +195,706 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-success fw-semibold">Thêm món ăn</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> *@
+
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.MenuManagerModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản Lý Thực Đơn";
+    ViewBag.PaginatedList = Model.DishList;
+}
+
+<style>
+    .menu-admin-page {
+        padding: 4px 0 30px;
+    }
+
+    .menu-admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .menu-admin-title {
+        margin: 0;
+        color: #991b1b;
+        font-weight: 900;
+    }
+
+    .menu-admin-subtitle {
+        margin-top: 4px;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .menu-admin-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-category,
+    .btn-add-dish {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 20px;
+        font-weight: 900;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+    .btn-category {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+        .btn-category:hover {
+            background: #2563eb;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+    .btn-add-dish {
+        color: #ffffff;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        box-shadow: 0 14px 28px rgba(220, 38, 38, .24);
+    }
+
+        .btn-add-dish:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(220, 38, 38, .34);
+        }
+
+    .admin-alert {
+        border: none;
+        border-radius: 18px;
+        padding: 15px 18px;
+        font-weight: 700;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, .06);
+    }
+
+    .alert-success.admin-alert {
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        color: #166534;
+    }
+
+    .alert-danger.admin-alert {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .admin-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+    }
+
+    .admin-card-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .category-list {
+        padding: 12px;
+        display: grid;
+        gap: 8px;
+    }
+
+    .category-link,
+    .category-item {
+        border-radius: 16px;
+        padding: 13px 15px;
+        font-weight: 800;
+        text-decoration: none;
+        border: 1px solid #e5e7eb;
+        background: #f8fafc;
+        color: #334155;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all .18s ease;
+    }
+
+        .category-link:hover,
+        .category-item:hover {
+            background: #fff7ed;
+            color: #dc2626;
+            transform: translateX(3px);
+        }
+
+    .category-active {
+        background: linear-gradient(135deg, #dc2626, #f97316) !important;
+        color: #ffffff !important;
+        border-color: transparent !important;
+        box-shadow: 0 12px 24px rgba(220, 38, 38, .2);
+    }
+
+    .search-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        padding: 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+    }
+
+    .search-input {
+        border-radius: 999px;
+        border: 1px solid #dbe3ef;
+        padding: 11px 18px;
+        font-weight: 600;
+    }
+
+        .search-input:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .btn-search {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 20px;
+        color: #fff;
+        font-weight: 900;
+        background: linear-gradient(135deg, #111827, #374151);
+    }
+
+    .dish-count-badge {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+        font-size: .85rem;
+    }
+
+    .menu-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .menu-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: .86rem;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .menu-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .menu-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .dish-id {
+        color: #dc2626;
+        font-weight: 900;
+    }
+
+    .dish-name {
+        color: #1f2937;
+        font-weight: 900;
+    }
+
+    .price-tag,
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: .84rem;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .price-tag {
+        background: #fff7ed;
+        color: #dc2626;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-inactive {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .action-group {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        border: none;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: .84rem;
+        font-weight: 900;
+        text-decoration: none;
+        transition: all .18s ease;
+    }
+
+    .btn-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+        .btn-edit:hover {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+    .empty-row {
+        padding: 30px;
+        color: #64748b;
+        font-weight: 800;
+    }
+
+    .admin-modal .modal-content {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, .18);
+    }
+
+    .admin-modal .modal-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #ffffff;
+        padding: 20px 24px;
+    }
+
+    .admin-modal .modal-title {
+        font-weight: 900;
+    }
+
+    .admin-modal .modal-body {
+        padding: 24px;
+    }
+
+    .admin-modal .form-label {
+        font-weight: 800;
+        color: #475569;
+    }
+
+    .admin-modal .form-control,
+    .admin-modal .form-select {
+        border-radius: 15px;
+        border: 1px solid #dbe3ef;
+        padding: 11px 13px;
+        font-weight: 600;
+    }
+
+        .admin-modal .form-control:focus,
+        .admin-modal .form-select:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .admin-modal .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        padding: 18px 24px;
+    }
+
+    .btn-modal-cancel,
+    .btn-modal-save {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-weight: 900;
+    }
+
+    .btn-modal-cancel {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .btn-modal-save {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #ffffff;
+    }
+
+    @@media (max-width: 576px) {
+        .menu-admin-actions,
+        .btn-category,
+        .btn-add-dish,
+        .btn-search {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="menu-admin-page">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert admin-alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>
+            @TempData["Success"]
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert admin-alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+            @TempData["Error"]
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="menu-admin-header">
+        <div>
+            <h2 class="menu-admin-title">
+                <i class="fa-solid fa-utensils me-2"></i>
+                Quản Lý Thực Đơn
+            </h2>
+
+            <div class="menu-admin-subtitle">
+                Quản lý danh mục món ăn, giá bán và trạng thái phục vụ
+            </div>
+        </div>
+
+        <div class="menu-admin-actions">
+            <button type="button"
+                    class="btn-category"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addCategoryModal">
+                <i class="fa-solid fa-folder-plus me-1"></i>
+                Thêm Danh Mục
+            </button>
+
+            <button type="button"
+                    class="btn-add-dish"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addDishModal">
+                <i class="fa-solid fa-circle-plus me-1"></i>
+                Thêm Món Mới
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <span>
+                        <i class="fa-solid fa-folder me-2"></i>
+                        Danh Mục Nhóm Món
+                    </span>
+                </div>
+
+                <div class="category-list">
+                    <a asp-page="/Admin/MenuManager"
+                       class="category-link @(Model.SelectedCategoryId == null ? "category-active" : "")">
+                        <span>Tất cả món ăn</span>
+                    </a>
+
+                    @foreach (var cat in Model.Categories)
+                    {
+                        var isActive = Model.SelectedCategoryId == cat.CategoryId;
+
+                        <a asp-page="/Admin/MenuManager"
+                           asp-route-SelectedCategoryId="@cat.CategoryId"
+                           asp-route-SearchString="@Model.SearchString"
+                           class="category-item @(isActive ? "category-active" : "")">
+                            <span>@cat.CategoryName</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="search-card">
+                <form method="get" class="row g-2">
+                    <input type="hidden"
+                           name="SelectedCategoryId"
+                           value="@Model.SelectedCategoryId" />
+
+                    <div class="col-sm-9">
+                        <input type="text"
+                               name="SearchString"
+                               class="form-control search-input"
+                               placeholder="Nhập tên món ăn cần tìm..."
+                               value="@Model.SearchString" />
+                    </div>
+
+                    <div class="col-sm-3">
+                        <button type="submit"
+                                class="btn-search w-100">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <span>Danh Sách Món Ăn</span>
+
+                    <span class="dish-count-badge">
+                        @Model.DishList.Items.Count món
+                    </span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table menu-table">
+                        <thead>
+                            <tr>
+                                <th class="ps-3">Mã Món</th>
+                                <th>Tên Món Ăn</th>
+                                <th>Đơn Giá</th>
+                                <th>Trạng Thái</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var dish in Model.DishList.Items)
+                            {
+                                <tr>
+                                    <td class="ps-3 dish-id">
+                                        #@dish.MenuItemId
+                                    </td>
+
+                                    <td class="dish-name">
+                                        @dish.ItemName
+                                    </td>
+
+                                    <td>
+                                        <span class="price-tag">
+                                            @dish.Price.ToString("N0") VNĐ
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @if (dish.IsAvailable == true)
+                                        {
+                                            <span class="status-pill status-active">
+                                                Còn món
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-pill status-inactive">
+                                                Hết món
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        <div class="action-group">
+                                            <a asp-page="/Admin/EditMenuItem"
+                                               asp-route-id="@dish.MenuItemId"
+                                               class="btn-edit">
+                                                Sửa
+                                            </a>
+
+                                            <form method="post"
+                                                  asp-page-handler="Delete"
+                                                  onsubmit="return confirm('Xóa món ăn này khỏi thực đơn?');">
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@dish.MenuItemId" />
+
+                                                <button type="submit"
+                                                        class="btn-delete">
+                                                    Xóa
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
+                            @if (!Model.DishList.Items.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center empty-row">
+                                        Không tìm thấy món ăn nào.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <partial name="_Pagination" />
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade admin-modal" id="addCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddCategory">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Thêm Nhóm Danh Mục Mới
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Tên nhóm danh mục</label>
+                        <input type="text"
+                               name="NewCategoryName"
+                               class="form-control"
+                               placeholder="Ví dụ: Sushi Cuộn, Khai Vị..."
+                               required />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn-modal-cancel"
+                            data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+
+                    <button type="submit"
+                            class="btn-modal-save">
+                        Tạo danh mục
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade admin-modal" id="addDishModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddDish">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-circle-plus me-1"></i>
+                        Thêm Món Ăn Mới
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Tên món ăn</label>
+                        <input type="text"
+                               name="NewDishName"
+                               class="form-control"
+                               required
+                               placeholder="Ví dụ: Salmon Sashimi..." />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Thuộc danh mục nhóm món</label>
+                        <select name="NewDishCategoryId"
+                                class="form-select"
+                                required>
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <option value="@cat.CategoryId">
+                                    @cat.CategoryName
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Đơn giá (VNĐ)</label>
+                        <input type="number"
+                               name="NewDishPrice"
+                               class="form-control"
+                               min="0"
+                               required
+                               placeholder="Mức giá món..." />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Đường dẫn hình ảnh (URL)</label>
+                        <input type="text"
+                               name="NewDishImageUrl"
+                               class="form-control"
+                               placeholder="Ví dụ: images/salmon_sushi.jpg" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả món ăn</label>
+                        <textarea name="NewDishDescription"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Nhập mô tả ngắn về nguyên liệu, hương vị món ăn..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn-modal-cancel"
+                            data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+
+                    <button type="submit"
+                            class="btn-modal-save">
+                        Thêm món ăn
+                    </button>
                 </div>
             </form>
         </div>

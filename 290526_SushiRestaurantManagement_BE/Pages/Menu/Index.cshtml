@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model _290526_SushiRestaurantManagement_BE.Pages.Menu.IndexModel
 
 <h2>Menu Sushi</h2>
@@ -38,6 +38,275 @@
         </div>
     }
 </div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('form.menu-add-form').forEach(function (form) {
+                form.addEventListener('submit', function () {
+                    var scrollInput = form.querySelector('input[name="scrollY"]');
+                    if (scrollInput) {
+                        scrollInput.value = Math.round(window.scrollY || 0);
+                    }
+                });
+            });
+
+            var params = new URLSearchParams(window.location.search);
+            var scrollY = parseInt(params.get('scrollY') || '0', 10);
+            if (!isNaN(scrollY) && scrollY > 0) {
+                window.scrollTo(0, scrollY);
+            }
+        });
+    </script>
+} *@
+
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Menu.IndexModel
+
+<style>
+    .menu-page {
+        padding: 10px 0 35px;
+    }
+
+    .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 26px;
+    }
+
+    .menu-title {
+        font-weight: 900;
+        color: #991b1b;
+        margin: 0;
+    }
+
+    .menu-subtitle {
+        color: #64748b;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+
+    .menu-badge {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: white;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 700;
+        box-shadow: 0 12px 25px rgba(220, 38, 38, 0.22);
+    }
+
+    .success-alert {
+        border: none;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        color: #166534;
+        font-weight: 700;
+        padding: 16px 20px;
+        box-shadow: 0 10px 25px rgba(22, 101, 52, 0.08);
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+    }
+
+    .menu-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
+        transition: all 0.22s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 22px 48px rgba(15, 23, 42, 0.13);
+        }
+
+    .menu-image-wrap {
+        position: relative;
+        height: 190px;
+        overflow: hidden;
+        background: #f8fafc;
+    }
+
+        .menu-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.28s ease;
+        }
+
+    .menu-card:hover .menu-image-wrap img {
+        transform: scale(1.06);
+    }
+
+    .price-pill {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #dc2626;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-weight: 900;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+    }
+
+    .menu-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .menu-name {
+        font-size: 1.18rem;
+        font-weight: 850;
+        color: #1f2937;
+        margin-bottom: 8px;
+    }
+
+    .menu-description {
+        color: #64748b;
+        font-size: 0.95rem;
+        min-height: 48px;
+        margin-bottom: 16px;
+    }
+
+    .menu-add-form {
+        margin-top: auto;
+    }
+
+    .form-label-custom {
+        font-size: 0.86rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 6px;
+    }
+
+    .menu-add-form .form-control {
+        border-radius: 14px;
+        border: 1px solid #dbe3ef;
+        padding: 10px 12px;
+        font-weight: 500;
+    }
+
+        .menu-add-form .form-control:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.15);
+        }
+
+    .menu-add-form textarea {
+        min-height: 86px;
+        resize: vertical;
+    }
+
+    .btn-add-cart {
+        width: 100%;
+        border: none;
+        border-radius: 16px;
+        padding: 11px 16px;
+        margin-top: 14px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #ffffff;
+        box-shadow: 0 12px 24px rgba(220, 38, 38, 0.22);
+        transition: all 0.2s ease;
+    }
+
+        .btn-add-cart:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 16px 28px rgba(220, 38, 38, 0.3);
+        }
+
+    @@media (max-width: 576px) {
+        .menu-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .menu-image-wrap {
+            height: 170px;
+        }
+    }
+</style>
+
+<div class="menu-page">
+
+    <div class="menu-header">
+        <div>
+            <h2 class="menu-title">Menu Sushi</h2>
+            <div class="menu-subtitle">Chọn món cho booking hiện tại</div>
+        </div>
+
+        <div class="menu-badge">
+            🍣 Fresh Menu
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert success-alert">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="menu-grid">
+        @foreach (var item in Model.MenuItems)
+        {
+            <div class="menu-card">
+
+                <div class="menu-image-wrap">
+                    <img src="@item.ImageUrl" alt="@item.ItemName" />
+                    <div class="price-pill">
+                        @item.Price.ToString("N0") đ
+                    </div>
+                </div>
+
+                <div class="menu-content">
+                    <h4 class="menu-name">@item.ItemName</h4>
+
+                    <p class="menu-description">
+                        @item.Description
+                    </p>
+
+                    <form method="post" asp-page="/Cart/Index" asp-page-handler="Add" class="menu-add-form">
+                        <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                        <input type="hidden" name="bookingId" value="@Model.BookingId" />
+                        <input type="hidden" name="tableId" value="@Model.TableId" />
+                        <input type="hidden" name="scrollY" value="@Model.ScrollY" />
+
+                        <div class="mb-3">
+                            <label class="form-label-custom">Số lượng</label>
+                            <input type="number" name="quantity" value="1" min="1" class="form-control" />
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label-custom">Tùy chọn</label>
+                            <textarea name="note"
+                                  class="form-control"
+                                  placeholder="Không wasabi, ít cơm, thêm gừng, dị ứng hải sản..."></textarea>
+                        </div>
+
+                        <button class="btn-add-cart">
+                            Thêm vào giỏ
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        }
+    </div>
+
+</div>
+
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {

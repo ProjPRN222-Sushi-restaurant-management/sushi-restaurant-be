@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model _290526_SushiRestaurantManagement_BE.Pages.Cart.IndexModel
 
 <h2>Giỏ hàng</h2>
@@ -76,4 +76,332 @@ else
     <a asp-page="/Cart/Checkout" class="btn btn-success">
         Gửi order
     </a>
-}
+} *@
+
+
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Cart.IndexModel
+
+<style>
+    .cart-page {
+        padding: 10px 0 35px;
+    }
+
+    .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .cart-title {
+        font-weight: 900;
+        color: #991b1b;
+        margin: 0;
+    }
+
+    .cart-subtitle {
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 4px;
+    }
+
+    .cart-badge {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 800;
+        box-shadow: 0 12px 24px rgba(220, 38, 38, 0.22);
+    }
+
+    .cart-card {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+    }
+
+    .cart-card-header {
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        padding: 18px 22px;
+        font-weight: 900;
+        color: #9a3412;
+    }
+
+    .cart-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .cart-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .cart-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .cart-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .item-name {
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .note-text {
+        color: #64748b;
+        font-size: 0.92rem;
+        max-width: 280px;
+    }
+
+    .money {
+        color: #dc2626;
+        font-weight: 900;
+    }
+
+    .quantity-control {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        padding: 5px;
+    }
+
+    .qty-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: none;
+        background: #ffffff;
+        color: #334155;
+        font-weight: 900;
+        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+        transition: all 0.18s ease;
+    }
+
+        .qty-btn:hover {
+            background: linear-gradient(135deg, #dc2626, #f97316);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+    .qty-number {
+        min-width: 34px;
+        text-align: center;
+        font-weight: 900;
+        color: #1f2937;
+    }
+
+    .btn-remove {
+        border: none;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 800;
+        background: #fee2e2;
+        color: #b91c1c;
+        transition: all 0.18s ease;
+    }
+
+        .btn-remove:hover {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+    .total-panel {
+        margin-top: 22px;
+        padding: 22px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #fff7ed, #ffffff);
+        border: 1px solid #fed7aa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .total-label {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+        color: #dc2626;
+        font-weight: 950;
+    }
+
+    .checkout-area {
+        margin-top: 22px;
+        text-align: right;
+    }
+
+    .btn-checkout {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 26px;
+        font-weight: 900;
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        color: #ffffff;
+        box-shadow: 0 14px 28px rgba(22, 163, 74, 0.24);
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-checkout:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(22, 163, 74, 0.32);
+        }
+
+    .empty-cart {
+        border: none;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #fff7ed, #ffffff);
+        color: #9a3412;
+        padding: 28px;
+        font-weight: 800;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+    }
+</style>
+
+<div class="cart-page">
+
+    <div class="cart-header">
+        <div>
+            <h2 class="cart-title">Giỏ hàng</h2>
+            <div class="cart-subtitle">Kiểm tra và điều chỉnh món trước khi gửi order</div>
+        </div>
+
+        <div class="cart-badge">
+            🛒 Current Cart
+        </div>
+    </div>
+
+    @if (!Model.CartItems.Any())
+    {
+        <div class="empty-cart">
+            Giỏ hàng đang trống.
+        </div>
+    }
+    else
+    {
+        <div class="cart-card">
+            <div class="cart-card-header">
+                Danh sách món đã chọn
+            </div>
+
+            <div class="table-responsive">
+                <table class="table cart-table">
+                    <thead>
+                        <tr>
+                            <th>Món</th>
+                            <th>Ghi chú / tùy biến</th>
+                            <th class="text-end">Giá</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Tổng</th>
+                            <th class="text-center"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td class="item-name">@item.ItemName</td>
+
+                                <td class="note-text">@item.Note</td>
+
+                                <td class="text-end">
+                                    @item.UnitPrice.ToString("N0") đ
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="quantity-control">
+
+                                        <form method="post"
+                                              asp-page-handler="Decrease"
+                                              class="d-inline">
+                                            <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                            <input type="hidden" name="note" value="@item.Note" />
+
+                                            <button type="submit" class="qty-btn">
+                                                -
+                                            </button>
+                                        </form>
+
+                                        <span class="qty-number">
+                                            @item.Quantity
+                                        </span>
+
+                                        <form method="post"
+                                              asp-page-handler="Increase"
+                                              class="d-inline">
+                                            <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                            <input type="hidden" name="note" value="@item.Note" />
+
+                                            <button type="submit" class="qty-btn">
+                                                +
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+
+                                <td class="text-end money">
+                                    @item.Total.ToString("N0") đ
+                                </td>
+
+                                <td class="text-center">
+                                    <form method="post" asp-page-handler="Remove">
+                                        <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                        <input type="hidden" name="note" value="@item.Note" />
+
+                                        <button class="btn-remove">
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="total-panel">
+            <div>
+                <div class="total-label">Tổng tiền dự kiến</div>
+                <div class="text-muted small">Tạm tính trước khi gửi order</div>
+            </div>
+
+            <div class="total-amount">
+                @Model.TotalAmount.ToString("N0") đ
+            </div>
+        </div>
+
+        <div class="checkout-area">
+            <a asp-page="/Cart/Checkout" class="btn-checkout">
+                Gửi order
+            </a>
+        </div>
+    }
+
+</div>

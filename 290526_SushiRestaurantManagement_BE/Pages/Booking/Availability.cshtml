@@ -220,6 +220,11 @@
         color: #166534;
     }
 
+    .status-preparing {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
     .status-cancelled {
         background: #fee2e2;
         color: #991b1b;
@@ -483,22 +488,18 @@
                                 <td>@booking.TableId</td>
 
                                 <td>
-                                    @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
-                                    {
-                                        <span class="booking-status status-pending">PENDING</span>
+                                    @{
+                                        var statusClass = booking.BookingStatus switch
+                                        {
+                                            BusinessObjects.Enums.BookingStatusEnum.PENDING => "status-pending",
+                                            BusinessObjects.Enums.BookingStatusEnum.PREPARING => "status-preparing",
+                                            BusinessObjects.Enums.BookingStatusEnum.COMPLETED => "status-completed",
+                                            BusinessObjects.Enums.BookingStatusEnum.CANCELLED => "status-cancelled",
+                                            _ => "status-other"
+                                        };
                                     }
-                                    else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
-                                    {
-                                        <span class="booking-status status-completed">COMPLETED</span>
-                                    }
-                                    else if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
-                                    {
-                                        <span class="booking-status status-cancelled">CANCELLED</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="booking-status status-other">@booking.BookingStatus</span>
-                                    }
+
+                                    <span class="booking-status @statusClass">@booking.BookingStatus</span>
                                 </td>
 
                                 <td>
@@ -541,34 +542,11 @@
 
                                             <select name="status"
                                                     class="form-select form-select-sm status-select">
-
-                                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
+                                                @foreach (var status in Enum.GetValues<BusinessObjects.Enums.BookingStatusEnum>())
                                                 {
-                                                    <option value="PENDING" selected>Pending</option>
+                                                    var selected = booking.BookingStatus == status ? "selected" : null;
+                                                    <option value="@status" selected="@selected">@status</option>
                                                 }
-                                                else
-                                                {
-                                                    <option value="PENDING">Pending</option>
-                                                }
-
-                                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.COMPLETED)
-                                                {
-                                                    <option value="COMPLETED" selected>Completed</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="COMPLETED">Completed</option>
-                                                }
-
-                                                @if (booking.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
-                                                {
-                                                    <option value="CANCELLED" selected>Cancelled</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="CANCELLED">Cancelled</option>
-                                                }
-
                                             </select>
 
                                             <button type="submit" class="btn-action btn-update">

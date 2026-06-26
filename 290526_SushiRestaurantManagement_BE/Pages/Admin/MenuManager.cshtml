@@ -746,6 +746,15 @@
                                                 <input type="hidden"
                                                        name="id"
                                                        value="@dish.MenuItemId" />
+                                                <input type="hidden"
+                                                       name="SelectedCategoryId"
+                                                       value="@Model.SelectedCategoryId" />
+                                                <input type="hidden"
+                                                       name="SearchString"
+                                                       value="@Model.SearchString" />
+                                                <input type="hidden"
+                                                       name="PageNumber"
+                                                       value="@Model.PageNumber" />
 
                                                 <button type="submit"
                                                         class="btn-delete">
@@ -780,6 +789,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" asp-page-handler="AddCategory">
+                <input type="hidden" name="SelectedCategoryId" value="@Model.SelectedCategoryId" />
+                <input type="hidden" name="SearchString" value="@Model.SearchString" />
+                <input type="hidden" name="PageNumber" value="@Model.PageNumber" />
+
                 <div class="modal-header">
                     <h5 class="modal-title">
                         Thêm Nhóm Danh Mục Mới
@@ -822,6 +835,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" asp-page-handler="AddDish">
+                <input type="hidden" name="SelectedCategoryId" value="@Model.SelectedCategoryId" />
+                <input type="hidden" name="SearchString" value="@Model.SearchString" />
+                <input type="hidden" name="PageNumber" value="@Model.PageNumber" />
+
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="fa-solid fa-circle-plus me-1"></i>

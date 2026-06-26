@@ -463,6 +463,8 @@
                 <tbody>
                     @foreach (var order in Model.Orders.Items)
                     {
+                        var customer = order.Customer ?? order.Booking?.Customer;
+
                         <tr>
                             <td class="ps-3 order-id">
                                 #@order.OrderId
@@ -482,10 +484,10 @@
 
                             <td>
                                 <div class="customer-name">
-                                    @(order.Customer?.FullName ?? "-")
+                                    @(customer?.FullName ?? "-")
                                 </div>
                                 <div class="customer-phone">
-                                    @(order.Customer?.Phone ?? "-")
+                                    @(customer?.Phone ?? "-")
                                 </div>
                             </td>
 

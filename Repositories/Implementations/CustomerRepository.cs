@@ -46,7 +46,25 @@ namespace Repositories.Implementations
 
         public async Task UpdateCustomerAsync(Customer customer, CancellationToken ct = default)
         {
-            _context.Customers.Update(customer);
+            var existingCustomer = _context.Customers
+                .Local
+                .FirstOrDefault(c => c.CustomerId == customer.CustomerId);
+
+            existingCustomer ??= await _context.Customers
+                .FirstOrDefaultAsync(c => c.CustomerId == customer.CustomerId, ct);
+
+            if (existingCustomer == null)
+            {
+                return;
+            }
+
+            existingCustomer.FullName = customer.FullName;
+            existingCustomer.Phone = customer.Phone;
+            existingCustomer.MembershipLevel = customer.MembershipLevel;
+            existingCustomer.LoyaltyPoints = customer.LoyaltyPoints;
+            existingCustomer.CreatedAt = customer.CreatedAt;
+            existingCustomer.DeletedAt = customer.DeletedAt;
+
             await _context.SaveChangesAsync(ct);
         }
 

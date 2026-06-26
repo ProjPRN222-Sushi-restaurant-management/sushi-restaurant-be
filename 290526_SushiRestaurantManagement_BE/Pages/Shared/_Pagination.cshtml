@@ -1,6 +1,18 @@
+@using Microsoft.AspNetCore.WebUtilities
 @model dynamic 
 @{
-    var paginatedList = ViewBag.PaginatedList as _290526_SushiRestaurantManagement_BE.Helpers.PaginatedList<dynamic>;
+    var paginatedList = ViewBag.PaginatedList as _290526_SushiRestaurantManagement_BE.Helpers.IPaginatedList;
+
+    string GetPageUrl(int pageNumber)
+    {
+        var query = Context.Request.Query.ToDictionary(
+            item => item.Key,
+            item => (string?)item.Value.ToString());
+
+        query["PageNumber"] = pageNumber.ToString();
+
+        return QueryHelpers.AddQueryString(Context.Request.Path.ToString(), query);
+    }
 }
 
 @if (paginatedList != null && paginatedList.TotalPages > 1)
@@ -81,12 +93,12 @@
             @if (paginatedList.HasPreviousPage)
             {
                 <li class="page-item">
-                    <a class="page-link" href="?PageNumber=1" aria-label="First page">
+                    <a class="page-link" href="@GetPageUrl(1)" aria-label="First page">
                         First
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?PageNumber=@(paginatedList.PageNumber - 1)" aria-label="Previous page">
+                    <a class="page-link" href="@GetPageUrl(paginatedList.PageNumber - 1)" aria-label="Previous page">
                         Previous
                     </a>
                 </li>
@@ -114,7 +126,7 @@
                 else if (i <= paginatedList.PageNumber + 2 && i >= paginatedList.PageNumber - 2)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="?PageNumber=@i">@i</a>
+                        <a class="page-link" href="@GetPageUrl(i)">@i</a>
                     </li>
                 }
             }
@@ -122,12 +134,12 @@
             @if (paginatedList.HasNextPage)
             {
                 <li class="page-item">
-                    <a class="page-link" href="?PageNumber=@(paginatedList.PageNumber + 1)" aria-label="Next page">
+                    <a class="page-link" href="@GetPageUrl(paginatedList.PageNumber + 1)" aria-label="Next page">
                         Next
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?PageNumber=@(paginatedList.TotalPages)" aria-label="Last page">
+                    <a class="page-link" href="@GetPageUrl(paginatedList.TotalPages)" aria-label="Last page">
                         Last
                     </a>
                 </li>

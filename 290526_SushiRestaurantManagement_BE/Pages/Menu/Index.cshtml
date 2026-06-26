@@ -248,20 +248,38 @@
 
 @section Scripts {
     <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('form.menu-add-form').forEach(function (form) {
                 form.addEventListener('submit', function () {
+                    var currentScrollY = Math.round(window.scrollY || 0);
                     var scrollInput = form.querySelector('input[name="scrollY"]');
                     if (scrollInput) {
-                        scrollInput.value = Math.round(window.scrollY || 0);
+                        scrollInput.value = currentScrollY;
                     }
+
+                    sessionStorage.setItem('menuScrollY', currentScrollY.toString());
                 });
             });
 
             var params = new URLSearchParams(window.location.search);
-            var scrollY = parseInt(params.get('scrollY') || '0', 10);
-            if (!isNaN(scrollY) && scrollY > 0) {
+            var scrollY = parseInt(params.get('scrollY') || sessionStorage.getItem('menuScrollY') || '0', 10);
+            if (isNaN(scrollY) || scrollY <= 0) {
+                return;
+            }
+
+            var restoreScroll = function () {
                 window.scrollTo(0, scrollY);
+            };
+
+            restoreScroll();
+            requestAnimationFrame(restoreScroll);
+
+            if (document.readyState !== 'complete') {
+                window.addEventListener('load', restoreScroll, { once: true });
             }
         });
     </script>

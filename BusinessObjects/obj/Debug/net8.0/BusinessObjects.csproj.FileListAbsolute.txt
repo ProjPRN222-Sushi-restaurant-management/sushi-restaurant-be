@@ -10,3 +10,6 @@ C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantM
 C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\BusinessObjects\obj\Debug\net8.0\BusinessObjects.pdb
 C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\BusinessObjects\obj\Debug\net8.0\ref\BusinessObjects.dll
 C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\BusinessObjects\obj\Debug\net8.0\BusinessObjects.sourcelink.json
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\verify-build\BusinessObjects.deps.json
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\verify-build\BusinessObjects.dll
+C:\Users\Huong\Documents\Sushi_Restaurant_Project_PRN222\290526_SushiRestaurantManagement_BE\verify-build\BusinessObjects.pdb

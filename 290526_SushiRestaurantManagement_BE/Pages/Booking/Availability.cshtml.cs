@@ -4,22 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Interfaces;
 
+using OrderEntity = BusinessObjects.Models.Order;
+
 namespace _290526_SushiRestaurantManagement_BE.Pages.Booking;
 
 public class AvailabilityModel : PageModel
 {
+    private const decimal AmountPerLoyaltyPoint = 10000m;
+
     private readonly ITableAvailabilityService _tableAvailabilityService;
     private readonly IRestaurantTableService _tableService;
     private readonly IBookingService _bookingService;
+    private readonly IOrderService _orderService;
+    private readonly ICustomerService _customerService;
 
     public AvailabilityModel(
         ITableAvailabilityService tableAvailabilityService,
         IRestaurantTableService tableService,
-        IBookingService bookingService)
+        IBookingService bookingService,
+        IOrderService orderService,
+        ICustomerService customerService)
     {
         _tableAvailabilityService = tableAvailabilityService;
         _tableService = tableService;
         _bookingService = bookingService;
+        _orderService = orderService;
+        _customerService = customerService;
     }
 
     public DateOnly SelectedDate { get; set; }
@@ -100,15 +110,119 @@ public class AvailabilityModel : PageModel
             return NotFound();
         }
 
-        booking.BookingStatus = status;
+        var previousStatus = booking.BookingStatus;
 
-        await _bookingService.UpdateAsync(booking);
-        await _bookingService.SaveChangesAsync();
+        if (previousStatus != status)
+        {
+            booking.BookingStatus = status;
+
+            await _bookingService.UpdateAsync(booking);
+            await _bookingService.SaveChangesAsync();
+
+            await SyncRelatedOrdersAsync(bookingId, booking.CustomerId, status);
+        }
 
         return RedirectToPage("/Booking/Availability", new
         {
             selectedDate = selectedDate.ToString("yyyy-MM-dd")
         });
+    }
+
+    private async Task SyncRelatedOrdersAsync(
+        long bookingId,
+        long? bookingCustomerId,
+        BookingStatusEnum bookingStatus)
+    {
+        var newOrderStatus = MapBookingStatusToOrderStatus(bookingStatus);
+        var orders = await _orderService.GetOrdersByBookingIdAsync(bookingId);
+
+        foreach (var order in orders)
+        {
+            var previousOrderStatus = order.OrderStatus;
+
+            order.OrderStatus = newOrderStatus;
+            order.CompletedAt = newOrderStatus == OrderStatusEnum.COMPLETED
+                ? DateTime.Now
+                : null;
+
+            await _orderService.UpdateOrderAsync(order);
+            await SyncCustomerLoyaltyPointsAsync(
+                order,
+                bookingCustomerId,
+                previousOrderStatus,
+                newOrderStatus);
+        }
+    }
+
+    private static OrderStatusEnum MapBookingStatusToOrderStatus(
+        BookingStatusEnum bookingStatus)
+    {
+        return bookingStatus switch
+        {
+            BookingStatusEnum.PREPARING => OrderStatusEnum.PREPARING,
+            BookingStatusEnum.COMPLETED => OrderStatusEnum.COMPLETED,
+            BookingStatusEnum.CANCELLED => OrderStatusEnum.CANCELLED,
+            _ => OrderStatusEnum.PENDING
+        };
+    }
+
+    private async Task SyncCustomerLoyaltyPointsAsync(
+        OrderEntity order,
+        long? bookingCustomerId,
+        OrderStatusEnum previousStatus,
+        OrderStatusEnum newStatus)
+    {
+        var pointDelta = CalculatePointDelta(
+            order.TotalAmount,
+            previousStatus,
+            newStatus);
+
+        if (pointDelta == 0)
+        {
+            return;
+        }
+
+        var customerId = order.CustomerId ?? bookingCustomerId;
+        if (!customerId.HasValue)
+        {
+            return;
+        }
+
+        await _customerService.AdjustLoyaltyPointsAsync(
+            customerId.Value,
+            pointDelta);
+    }
+
+    private static int CalculatePointDelta(
+        decimal totalAmount,
+        OrderStatusEnum previousStatus,
+        OrderStatusEnum newStatus)
+    {
+        var points = CalculateEarnedPoints(totalAmount);
+
+        if (previousStatus != OrderStatusEnum.COMPLETED &&
+            newStatus == OrderStatusEnum.COMPLETED)
+        {
+            return points;
+        }
+
+        if (previousStatus == OrderStatusEnum.COMPLETED &&
+            newStatus != OrderStatusEnum.COMPLETED)
+        {
+            return -points;
+        }
+
+        return 0;
+    }
+
+    private static int CalculateEarnedPoints(decimal totalAmount)
+    {
+        if (totalAmount <= 0)
+        {
+            return 0;
+        }
+
+        return (int)Math.Floor(totalAmount / AmountPerLoyaltyPoint);
     }
 
     public class TimeSlotInfo

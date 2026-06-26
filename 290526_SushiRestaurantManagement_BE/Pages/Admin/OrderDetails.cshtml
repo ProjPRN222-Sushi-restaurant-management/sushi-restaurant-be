@@ -280,6 +280,8 @@
 
     @if (Model.Order != null)
     {
+        var customer = Model.Order.Customer ?? Model.Order.Booking?.Customer;
+
         <div class="order-detail-header">
             <div>
                 <h2 class="order-title">
@@ -355,14 +357,14 @@
                         <div class="info-line">
                             <span class="info-label">Tên</span>
                             <span class="info-value">
-                                @(Model.Order.Customer?.FullName ?? "-")
+                                @(customer?.FullName ?? "-")
                             </span>
                         </div>
 
                         <div class="info-line">
                             <span class="info-label">SĐT</span>
                             <span class="info-value">
-                                @(Model.Order.Customer?.Phone ?? "-")
+                                @(customer?.Phone ?? "-")
                             </span>
                         </div>
                     </div>

@@ -67,7 +67,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             if (string.IsNullOrWhiteSpace(NewCategoryName))
             {
                 TempData["Error"] = "T�n nh�m danh m?c kh�ng ???c ?? tr?ng.";
-                return RedirectToPage("/Admin/MenuManager");
+                return RedirectToPage("/Admin/MenuManager", new
+                {
+                    selectedCategoryId = SelectedCategoryId,
+                    searchString = SearchString,
+                    PageNumber = PageNumber
+                });
             }
 
             try
@@ -92,7 +97,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 TempData["Error"] = "L?i h? th?ng: " + ex.Message;
             }
 
-            return RedirectToPage("/Admin/MenuManager");
+            return RedirectToPage("/Admin/MenuManager", new
+            {
+                selectedCategoryId = SelectedCategoryId,
+                searchString = SearchString,
+                PageNumber = PageNumber
+            });
         }
 
         public async Task<IActionResult> OnPostAddDishAsync(
@@ -105,7 +115,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             if (string.IsNullOrWhiteSpace(NewDishName) || NewDishPrice < 0)
             {
                 TempData["Error"] = "Th�ng tin t�n m�n ho?c gi� b�n nh?p v�o kh�ng h?p l?.";
-                return RedirectToPage("/Admin/MenuManager", new { selectedCategoryId = SelectedCategoryId });
+                return RedirectToPage("/Admin/MenuManager", new
+                {
+                    selectedCategoryId = SelectedCategoryId,
+                    searchString = SearchString,
+                    PageNumber = PageNumber
+                });
             }
 
             try
@@ -135,7 +150,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 TempData["Error"] = "L?i h? th?ng: " + ex.Message;
             }
 
-            return RedirectToPage("/Admin/MenuManager", new { selectedCategoryId = SelectedCategoryId });
+            return RedirectToPage("/Admin/MenuManager", new
+            {
+                selectedCategoryId = SelectedCategoryId,
+                searchString = SearchString,
+                PageNumber = PageNumber
+            });
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
@@ -161,7 +181,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             return RedirectToPage("/Admin/MenuManager", new
             {
                 selectedCategoryId = SelectedCategoryId,
-                searchString = SearchString
+                searchString = SearchString,
+                PageNumber = PageNumber
             });
         }
 

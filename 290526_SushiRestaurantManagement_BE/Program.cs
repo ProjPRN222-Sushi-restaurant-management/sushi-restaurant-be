@@ -50,6 +50,8 @@ builder.Services.AddHostedService<TableStatusUpdateHostedService>();
 
 var app = builder.Build();
 
+await EnsureStatusColumnsSupportPreparingAsync(app);
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -82,3 +84,15 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+
+static async Task EnsureStatusColumnsSupportPreparingAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<RestaurantSystemDbContext>();
+
+    await dbContext.Database.ExecuteSqlRawAsync(
+        "ALTER TABLE bookings MODIFY booking_status VARCHAR(20) NOT NULL DEFAULT 'PENDING';");
+
+    await dbContext.Database.ExecuteSqlRawAsync(
+        "ALTER TABLE orders MODIFY order_status VARCHAR(20) NOT NULL DEFAULT 'PENDING';");
+}

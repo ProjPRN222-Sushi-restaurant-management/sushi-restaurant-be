@@ -22,6 +22,7 @@ namespace Repositories.Implementations
                 .Include(o => o.Customer)
                 .Include(o => o.Table)
                 .Include(o => o.Booking)
+                    .ThenInclude(b => b.Customer)
                 .OrderByDescending(o => o.OrderId)
                 .ToListAsync(ct);
         }
@@ -35,6 +36,7 @@ namespace Repositories.Implementations
                 .Include(o => o.Customer)
                 .Include(o => o.Table)
                 .Include(o => o.Booking)
+                    .ThenInclude(b => b.Customer)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.MenuItem)
                 .FirstOrDefaultAsync(o => o.OrderId == id, ct);
@@ -49,7 +51,22 @@ namespace Repositories.Implementations
 
         public async Task<bool> UpdateOrderAsync(Order order, CancellationToken ct = default)
         {
-            _context.Orders.Update(order);
+            var existingOrder = await _context.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == order.OrderId, ct);
+
+            if (existingOrder == null)
+            {
+                return false;
+            }
+
+            existingOrder.BookingId = order.BookingId;
+            existingOrder.CustomerId = order.CustomerId;
+            existingOrder.TableId = order.TableId;
+            existingOrder.OrderStatus = order.OrderStatus;
+            existingOrder.TotalAmount = order.TotalAmount;
+            existingOrder.CreatedAt = order.CreatedAt;
+            existingOrder.CompletedAt = order.CompletedAt;
+
             await _context.SaveChangesAsync(ct);
             return true;
         }

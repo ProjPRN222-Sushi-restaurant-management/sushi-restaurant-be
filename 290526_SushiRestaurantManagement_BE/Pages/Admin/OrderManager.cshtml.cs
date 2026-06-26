@@ -9,12 +9,20 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 {
     public class OrderManagerModel : AdminPageModel
     {
+        private const decimal AmountPerLoyaltyPoint = 10000m;
+
         private readonly IOrderService _orderService;
+        private readonly IBookingService _bookingService;
+        private readonly ICustomerService _customerService;
 
         public OrderManagerModel(
-            IOrderService orderService)
+            IOrderService orderService,
+            IBookingService bookingService,
+            ICustomerService customerService)
         {
             _orderService = orderService;
+            _bookingService = bookingService;
+            _customerService = customerService;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -79,6 +87,24 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 
                      o.Customer.FullName
                       .Contains(keyword))
+
+                    ||
+
+                    (o.Booking != null &&
+                     o.Booking.Customer != null &&
+                     o.Booking.Customer.Phone != null &&
+
+                     o.Booking.Customer.Phone
+                      .Contains(keyword))
+
+                    ||
+
+                    (o.Booking != null &&
+                     o.Booking.Customer != null &&
+                     o.Booking.Customer.FullName != null &&
+
+                     o.Booking.Customer.FullName
+                      .Contains(keyword))
                 );
             }
 
@@ -117,6 +143,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 return NotFound();
             }
 
+            var previousStatus = order.OrderStatus;
+
             order.OrderStatus = status;
 
             if (status ==
@@ -125,13 +153,102 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 order.CompletedAt =
                     DateTime.Now;
             }
+            else
+            {
+                order.CompletedAt = null;
+            }
 
             await _orderService
                 .UpdateOrderAsync(order);
 
+            if (order.BookingId.HasValue)
+            {
+                await _bookingService.UpdateBookingStatusAsync(
+                    order.BookingId.Value,
+                    MapOrderStatusToBookingStatus(status));
+            }
+
+            await SyncCustomerLoyaltyPointsAsync(order, previousStatus, status);
+
             return RedirectToPage(
-                "/Admin/OrderManager"
+                "/Admin/OrderManager",
+                new
+                {
+                    SearchString,
+                    StatusFilter,
+                    PageNumber
+                }
             );
+        }
+
+        private static BookingStatusEnum MapOrderStatusToBookingStatus(
+            OrderStatusEnum status)
+        {
+            return status switch
+            {
+                OrderStatusEnum.PREPARING => BookingStatusEnum.PREPARING,
+                OrderStatusEnum.COMPLETED => BookingStatusEnum.COMPLETED,
+                OrderStatusEnum.CANCELLED => BookingStatusEnum.CANCELLED,
+                _ => BookingStatusEnum.PENDING
+            };
+        }
+
+        private async Task SyncCustomerLoyaltyPointsAsync(
+            OrderEntity order,
+            OrderStatusEnum previousStatus,
+            OrderStatusEnum newStatus)
+        {
+            var pointDelta = CalculatePointDelta(
+                order.TotalAmount,
+                previousStatus,
+                newStatus);
+
+            if (pointDelta == 0)
+            {
+                return;
+            }
+
+            var customerId = order.CustomerId ?? order.Booking?.CustomerId;
+            if (!customerId.HasValue)
+            {
+                return;
+            }
+
+            await _customerService.AdjustLoyaltyPointsAsync(
+                customerId.Value,
+                pointDelta);
+        }
+
+        private static int CalculatePointDelta(
+            decimal totalAmount,
+            OrderStatusEnum previousStatus,
+            OrderStatusEnum newStatus)
+        {
+            var points = CalculateEarnedPoints(totalAmount);
+
+            if (previousStatus != OrderStatusEnum.COMPLETED &&
+                newStatus == OrderStatusEnum.COMPLETED)
+            {
+                return points;
+            }
+
+            if (previousStatus == OrderStatusEnum.COMPLETED &&
+                newStatus != OrderStatusEnum.COMPLETED)
+            {
+                return -points;
+            }
+
+            return 0;
+        }
+
+        private static int CalculateEarnedPoints(decimal totalAmount)
+        {
+            if (totalAmount <= 0)
+            {
+                return 0;
+            }
+
+            return (int)Math.Floor(totalAmount / AmountPerLoyaltyPoint);
         }
     }
 }

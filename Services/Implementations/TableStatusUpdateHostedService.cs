@@ -62,20 +62,22 @@ public class TableStatusUpdateHostedService : BackgroundService
 
             var now = DateTime.Now;
 
-            // Get bookings that have passed their booking time and are still PENDING or COMPLETED
+            // Get bookings that have passed their booking time and are still active
             var expiredBookings = allBookings
                 .Where(b =>
                     b.BookingDate < DateOnly.FromDateTime(now) ||
                     (b.BookingDate == DateOnly.FromDateTime(now) &&
                      b.BookingTime < TimeOnly.FromDateTime(now)) &&
                     (b.BookingStatus == BookingStatusEnum.PENDING ||
+                     b.BookingStatus == BookingStatusEnum.PREPARING ||
                      b.BookingStatus == BookingStatusEnum.COMPLETED))
                 .ToList();
 
             foreach (var booking in expiredBookings)
             {
-                // Update booking status to COMPLETED if it's PENDING
-                if (booking.BookingStatus == BookingStatusEnum.PENDING)
+                // Update active booking status to COMPLETED after its time has passed.
+                if (booking.BookingStatus == BookingStatusEnum.PENDING ||
+                    booking.BookingStatus == BookingStatusEnum.PREPARING)
                 {
                     booking.BookingStatus = BookingStatusEnum.COMPLETED;
                     await bookingService.UpdateAsync(booking, stoppingToken);

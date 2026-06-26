@@ -10,10 +10,14 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
     public class CheckoutModel : PageModel
     {
         private readonly IOrderService _orderService;
+        private readonly IBookingService _bookingService;
 
-        public CheckoutModel(IOrderService orderService)
+        public CheckoutModel(
+            IOrderService orderService,
+            IBookingService bookingService)
         {
             _orderService = orderService;
+            _bookingService = bookingService;
         }
 
         public List<CartItemViewModel> CartItems { get; set; } = [];
@@ -44,9 +48,17 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             if (long.TryParse(HttpContext.Session.GetString("TABLE_ID"), out var tId))
                 tableId = tId;
 
+            BusinessObjects.Models.Booking? booking = null;
+            if (bookingId.HasValue)
+            {
+                booking = await _bookingService.GetBookingByIdAsync(bookingId.Value);
+                tableId ??= booking?.TableId;
+            }
+
             var order = new BusinessObjects.Models.Order
             {
                 BookingId = bookingId,
+                CustomerId = booking?.CustomerId,
                 TableId = tableId,
                 TotalAmount = TotalAmount,
                 OrderStatus = OrderStatusEnum.PENDING,

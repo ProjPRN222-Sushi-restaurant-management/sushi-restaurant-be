@@ -166,6 +166,241 @@
             box-shadow: 0 16px 28px rgba(220, 38, 38, 0.3);
         }
 
+    /* ===== Floating cart ===== */
+    .floating-cart {
+        position: fixed;
+        right: 26px;
+        bottom: 26px;
+        z-index: 1050;
+    }
+
+    .cart-fab {
+        position: relative;
+        width: 64px;
+        height: 64px;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #ffffff;
+        font-size: 1.45rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 16px 32px rgba(220, 38, 38, 0.38);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+        .cart-fab:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 38px rgba(220, 38, 38, 0.48);
+        }
+
+        .cart-fab.bump {
+            animation: cartBump 0.42s ease;
+        }
+
+    @@keyframes cartBump {
+        0% { transform: scale(1); }
+        30% { transform: scale(1.18); }
+        60% { transform: scale(0.93); }
+        100% { transform: scale(1); }
+    }
+
+    .cart-fab-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        min-width: 25px;
+        height: 25px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: #111827;
+        color: #ffffff;
+        font-size: 0.8rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .cart-panel {
+        position: absolute;
+        right: 0;
+        bottom: 78px;
+        width: 350px;
+        max-width: 86vw;
+        max-height: 72vh;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border: 1px solid #fee2e2;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 26px 60px rgba(15, 23, 42, 0.28);
+        transform-origin: bottom right;
+        animation: panelIn 0.18s ease;
+    }
+
+    @@keyframes panelIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.96); }
+        to { opacity: 1; transform: none; }
+    }
+
+    .cart-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #ffffff;
+        font-weight: 800;
+    }
+
+    .cart-panel-close {
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-size: 1.5rem;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0 4px;
+    }
+
+    .cart-panel-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 14px;
+    }
+
+    .cart-line {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 11px 4px;
+        border-bottom: 1px dashed #f1f5f9;
+    }
+
+        .cart-line:last-child {
+            border-bottom: none;
+        }
+
+    .cart-line-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .cart-line-name {
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .cart-line-note {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 2px 9px;
+        border-radius: 8px;
+        background: #fff7ed;
+        color: #9a3412;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .cart-line-meta {
+        margin-top: 3px;
+        color: #64748b;
+        font-size: 0.85rem;
+    }
+
+    .cart-line-total {
+        white-space: nowrap;
+        font-weight: 900;
+        color: #dc2626;
+    }
+
+    .cart-empty {
+        padding: 28px 10px;
+        text-align: center;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+
+    .cart-panel-footer {
+        padding: 14px 18px;
+        border-top: 1px solid #f1f5f9;
+        background: #ffffff;
+    }
+
+    .cart-panel-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        color: #64748b;
+        font-weight: 700;
+    }
+
+        .cart-panel-total strong {
+            color: #dc2626;
+            font-size: 1.2rem;
+        }
+
+    .cart-checkout-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        border-radius: 14px;
+        font-weight: 800;
+        text-decoration: none;
+        color: #ffffff;
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        box-shadow: 0 12px 24px rgba(22, 163, 74, 0.24);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+        .cart-checkout-btn:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(22, 163, 74, 0.32);
+        }
+
+        .cart-checkout-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+    .cart-toast {
+        position: fixed;
+        right: 26px;
+        bottom: 104px;
+        z-index: 1060;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 18px;
+        border-radius: 14px;
+        background: #111827;
+        color: #ffffff;
+        font-weight: 700;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+        animation: toastIn 0.2s ease;
+    }
+
+        .cart-toast .toast-ic {
+            color: #4ade80;
+            font-size: 1.15rem;
+        }
+
+    @@keyframes toastIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: none; }
+    }
+
     @@media (max-width: 576px) {
         .menu-grid {
             grid-template-columns: 1fr;
@@ -173,6 +408,11 @@
 
         .menu-image-wrap {
             height: 170px;
+        }
+
+        .floating-cart {
+            right: 16px;
+            bottom: 16px;
         }
     }
 </style>
@@ -216,11 +456,11 @@
                         @item.Description
                     </p>
 
-                    <form method="post" asp-page="/Cart/Index" asp-page-handler="Add" class="menu-add-form">
+                    <form method="post" asp-page="/Menu/Index" asp-page-handler="AddToCart"
+                          class="menu-add-form" data-name="@item.ItemName">
                         <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
                         <input type="hidden" name="bookingId" value="@Model.BookingId" />
                         <input type="hidden" name="tableId" value="@Model.TableId" />
-                        <input type="hidden" name="scrollY" value="@Model.ScrollY" />
 
                         <div class="mb-3">
                             <label class="form-label-custom">Số lượng</label>
@@ -246,41 +486,189 @@
 
 </div>
 
+<!-- ===== Giỏ hàng nổi (floating cart) ===== -->
+<div class="floating-cart">
+    <div class="cart-panel" id="cartPanel" hidden>
+        <div class="cart-panel-header">
+            <span><i class="fa-solid fa-basket-shopping me-2"></i>Giỏ hàng của bạn</span>
+            <button type="button" class="cart-panel-close" id="cartPanelClose" aria-label="Đóng">&times;</button>
+        </div>
+
+        <div class="cart-panel-body" id="cartPanelBody"></div>
+
+        <div class="cart-panel-footer">
+            <div class="cart-panel-total">
+                <span>Tổng cộng</span>
+                <strong id="cartPanelTotal">0 đ</strong>
+            </div>
+
+            <a class="cart-checkout-btn" id="cartCheckoutBtn"
+               asp-page="/Cart/Index"
+               asp-route-bookingId="@Model.BookingId"
+               asp-route-tableId="@Model.TableId">
+                <i class="fa-solid fa-credit-card"></i>
+                Thanh toán
+            </a>
+        </div>
+    </div>
+
+    <button type="button" class="cart-fab" id="cartFab" aria-label="Giỏ hàng">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-fab-badge" id="cartFabBadge" hidden>0</span>
+    </button>
+</div>
+
+<div class="cart-toast" id="cartToast" hidden></div>
+
+@{
+    var initialCart = new
+    {
+        count = Model.CartItems.Sum(x => x.Quantity),
+        totalAmount = Model.CartItems.Sum(x => x.Total),
+        items = Model.CartItems.Select(x => new
+        {
+            menuItemId = x.MenuItemId,
+            itemName = x.ItemName,
+            quantity = x.Quantity,
+            unitPrice = x.UnitPrice,
+            total = x.Total,
+            note = x.Note
+        })
+    };
+}
+<script id="cartInitData" type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(initialCart))</script>
+
 @section Scripts {
     <script>
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
+        (function () {
+            var fab = document.getElementById('cartFab');
+            var badge = document.getElementById('cartFabBadge');
+            var panel = document.getElementById('cartPanel');
+            var panelBody = document.getElementById('cartPanelBody');
+            var panelTotal = document.getElementById('cartPanelTotal');
+            var checkoutBtn = document.getElementById('cartCheckoutBtn');
+            var closeBtn = document.getElementById('cartPanelClose');
+            var toastEl = document.getElementById('cartToast');
+            var toastTimer = null;
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('form.menu-add-form').forEach(function (form) {
-                form.addEventListener('submit', function () {
-                    var currentScrollY = Math.round(window.scrollY || 0);
-                    var scrollInput = form.querySelector('input[name="scrollY"]');
-                    if (scrollInput) {
-                        scrollInput.value = currentScrollY;
-                    }
+            function formatMoney(n) {
+                return Number(n || 0).toLocaleString('vi-VN') + ' đ';
+            }
 
-                    sessionStorage.setItem('menuScrollY', currentScrollY.toString());
+            function escapeHtml(s) {
+                return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
                 });
+            }
+
+            function renderCart(data) {
+                data = data || {};
+                var count = data.count || 0;
+
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.hidden = false;
+                } else {
+                    badge.hidden = true;
+                }
+
+                panelTotal.textContent = formatMoney(data.totalAmount);
+
+                var items = data.items || [];
+                if (!items.length) {
+                    panelBody.innerHTML = '<div class="cart-empty">Giỏ hàng đang trống</div>';
+                    checkoutBtn.classList.add('disabled');
+                    return;
+                }
+
+                var html = '';
+                items.forEach(function (it) {
+                    html += '<div class="cart-line">'
+                        + '<div class="cart-line-info">'
+                        + '<div class="cart-line-name">' + escapeHtml(it.itemName) + '</div>'
+                        + (it.note ? '<div class="cart-line-note">' + escapeHtml(it.note) + '</div>' : '')
+                        + '<div class="cart-line-meta">' + formatMoney(it.unitPrice) + ' × ' + it.quantity + '</div>'
+                        + '</div>'
+                        + '<div class="cart-line-total">' + formatMoney(it.total) + '</div>'
+                        + '</div>';
+                });
+                panelBody.innerHTML = html;
+                checkoutBtn.classList.remove('disabled');
+            }
+
+            function bump() {
+                fab.classList.remove('bump');
+                void fab.offsetWidth;
+                fab.classList.add('bump');
+            }
+
+            function showToast(msg) {
+                toastEl.innerHTML = '<i class="fa-solid fa-circle-check toast-ic"></i><span>' + escapeHtml(msg) + '</span>';
+                toastEl.hidden = false;
+                if (toastTimer) clearTimeout(toastTimer);
+                toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2200);
+            }
+
+            // Khởi tạo trạng thái giỏ hàng từ dữ liệu server
+            try {
+                var initEl = document.getElementById('cartInitData');
+                if (initEl) renderCart(JSON.parse(initEl.textContent));
+            } catch (e) { }
+
+            // Đóng / mở panel giỏ hàng
+            fab.addEventListener('click', function (e) {
+                e.stopPropagation();
+                panel.hidden = !panel.hidden;
+            });
+            closeBtn.addEventListener('click', function () { panel.hidden = true; });
+            document.addEventListener('click', function (e) {
+                if (!panel.hidden && !panel.contains(e.target) && !fab.contains(e.target)) {
+                    panel.hidden = true;
+                }
             });
 
-            var params = new URLSearchParams(window.location.search);
-            var scrollY = parseInt(params.get('scrollY') || sessionStorage.getItem('menuScrollY') || '0', 10);
-            if (isNaN(scrollY) || scrollY <= 0) {
-                return;
-            }
+            // Thêm vào giỏ bằng AJAX -> không reload trang, không nhảy về đầu trang
+            document.querySelectorAll('form.menu-add-form').forEach(function (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
 
-            var restoreScroll = function () {
-                window.scrollTo(0, scrollY);
-            };
+                    var btn = form.querySelector('.btn-add-cart');
+                    var original = btn ? btn.innerHTML : '';
+                    if (btn) { btn.disabled = true; btn.innerHTML = 'Đang thêm...'; }
 
-            restoreScroll();
-            requestAnimationFrame(restoreScroll);
+                    fetch(form.action, {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        body: new FormData(form)
+                    })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (!data || !data.success) {
+                            if (btn) { btn.innerHTML = original; btn.disabled = false; }
+                            return;
+                        }
 
-            if (document.readyState !== 'complete') {
-                window.addEventListener('load', restoreScroll, { once: true });
-            }
-        });
+                        renderCart(data);
+                        bump();
+                        showToast('Đã thêm ' + (form.getAttribute('data-name') || 'món') + ' vào giỏ');
+
+                        var noteEl = form.querySelector('textarea[name="note"]');
+                        if (noteEl) noteEl.value = '';
+                        var qtyEl = form.querySelector('input[name="quantity"]');
+                        if (qtyEl) qtyEl.value = 1;
+
+                        if (btn) {
+                            btn.innerHTML = '<i class="fa-solid fa-check me-1"></i>Đã thêm';
+                            setTimeout(function () { btn.innerHTML = original; btn.disabled = false; }, 1000);
+                        }
+                    })
+                    .catch(function () {
+                        // AJAX lỗi -> quay về submit thường (fallback)
+                        if (btn) { btn.disabled = false; }
+                        form.submit();
+                    });
+                });
+            });
+        })();
     </script>
 }

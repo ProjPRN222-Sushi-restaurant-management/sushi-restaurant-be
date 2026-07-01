@@ -119,25 +119,6 @@
             box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
         }
 
-        .top-bar {
-            background: linear-gradient(135deg, #fff 0%, #fff7ed 100%);
-            border: 1px solid #fed7aa;
-            border-radius: 20px;
-            padding: 18px 22px;
-            margin-bottom: 24px;
-        }
-
-            .top-bar h4 {
-                margin: 0;
-                font-weight: 800;
-                color: #991b1b;
-            }
-
-            .top-bar span {
-                color: #64748b;
-                font-size: 0.95rem;
-            }
-
         @@media (max-width: 768px) {
             .admin-sidebar {
                 position: relative !important;
@@ -232,18 +213,6 @@
 
     <main class="main-content">
         <div class="content-card">
-
-            <div class="top-bar d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div>
-                    <h4>@ViewData["Title"]</h4>
-                    <span>Quản trị hệ thống nhà hàng Sushi</span>
-                </div>
-
-                <div class="badge rounded-pill text-bg-danger px-3 py-2">
-                    <i class="fa-solid fa-user-shield me-1"></i>
-                    Admin
-                </div>
-            </div>
 
             @RenderBody()
 

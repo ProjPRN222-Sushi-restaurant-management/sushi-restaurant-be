@@ -320,6 +320,30 @@
         color: #dc2626;
     }
 
+    .cart-line-remove {
+        flex: none;
+        width: 26px;
+        height: 26px;
+        margin-top: 1px;
+        border: none;
+        border-radius: 50%;
+        background: #fee2e2;
+        color: #b91c1c;
+        font-size: 1.05rem;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+    }
+
+        .cart-line-remove:hover {
+            background: #dc2626;
+            color: #ffffff;
+            transform: scale(1.08);
+        }
+
     .cart-empty {
         padding: 28px 10px;
         text-align: center;
@@ -520,6 +544,8 @@
 
 <div class="cart-toast" id="cartToast" hidden></div>
 
+@Html.AntiForgeryToken()
+
 @{
     var initialCart = new
     {
@@ -550,6 +576,9 @@
             var closeBtn = document.getElementById('cartPanelClose');
             var toastEl = document.getElementById('cartToast');
             var toastTimer = null;
+
+            var antiforgeryToken = (document.querySelector('input[name="__RequestVerificationToken"]') || {}).value || '';
+            var removeUrl = '@Url.Page("/Menu/Index", "RemoveFromCart")';
 
             function formatMoney(n) {
                 return Number(n || 0).toLocaleString('vi-VN') + ' đ';
@@ -590,6 +619,7 @@
                         + '<div class="cart-line-meta">' + formatMoney(it.unitPrice) + ' × ' + it.quantity + '</div>'
                         + '</div>'
                         + '<div class="cart-line-total">' + formatMoney(it.total) + '</div>'
+                        + '<button type="button" class="cart-line-remove" data-id="' + it.menuItemId + '" data-note="' + escapeHtml(it.note) + '" aria-label="Xóa món" title="Xóa món">&times;</button>'
                         + '</div>';
                 });
                 panelBody.innerHTML = html;
@@ -609,6 +639,29 @@
                 toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2200);
             }
 
+            function removeItem(id, note) {
+                var body = new URLSearchParams();
+                body.append('menuItemId', id);
+                body.append('note', note || '');
+
+                fetch(removeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': antiforgeryToken
+                    },
+                    body: body.toString()
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data && data.success) {
+                        renderCart(data);
+                    }
+                })
+                .catch(function () { });
+            }
+
             // Khởi tạo trạng thái giỏ hàng từ dữ liệu server
             try {
                 var initEl = document.getElementById('cartInitData');
@@ -625,6 +678,13 @@
                 if (!panel.hidden && !panel.contains(e.target) && !fab.contains(e.target)) {
                     panel.hidden = true;
                 }
+            });
+
+            // Xóa món khỏi giỏ (nút ×)
+            panelBody.addEventListener('click', function (e) {
+                var btn = e.target.closest('.cart-line-remove');
+                if (!btn) return;
+                removeItem(btn.getAttribute('data-id'), btn.getAttribute('data-note') || '');
             });
 
             // Thêm vào giỏ bằng AJAX -> không reload trang, không nhảy về đầu trang

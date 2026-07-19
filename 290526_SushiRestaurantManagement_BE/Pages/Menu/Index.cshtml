@@ -1,6 +1,39 @@
 ﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Menu.IndexModel
 
+@functions {
+    // Map tên món -> tên file ảnh thực tế trong wwwroot/images/
+    static readonly Dictionary<string, string> ImageMap = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Salmon Sushi"]    = "salmon-sushi.png",
+        ["Tuna Sushi"]      = "tuna-sushi.png",
+        ["Salmon Sashimi"]  = "salmon-sashimi.png",
+        ["Tuna Sashimi"]    = "tuna-sashimi.png",
+        ["Ebi Nigiri"]      = "ebi-nigiri.png",
+        ["California Roll"]  = "California-roll.png",
+        ["Tonkotsu Ramen"]  = "tonkotsu-ramen.png",
+        ["Tempura Udon"]    = "tempura-udon.png",
+        ["Shrimp Tempura"]  = "shrimp-tempura.png",
+        ["Matcha Latte"]    = "match-latte.png",
+        ["Sakura Tea"]      = "sakura-tea.png",
+        ["Mochi Ice Cream"] = "mochi-ice-cream.png",
+    };
+
+    // Ưu tiên map theo tên món (khớp file ảnh thực tế); nếu không có thì
+    // dùng image_url trong DB; cuối cùng là ảnh placeholder.
+    static string ResolveImageUrl(string? itemName, string? imageUrl)
+    {
+        if (!string.IsNullOrWhiteSpace(itemName) && ImageMap.TryGetValue(itemName.Trim(), out var file))
+            return "/images/" + file;
+
+        if (string.IsNullOrWhiteSpace(imageUrl))
+            return "/images/placeholder.svg";
+        if (imageUrl.StartsWith("http://") || imageUrl.StartsWith("https://") || imageUrl.StartsWith("/"))
+            return imageUrl;
+        return "/" + imageUrl.TrimStart('~', '/');
+    }
+}
+
 <style>
     .menu-page {
         padding: 10px 0 35px;
@@ -467,7 +500,8 @@
             <div class="menu-card">
 
                 <div class="menu-image-wrap">
-                    <img src="@item.ImageUrl" alt="@item.ItemName" />
+                    <img src="@ResolveImageUrl(item.ItemName, item.ImageUrl)" alt="@item.ItemName" loading="lazy"
+                         onerror="this.onerror=null;this.src='/images/placeholder.svg';" />
                     <div class="price-pill">
                         @item.Price.ToString("N0") đ
                     </div>

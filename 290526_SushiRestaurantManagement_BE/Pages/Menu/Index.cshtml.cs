@@ -84,26 +84,45 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
 
             if (isAjax)
             {
-                return new JsonResult(new
-                {
-                    success = true,
-                    count = cart.Sum(x => x.Quantity),
-                    totalAmount = cart.Sum(x => x.Total),
-                    items = cart.Select(x => new
-                    {
-                        menuItemId = x.MenuItemId,
-                        itemName = x.ItemName,
-                        quantity = x.Quantity,
-                        unitPrice = x.UnitPrice,
-                        total = x.Total,
-                        note = x.Note
-                    })
-                });
+                return new JsonResult(BuildCartPayload(cart));
             }
 
             // Fallback cho trường hợp không có JavaScript
             TempData["Success"] = "Đã thêm món vào giỏ hàng.";
             return RedirectToPage("/Menu/Index", new { bookingId, tableId });
         }
+
+        public IActionResult OnPostRemoveFromCart(long menuItemId, string? note)
+        {
+            var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>(CartSessionKey) ?? [];
+
+            var item = cart.FirstOrDefault(x =>
+                x.MenuItemId == menuItemId &&
+                x.Note == note);
+
+            if (item != null)
+            {
+                cart.Remove(item);
+                HttpContext.Session.SetObject(CartSessionKey, cart);
+            }
+
+            return new JsonResult(BuildCartPayload(cart));
+        }
+
+        private static object BuildCartPayload(List<CartItemViewModel> cart) => new
+        {
+            success = true,
+            count = cart.Sum(x => x.Quantity),
+            totalAmount = cart.Sum(x => x.Total),
+            items = cart.Select(x => new
+            {
+                menuItemId = x.MenuItemId,
+                itemName = x.ItemName,
+                quantity = x.Quantity,
+                unitPrice = x.UnitPrice,
+                total = x.Total,
+                note = x.Note
+            })
+        };
     }
 }

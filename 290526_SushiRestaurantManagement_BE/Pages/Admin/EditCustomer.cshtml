@@ -1,0 +1,300 @@
+@* @page "{id:long}"
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.EditCustomerModel
+@using BusinessObjects.Enums
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chỉnh Sửa Khách Hàng";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white py-3">
+            <h5 class="mb-0">Chỉnh sửa khách hàng #@Model.CustomerInfo.CustomerId</h5>
+        </div>
+        <div class="card-body p-4">
+            <form method="post">
+                <input type="hidden" asp-for="CustomerInfo.CustomerId" />
+                <input type="hidden" asp-for="CustomerInfo.CreatedAt" />
+                <input type="hidden" asp-for="CustomerInfo.DeletedAt" />
+
+                <div class="mb-3">
+                    <label class="form-label">Họ và tên</label>
+                    <input asp-for="CustomerInfo.FullName" class="form-control" required />
+                    <span asp-validation-for="CustomerInfo.FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input asp-for="CustomerInfo.Phone" class="form-control" required />
+                    <span asp-validation-for="CustomerInfo.Phone" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Hạng thành viên</label>
+                    <select asp-for="CustomerInfo.MembershipLevel" class="form-select">
+                        <option value="@MembershipLevelEnum.NONE">NONE</option>
+                        <option value="@MembershipLevelEnum.SILVER">SILVER</option>
+                        <option value="@MembershipLevelEnum.GOLD">GOLD</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Loyalty points</label>
+                    <input asp-for="CustomerInfo.LoyaltyPoints" type="number" min="0" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Trạng thái</label>
+                    <input class="form-control" value="@(Model.CustomerInfo.DeletedAt == null ? "Active" : "Deleted")" disabled />
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    <a asp-page="/Admin/CustomerManager" class="btn btn-outline-secondary">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@
+@page "{id:long}"
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.EditCustomerModel
+@using BusinessObjects.Enums
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chỉnh Sửa Khách Hàng";
+}
+
+<style>
+    .edit-customer-page {
+        padding: 8px 0 32px;
+    }
+
+    .edit-customer-wrapper {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .edit-header {
+        margin-bottom: 24px;
+    }
+
+    .edit-title {
+        color: #991b1b;
+        font-weight: 900;
+        margin: 0;
+    }
+
+    .edit-subtitle {
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 4px;
+    }
+
+    .edit-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 26px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, .1);
+    }
+
+    .edit-card-header {
+        padding: 28px 26px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+    }
+
+    .edit-card-title {
+        font-weight: 900;
+        margin: 0;
+    }
+
+    .edit-card-subtitle {
+        opacity: .95;
+        margin-top: 6px;
+        font-weight: 500;
+    }
+
+    .edit-card-body {
+        padding: 28px;
+    }
+
+    .form-label-custom {
+        color: #475569;
+        font-size: .9rem;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .edit-form .form-control,
+    .edit-form .form-select {
+        border-radius: 16px;
+        border: 1px solid #dbe3ef;
+        padding: 12px 14px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+        .edit-form .form-control:focus,
+        .edit-form .form-select:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .status-input-active {
+        background: #dcfce7 !important;
+        color: #166534 !important;
+        border-color: #bbf7d0 !important;
+        font-weight: 900 !important;
+    }
+
+    .status-input-deleted {
+        background: #e5e7eb !important;
+        color: #374151 !important;
+        border-color: #d1d5db !important;
+        font-weight: 900 !important;
+    }
+
+    .action-area {
+        display: grid;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .btn-save,
+    .btn-back {
+        border: none;
+        border-radius: 999px;
+        padding: 13px 24px;
+        font-weight: 900;
+        text-align: center;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+    .btn-save {
+        color: #ffffff;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        box-shadow: 0 14px 28px rgba(220, 38, 38, .25);
+    }
+
+        .btn-save:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(220, 38, 38, .34);
+        }
+
+    .btn-back {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 576px) {
+        .edit-card-body {
+            padding: 22px;
+        }
+    }
+</style>
+
+<div class="edit-customer-page">
+    <div class="edit-customer-wrapper">
+
+        <div class="edit-header">
+            <h2 class="edit-title">
+                Chỉnh Sửa Khách Hàng
+            </h2>
+            <div class="edit-subtitle">
+                Cập nhật thông tin khách hàng, hạng thành viên và điểm tích lũy
+            </div>
+        </div>
+
+        <div class="edit-card">
+            <div class="edit-card-header">
+                <h5 class="edit-card-title">
+                    Khách hàng #@Model.CustomerInfo.CustomerId
+                </h5>
+                <div class="edit-card-subtitle">
+                    Thông tin chi tiết khách hàng trong hệ thống
+                </div>
+            </div>
+
+            <div class="edit-card-body">
+                <form method="post" class="edit-form">
+                    <input type="hidden" asp-for="CustomerInfo.CustomerId" />
+                    <input type="hidden" asp-for="CustomerInfo.CreatedAt" />
+                    <input type="hidden" asp-for="CustomerInfo.DeletedAt" />
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Họ và tên</label>
+                        <input asp-for="CustomerInfo.FullName"
+                               class="form-control"
+                               required />
+                        <span asp-validation-for="CustomerInfo.FullName"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Số điện thoại</label>
+                        <input asp-for="CustomerInfo.Phone"
+                               class="form-control"
+                               required />
+                        <span asp-validation-for="CustomerInfo.Phone"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Hạng thành viên</label>
+                        <select asp-for="CustomerInfo.MembershipLevel"
+                                class="form-select">
+                            <option value="@MembershipLevelEnum.NONE">NONE</option>
+                            <option value="@MembershipLevelEnum.SILVER">SILVER</option>
+                            <option value="@MembershipLevelEnum.GOLD">GOLD</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Loyalty points</label>
+                        <input asp-for="CustomerInfo.LoyaltyPoints"
+                               type="number"
+                               min="0"
+                               class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Trạng thái</label>
+                        <input class="form-control @(Model.CustomerInfo.DeletedAt == null ? "status-input-active" : "status-input-deleted")"
+                               value="@(Model.CustomerInfo.DeletedAt == null ? "Active" : "Deleted")"
+                               disabled />
+                    </div>
+
+                    <div class="action-area">
+                        <button type="submit" class="btn-save">
+                            Lưu thay đổi
+                        </button>
+
+                        <a asp-page="/Admin/CustomerManager"
+                           class="btn-back">
+                            Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

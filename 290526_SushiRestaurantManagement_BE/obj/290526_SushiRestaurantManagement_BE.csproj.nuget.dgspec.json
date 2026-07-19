@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj": {}
+    "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj": {
+    "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj",
+        "projectUniqueName": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj",
         "projectName": "290526_SushiRestaurantManagement_BE",
-        "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj",
-        "packagesPath": "C:\\Users\\Huong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE\\obj\\",
+        "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\290526_SushiRestaurantManagement_BE\\290526_SushiRestaurantManagement_BE.csproj",
+        "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\290526_SushiRestaurantManagement_BE\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\VisualStudio\\shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Huong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -32,17 +32,17 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj"
               },
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\DataAccessObjects.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\DataAccessObjects.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\DataAccessObjects.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\DataAccessObjects.csproj"
               },
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Repositories.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Repositories.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\Repositories.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\Repositories.csproj"
               },
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Services.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Services.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Services\\Services.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Services\\Services.csproj"
               }
             }
           }
@@ -62,6 +62,22 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Core": {
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Portable.BouncyCastle": {
+              "target": "Package",
+              "version": "[1.9.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -81,24 +97,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj": {
+    "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj",
+        "projectUniqueName": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj",
         "projectName": "BusinessObjects",
-        "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj",
-        "packagesPath": "C:\\Users\\Huong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\obj\\",
+        "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj",
+        "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\VisualStudio\\shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Huong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -146,24 +162,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\DataAccessObjects.csproj": {
+    "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\DataAccessObjects.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\DataAccessObjects.csproj",
+        "projectUniqueName": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\DataAccessObjects.csproj",
         "projectName": "DataAccessObjects",
-        "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\DataAccessObjects.csproj",
-        "packagesPath": "C:\\Users\\Huong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\obj\\",
+        "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\DataAccessObjects.csproj",
+        "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\VisualStudio\\shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Huong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -178,8 +194,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj"
               }
             }
           }
@@ -245,24 +261,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Repositories.csproj": {
+    "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\Repositories.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Repositories.csproj",
+        "projectUniqueName": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\Repositories.csproj",
         "projectName": "Repositories",
-        "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Repositories.csproj",
-        "packagesPath": "C:\\Users\\Huong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\obj\\",
+        "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\Repositories.csproj",
+        "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\VisualStudio\\shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Huong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -277,11 +293,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\BusinessObjects\\BusinessObjects.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\BusinessObjects\\BusinessObjects.csproj"
               },
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\DataAccessObjects.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\DataAccessObjects\\DataAccessObjects.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\DataAccessObjects.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\DataAccessObjects\\DataAccessObjects.csproj"
               }
             }
           }
@@ -317,24 +333,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Services.csproj": {
+    "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Services\\Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Services.csproj",
+        "projectUniqueName": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Services\\Services.csproj",
         "projectName": "Services",
-        "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\Services.csproj",
-        "packagesPath": "C:\\Users\\Huong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Services\\obj\\",
+        "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Services\\Services.csproj",
+        "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Services\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\VisualStudio\\shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Huong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -349,8 +365,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Repositories.csproj": {
-                "projectPath": "C:\\Users\\Huong\\Documents\\Sushi_Restaurant_Project_PRN222\\290526_SushiRestaurantManagement_BE\\Repositories\\Repositories.csproj"
+              "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\Repositories.csproj": {
+                "projectPath": "D:\\FPT\\PRN222\\SushiRestaurant\\sushi-restaurant-be\\Repositories\\Repositories.csproj"
               }
             }
           }
@@ -370,6 +386,16 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.8, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[10.0.8, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -386,7 +412,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,0 +1,666 @@
+﻿@* @page
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.StaffManagerModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản Lý Nhân Viên";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="h3 mb-0 text-gray-800"><i class="fa-solid fa-user-tie me-2"></i>Quản Lý Nhân Viên</h2>
+    <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+        <i class="fa-solid fa-user-plus me-1"></i> Thêm Nhân Viên
+    </button>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2">
+            <div class="col-sm-9">
+                <input type="text" name="SearchString" class="form-control" placeholder="Tìm theo tên hoặc số điện thoại..." value="@Model.SearchString" />
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" class="btn btn-dark w-100 fw-semibold">Tìm kiếm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@{
+    ViewBag.PaginatedList = Model.StaffList;
+}
+
+<partial name="_Pagination"  />
+
+<div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-dark text-white fw-bold">Danh Sách Nhân Viên</div>
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">Mã NV</th>
+                    <th>Họ và Tên</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Trạng Thái</th>
+                    <th>Ngày Tạo</th>
+                    <th class="text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var staff in Model.StaffList.Items)
+                {
+                    <tr>
+                        <td class="ps-3">#@staff.StaffId</td>
+                        <td><strong>@staff.FullName</strong></td>
+                        <td>@staff.Phone</td>
+                        <td>
+                            <span class="badge @(staff.IsActive == true ? "bg-success" : "bg-secondary")">
+                                @(staff.IsActive == true ? "Đang hoạt động" : "Bị khóa")
+                            </span>
+                        </td>
+                        <td>@(staff.CreatedAt?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a asp-page="/Admin/EditStaff" asp-route-id="@staff.StaffId" class="btn btn-sm btn-outline-primary py-1 px-2">
+                                    <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                </a>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@staff.StaffId" onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2">
+                                        <i class="fa-solid fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.StaffList.Items.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Không tìm thấy nhân viên nào.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addStaffModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddStaff">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Thêm Nhân Viên Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Họ và tên</label>
+                        <input type="text" name="NewFullName" class="form-control" required placeholder="Nhập đầy đủ họ tên..." />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Số điện thoại (Dùng đăng nhập)</label>
+                        <input type="text" name="NewPhone" class="form-control" required placeholder="Ví dụ: 0912345678" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Mật khẩu ban đầu</label>
+                        <input type="password" name="NewPassword" class="form-control" required placeholder="Ít nhất 6 ký tự..." />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success fw-semibold">Thêm nhân viên</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> *@
+
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Admin.StaffManagerModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản Lý Nhân Viên";
+    ViewBag.PaginatedList = Model.StaffList;
+}
+
+<style>
+    .staff-page {
+        padding: 4px 0 30px;
+    }
+
+    .staff-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .staff-title {
+        margin: 0;
+        color: #991b1b;
+        font-weight: 900;
+    }
+
+    .staff-subtitle {
+        margin-top: 4px;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .btn-add-staff {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 22px;
+        color: #fff;
+        font-weight: 900;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        box-shadow: 0 14px 28px rgba(220, 38, 38, .24);
+        transition: all .2s ease;
+    }
+
+        .btn-add-staff:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(220, 38, 38, .34);
+        }
+
+    .admin-alert {
+        border: none;
+        border-radius: 18px;
+        padding: 15px 18px;
+        font-weight: 700;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, .06);
+    }
+
+    .alert-success.admin-alert {
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        color: #166534;
+    }
+
+    .alert-danger.admin-alert {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .search-card,
+    .staff-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+        overflow: hidden;
+    }
+
+    .search-card {
+        padding: 22px;
+        margin-bottom: 24px;
+    }
+
+    .search-input {
+        border-radius: 999px;
+        border: 1px solid #dbe3ef;
+        padding: 11px 18px;
+        font-weight: 600;
+    }
+
+        .search-input:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .btn-search {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 22px;
+        color: #fff;
+        font-weight: 900;
+        background: linear-gradient(135deg, #111827, #374151);
+    }
+
+    .staff-card-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .staff-count-badge {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+        font-size: .85rem;
+    }
+
+    .staff-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .staff-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: .86rem;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .staff-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .staff-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .staff-id {
+        color: #dc2626;
+        font-weight: 900;
+    }
+
+    .staff-name {
+        color: #1f2937;
+        font-weight: 900;
+    }
+
+    .phone-pill,
+    .date-pill,
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: .84rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .phone-pill,
+    .date-pill {
+        background: #f8fafc;
+        color: #334155;
+        border: 1px solid #e5e7eb;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-locked {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .action-group {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        border: none;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: .84rem;
+        font-weight: 900;
+        text-decoration: none;
+        transition: all .18s ease;
+    }
+
+    .btn-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+        .btn-edit:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+    .empty-row {
+        padding: 30px;
+        color: #64748b;
+        font-weight: 800;
+    }
+
+    .staff-modal .modal-content {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, .18);
+    }
+
+    .staff-modal .modal-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+        padding: 20px 24px;
+    }
+
+    .staff-modal .modal-title {
+        font-weight: 900;
+    }
+
+    .staff-modal .modal-body {
+        padding: 24px;
+    }
+
+    .staff-modal .form-label {
+        font-weight: 800;
+        color: #475569;
+    }
+
+    .staff-modal .form-control {
+        border-radius: 15px;
+        border: 1px solid #dbe3ef;
+        padding: 11px 13px;
+        font-weight: 600;
+    }
+
+        .staff-modal .form-control:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .staff-modal .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        padding: 18px 24px;
+    }
+
+    .btn-modal-cancel,
+    .btn-modal-save {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-weight: 900;
+    }
+
+    .btn-modal-cancel {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .btn-modal-save {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+    }
+
+    @@media (max-width: 576px) {
+        .btn-add-staff,
+        .btn-search {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="staff-page">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert admin-alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>
+            @TempData["Success"]
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert admin-alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+            @TempData["Error"]
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="staff-header">
+        <div>
+            <h2 class="staff-title">
+                <i class="fa-solid fa-user-tie me-2"></i>
+                Quản Lý Nhân Viên
+            </h2>
+
+            <div class="staff-subtitle">
+                Quản lý tài khoản, trạng thái và thông tin nhân viên
+            </div>
+        </div>
+
+        <button type="button"
+                class="btn-add-staff"
+                data-bs-toggle="modal"
+                data-bs-target="#addStaffModal">
+            <i class="fa-solid fa-user-plus me-1"></i>
+            Thêm Nhân Viên
+        </button>
+    </div>
+
+    <div class="search-card">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-sm-9">
+                <input type="text"
+                       name="SearchString"
+                       class="form-control search-input"
+                       placeholder="Tìm theo tên hoặc số điện thoại..."
+                       value="@Model.SearchString" />
+            </div>
+
+            <div class="col-sm-3">
+                <button type="submit"
+                        class="btn-search w-100">
+                    Tìm kiếm
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="staff-card">
+        <div class="staff-card-header">
+            <span>Danh Sách Nhân Viên</span>
+
+            <span class="staff-count-badge">
+                @Model.StaffList.Items.Count nhân viên
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table staff-table">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Mã NV</th>
+                        <th>Họ và Tên</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Trạng Thái</th>
+                        <th>Ngày Tạo</th>
+                        <th class="text-center">Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var staff in Model.StaffList.Items)
+                    {
+                        <tr>
+                            <td class="ps-3 staff-id">
+                                #@staff.StaffId
+                            </td>
+
+                            <td class="staff-name">
+                                @staff.FullName
+                            </td>
+
+                            <td>
+                                <span class="phone-pill">
+                                    @staff.Phone
+                                </span>
+                            </td>
+
+                            <td>
+                                @if (staff.IsActive == true)
+                                {
+                                    <span class="status-pill status-active">
+                                        Đang hoạt động
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill status-locked">
+                                        Bị khóa
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                <span class="date-pill">
+                                    @(staff.CreatedAt?.ToString("dd/MM/yyyy") ?? "-")
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="action-group">
+                                    <a asp-page="/Admin/EditStaff"
+                                       asp-route-id="@staff.StaffId"
+                                       class="btn-edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        Sửa
+                                    </a>
+
+                                    <form method="post"
+                                          asp-page-handler="Delete"
+                                          asp-route-id="@staff.StaffId"
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');"
+                                          class="d-inline">
+                                        <button type="submit" class="btn-delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.StaffList.Items.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center empty-row">
+                                Không tìm thấy nhân viên nào.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (Model.StaffList.Items.Any())
+    {
+        <partial name="_Pagination" />
+    }
+
+</div>
+
+<div class="modal fade staff-modal" id="addStaffModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AddStaff">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-user-plus me-2"></i>
+                        Thêm Nhân Viên Mới
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Họ và tên</label>
+                        <input type="text"
+                               name="NewFullName"
+                               class="form-control"
+                               required
+                               placeholder="Nhập đầy đủ họ tên..." />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại (Dùng đăng nhập)</label>
+                        <input type="text"
+                               name="NewPhone"
+                               class="form-control"
+                               required
+                               placeholder="Ví dụ: 0912345678" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu ban đầu</label>
+                        <input type="password"
+                               name="NewPassword"
+                               class="form-control"
+                               required
+                               placeholder="Ít nhất 6 ký tự..." />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn-modal-cancel"
+                            data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+
+                    <button type="submit"
+                            class="btn-modal-save">
+                        Thêm nhân viên
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

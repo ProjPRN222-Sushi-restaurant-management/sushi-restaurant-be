@@ -1,0 +1,254 @@
+﻿@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Cart.CheckoutModel
+
+<style>
+    .checkout-page {
+        padding: 10px 0 35px;
+    }
+
+    .checkout-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .checkout-title {
+        font-weight: 900;
+        color: #991b1b;
+        margin: 0;
+    }
+
+    .checkout-subtitle {
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 4px;
+    }
+
+    .checkout-badge {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        color: #fff;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 800;
+        box-shadow: 0 12px 24px rgba(22, 163, 74, 0.22);
+    }
+
+    .success-alert {
+        border: none;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        color: #166534;
+        font-weight: 700;
+        padding: 16px 20px;
+        box-shadow: 0 10px 25px rgba(22, 101, 52, 0.08);
+    }
+
+    .checkout-card {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+    }
+
+    .checkout-card-header {
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        padding: 18px 22px;
+        font-weight: 900;
+        color: #9a3412;
+    }
+
+    .checkout-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .checkout-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .checkout-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .checkout-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .item-name {
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .note-text {
+        color: #64748b;
+        font-size: 0.92rem;
+    }
+
+    .quantity-pill {
+        display: inline-flex;
+        min-width: 42px;
+        height: 34px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #334155;
+        font-weight: 800;
+    }
+
+    .money {
+        color: #dc2626;
+        font-weight: 900;
+    }
+
+    .total-panel {
+        margin-top: 22px;
+        padding: 22px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #fff7ed, #ffffff);
+        border: 1px solid #fed7aa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .total-label {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+        color: #dc2626;
+        font-weight: 950;
+    }
+
+    .submit-area {
+        margin-top: 22px;
+        text-align: right;
+    }
+
+    .btn-submit-order {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 26px;
+        font-weight: 900;
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        color: #ffffff;
+        box-shadow: 0 14px 28px rgba(22, 163, 74, 0.24);
+        transition: all 0.2s ease;
+    }
+
+        .btn-submit-order:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(22, 163, 74, 0.32);
+        }
+
+    .empty-cart {
+        border: none;
+        border-radius: 20px;
+        background: #fff7ed;
+        color: #9a3412;
+        padding: 20px 24px;
+        font-weight: 800;
+    }
+</style>
+
+<div class="checkout-page">
+
+    <div class="checkout-header">
+        <div>
+            <h2 class="checkout-title">Xác nhận order</h2>
+            <div class="checkout-subtitle">Kiểm tra món trước khi gửi order vào bếp</div>
+        </div>
+
+        <div class="checkout-badge">
+            ✅ Ready to Order
+        </div>
+    </div>
+
+    @if (TempData["OrderSuccess"] != null)
+    {
+        <div class="alert success-alert">
+            @TempData["OrderSuccess"]
+        </div>
+    }
+
+    @if (Model.CartItems.Any())
+    {
+        <div class="checkout-card">
+            <div class="checkout-card-header">
+                Danh sách món trong giỏ
+            </div>
+
+            <div class="table-responsive">
+                <table class="table checkout-table">
+                    <thead>
+                        <tr>
+                            <th>Món</th>
+                            <th>Tùy chọn</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Tổng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td class="item-name">@item.ItemName</td>
+                                <td class="note-text">@item.Note</td>
+                                <td class="text-center">
+                                    <span class="quantity-pill">@item.Quantity</span>
+                                </td>
+                                <td class="text-end money">
+                                    @item.Total.ToString("N0") đ
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="total-panel">
+            <div>
+                <div class="total-label">Tổng tiền dự kiến</div>
+                <div class="text-muted small">Số tiền tạm tính trước khi thanh toán</div>
+            </div>
+
+            <div class="total-amount">
+                @Model.TotalAmount.ToString("N0") đ
+            </div>
+        </div>
+
+        <form method="post">
+            <div class="submit-area">
+                <button class="btn-submit-order">
+                    Gửi order
+                </button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="empty-cart">
+            Giỏ hàng hiện chưa có món nào để xác nhận.
+        </div>
+    }
+
+</div>

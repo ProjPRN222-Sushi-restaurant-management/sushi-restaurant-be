@@ -1,0 +1,165 @@
+@using Microsoft.AspNetCore.WebUtilities
+@model dynamic 
+@{
+    var paginatedList = ViewBag.PaginatedList as _290526_SushiRestaurantManagement_BE.Helpers.IPaginatedList;
+
+    string GetPageUrl(int pageNumber)
+    {
+        var query = Context.Request.Query.ToDictionary(
+            item => item.Key,
+            item => (string?)item.Value.ToString());
+
+        query["PageNumber"] = pageNumber.ToString();
+
+        return QueryHelpers.AddQueryString(Context.Request.Path.ToString(), query);
+    }
+}
+
+@if (paginatedList != null && paginatedList.TotalPages > 1)
+{
+    <style>
+        .pagination-wrapper {
+            margin-top: 32px;
+        }
+
+        .pagination-card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 14px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+            .pagination-card .page-item {
+                margin: 0 2px;
+            }
+
+            .pagination-card .page-link {
+                border: none;
+                min-width: 42px;
+                height: 42px;
+                padding: 0 14px;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #475569;
+                font-weight: 700;
+                background: #f8fafc;
+                transition: all 0.2s ease;
+            }
+
+                .pagination-card .page-link:hover {
+                    color: #ffffff;
+                    background: linear-gradient(135deg, #dc2626, #f97316);
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 20px rgba(220, 38, 38, 0.25);
+                }
+
+            .pagination-card .page-item.active .page-link {
+                color: #ffffff;
+                background: linear-gradient(135deg, #dc2626, #f97316);
+                box-shadow: 0 10px 20px rgba(220, 38, 38, 0.28);
+            }
+
+            .pagination-card .page-item.disabled .page-link {
+                color: #cbd5e1;
+                background: #f1f5f9;
+                cursor: not-allowed;
+                box-shadow: none;
+                transform: none;
+            }
+
+        .pagination-info {
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+            .pagination-info strong {
+                color: #dc2626;
+            }
+    </style>
+
+    <nav aria-label="Pagination Navigation" class="pagination-wrapper">
+        <ul class="pagination pagination-card">
+
+            @if (paginatedList.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@GetPageUrl(1)" aria-label="First page">
+                        First
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="@GetPageUrl(paginatedList.PageNumber - 1)" aria-label="Previous page">
+                        Previous
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">First</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            }
+
+            @for (int i = 1; i <= paginatedList.TotalPages; i++)
+            {
+                if (i == paginatedList.PageNumber)
+                {
+                    <li class="page-item active">
+                        <span class="page-link">
+                            @i <span class="visually-hidden">(current)</span>
+                        </span>
+                    </li>
+                }
+                else if (i <= paginatedList.PageNumber + 2 && i >= paginatedList.PageNumber - 2)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@GetPageUrl(i)">@i</a>
+                    </li>
+                }
+            }
+
+            @if (paginatedList.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@GetPageUrl(paginatedList.PageNumber + 1)" aria-label="Next page">
+                        Next
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="@GetPageUrl(paginatedList.TotalPages)" aria-label="Last page">
+                        Last
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Last</span>
+                </li>
+            }
+
+        </ul>
+    </nav>
+
+    <div class="text-center pagination-info">
+        Page <strong>@paginatedList.PageNumber</strong> of <strong>@paginatedList.TotalPages</strong>
+        <span class="mx-2">|</span>
+        Total: <strong>@paginatedList.TotalItems</strong> items
+    </div>
+}

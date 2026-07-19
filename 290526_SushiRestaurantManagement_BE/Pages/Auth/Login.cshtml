@@ -1,0 +1,197 @@
+﻿@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Auth.LoginModel
+
+<style>
+    .login-page {
+        min-height: 78vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 35px 0;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 520px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #ffffff;
+        text-align: center;
+        padding: 38px 26px;
+    }
+
+    .login-icon {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 16px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, .18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+    }
+
+    .login-title {
+        margin: 0;
+        font-weight: 900;
+    }
+
+    .login-subtitle {
+        margin-top: 6px;
+        opacity: .95;
+        font-weight: 500;
+    }
+
+    .login-body {
+        padding: 30px;
+    }
+
+    .auth-alert {
+        border: none;
+        border-radius: 18px;
+        padding: 15px 18px;
+        font-weight: 700;
+    }
+
+    .success-alert {
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        color: #166534;
+    }
+
+    .error-alert {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .form-label-custom {
+        color: #475569;
+        font-size: .9rem;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .login-form .form-control {
+        border-radius: 16px;
+        border: 1px solid #dbe3ef;
+        padding: 12px 14px;
+        font-weight: 600;
+    }
+
+        .login-form .form-control:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .btn-login {
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        padding: 13px 24px;
+        font-weight: 900;
+        color: #ffffff;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        box-shadow: 0 14px 28px rgba(220, 38, 38, .25);
+        transition: all .2s ease;
+    }
+
+        .btn-login:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(220, 38, 38, .34);
+        }
+
+    .auth-links {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .auth-link {
+        color: #64748b;
+        font-weight: 800;
+        text-decoration: none;
+        font-size: .92rem;
+    }
+
+        .auth-link:hover {
+            color: #dc2626;
+        }
+</style>
+
+<div class="login-page">
+    <div class="login-card">
+
+        <div class="login-header">
+            <div class="login-icon">🍣</div>
+            <h2 class="login-title">Login</h2>
+            <div class="login-subtitle">
+                Đăng nhập vào hệ thống Sushi Restaurant
+            </div>
+        </div>
+
+        <div class="login-body">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert auth-alert success-alert">
+                    @TempData["Success"]
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert auth-alert error-alert">
+                    @Model.ErrorMessage
+                </div>
+            }
+
+            <form method="post" class="login-form">
+                <div class="mb-3">
+                    <label class="form-label-custom">Phone</label>
+                    <input asp-for="Input.Phone"
+                           class="form-control"
+                           placeholder="Nhập số điện thoại..." />
+                    <span asp-validation-for="Input.Phone" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label-custom">Password</label>
+                    <input asp-for="Input.Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Nhập mật khẩu..." />
+                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                </div>
+
+                <button class="btn-login">
+                    Login
+                </button>
+
+                <div class="auth-links">
+                    <a asp-page="/Auth/ForgotPassword" class="auth-link">
+                        Forgot password?
+                    </a>
+
+                    <a asp-page="/Auth/Register" class="auth-link">
+                        Register
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

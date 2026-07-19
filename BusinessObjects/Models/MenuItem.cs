@@ -17,7 +17,7 @@ public partial class MenuItem
 
     public decimal Price { get; set; }
 
-    public bool? IsAvailable { get; set; }
+    public bool IsAvailable { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

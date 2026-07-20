@@ -18,6 +18,9 @@ public partial class Booking
 
     public TimeOnly BookingTime { get; set; }
 
+    // Thời lượng dùng bữa (phút). Bàn bị chiếm trong [BookingTime, BookingTime + DurationMinutes).
+    public int DurationMinutes { get; set; } = 90;
+
     public int GuestCount { get; set; }
 
     public BookingStatusEnum BookingStatus { get; set; }

@@ -83,6 +83,9 @@ public partial class RestaurantSystemDbContext : DbContext
             entity.Property(e => e.BookingTime)
                 .HasColumnType("time")
                 .HasColumnName("booking_time");
+            entity.Property(e => e.DurationMinutes)
+                .HasDefaultValue(90)
+                .HasColumnName("duration_minutes");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp")

@@ -1,6 +1,9 @@
 ﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Booking.CreateModel
 @using BusinessObjects.Enums
+@{
+    var minBookingDate = DateTime.Today.ToString("yyyy-MM-dd");
+}
 
 <style>
     .booking-page {
@@ -228,6 +231,123 @@
             width: 100%;
         }
     }
+
+    /* ===== Tình trạng bàn theo khu vực + chọn bàn ===== */
+    .status-hint {
+        background: #eff6ff;
+        color: #1e3a8a;
+        border-radius: 14px;
+        padding: 11px 14px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 14px;
+    }
+
+    .auto-assign-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 14px;
+        margin-bottom: 16px;
+        cursor: pointer;
+        font-weight: 700;
+        color: #475569;
+    }
+
+    .area-block {
+        margin-bottom: 16px;
+    }
+
+    .area-block-title {
+        font-weight: 900;
+        color: #9a3412;
+        margin-bottom: 8px;
+    }
+
+    .table-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .table-cell {
+        position: relative;
+        border-radius: 16px;
+        padding: 12px 14px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-cell.free {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+        .table-cell.free:hover {
+            border-color: #16a34a;
+            transform: translateY(-2px);
+        }
+
+    .table-cell.booked {
+        background: #fef2f2;
+        border-color: #fecaca;
+        opacity: 0.9;
+    }
+
+    .table-radio {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        accent-color: #16a34a;
+        transform: scale(1.15);
+    }
+
+    .table-cell.free:has(.table-radio:checked) {
+        border-color: #16a34a;
+        box-shadow: inset 0 0 0 2px #16a34a;
+        background: #dcfce7;
+    }
+
+    .table-cell-name {
+        font-weight: 900;
+        color: #1f2937;
+    }
+
+    .table-cell-meta {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .table-cell-status {
+        display: inline-block;
+        margin-top: 6px;
+        font-size: 0.72rem;
+        font-weight: 900;
+        padding: 3px 10px;
+        border-radius: 999px;
+    }
+
+    .st-free {
+        background: #16a34a;
+        color: #fff;
+    }
+
+    .st-booked {
+        background: #dc2626;
+        color: #fff;
+    }
+
+    /* Khu vực đang được chọn ở form -> làm nổi tiêu đề để dễ theo dõi */
+    .area-block.area-active .area-block-title {
+        background: #ffedd5;
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 999px;
+    }
 </style>
 
 <div class="booking-page">
@@ -247,7 +367,13 @@
         </div>
     </div>
 
-    @if (!ViewData.ModelState.IsValid)
+    @if (!string.IsNullOrEmpty(Model.UnavailableReason))
+    {
+        <div class="validation-alert">
+            @Model.UnavailableReason
+        </div>
+    }
+    else if (!ViewData.ModelState.IsValid)
     {
         <div class="validation-alert">
             Vui lòng kiểm tra lại thông tin đặt bàn.
@@ -267,12 +393,23 @@
 
                         <div>
                             <label class="form-label-custom">Ngày đặt</label>
-                            <input asp-for="Input.BookingDate" type="date" class="form-control" />
+                            <input asp-for="Input.BookingDate" type="date" class="form-control" min="@minBookingDate" />
                         </div>
 
                         <div>
                             <label class="form-label-custom">Giờ đặt</label>
                             <input asp-for="Input.BookingTime" type="time" class="form-control" />
+                        </div>
+
+                        <div>
+                            <label class="form-label-custom">Thời lượng dùng bữa</label>
+                            <select asp-for="Input.DurationMinutes" class="form-control">
+                                <option value="60">1 giờ</option>
+                                <option value="90">1 giờ 30 phút</option>
+                                <option value="120">2 giờ</option>
+                                <option value="150">2 giờ 30 phút</option>
+                                <option value="180">3 giờ</option>
+                            </select>
                         </div>
 
                         <div>
@@ -287,11 +424,13 @@
 
                         <div class="form-group-full">
                             <label class="form-label-custom">Khu vực mong muốn</label>
-                            <select asp-for="Input.TableType" class="form-control">
+                            <select asp-for="Input.TableType" id="tableTypeSelect" class="form-control">
                                 <option value="@TableTypeEnum.NORMAL">Bàn thường</option>
                                 <option value="@TableTypeEnum.BAR">Quầy bar xem đầu bếp làm sushi</option>
                                 <option value="@TableTypeEnum.VIP">VIP</option>
                             </select>
+                            <div id="areaSeatInfo"
+                                 style="margin-top:8px;padding:8px 12px;border-radius:12px;background:#ecfeff;color:#0f766e;font-weight:700;font-size:.92rem;"></div>
                         </div>
 
                         <div>
@@ -316,15 +455,15 @@
                     <div class="available-summary">
                         <div>
                             <div class="available-summary-label">
-                                Bàn phù hợp hiện có
+                                Bàn còn trống ở khu vực này
                             </div>
                             <div class="text-muted small">
-                                Dựa trên ngày, giờ và khu vực đã chọn
+                                Cập nhật theo ngày, giờ, thời lượng và khu vực đã chọn
                             </div>
                         </div>
 
-                        <div class="available-count">
-                            @Model.AvailableTableCount
+                        <div class="available-count" id="availableCount">
+                            @Model.SelectedAreaFreeCount
                         </div>
                     </div>
 
@@ -341,49 +480,50 @@
 
                 <div class="status-card-body">
 
-                    @if (Model.AvailableTables.Any())
-                    {
-                        <div class="mb-3 fw-bold text-success">
-                            Các bàn còn trống
-                        </div>
+                    <div class="status-hint">
+                        🟢 Trống · 🔴 Đã đặt. Chọn một bàn trống để đặt, hoặc để "tự động" cho hệ thống gán bàn phù hợp.
+                    </div>
 
-                        <ul class="table-list">
-                            @foreach (var table in Model.AvailableTables)
-                            {
-                                <li class="table-item">
-                                    Bàn @table.TableNum -
-                                    Sức chứa: @table.Capacity -
-                                    Loại: @table.TableType
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <div class="empty-table-alert">
-                            Khung giờ này đã hết bàn phù hợp.
-                        </div>
-                    }
+                    <label class="auto-assign-option">
+                        <input type="radio" name="Input.TableId" value="" id="autoAssignRadio"
+                               checked="@(Model.Input.TableId == null)" />
+                        Để hệ thống tự chọn bàn phù hợp
+                    </label>
 
-                    @if (Model.ExistingBookings.Any())
-                    {
-                        <div class="existing-booking-alert">
-                            <div class="existing-title">
-                                Khung giờ này đã có người đặt
+                    <div id="tablePanel">
+                        @foreach (var area in Model.TableStatusByArea)
+                        {
+                            <div class="area-block" data-area="@area.AreaType">
+                                <div class="area-block-title">@area.AreaName</div>
+
+                                <div class="table-grid">
+                                    @foreach (var t in area.Tables)
+                                    {
+                                        if (t.IsBooked)
+                                        {
+                                            <div class="table-cell booked">
+                                                <div class="table-cell-name">Bàn @t.TableNum</div>
+                                                <div class="table-cell-meta">Sức chứa @t.Capacity</div>
+                                                <span class="table-cell-status st-booked">Đã đặt</span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <label class="table-cell free">
+                                                <input type="radio" name="Input.TableId" value="@t.TableId"
+                                                       class="table-radio"
+                                                       data-type="@area.AreaType" data-cap="@t.Capacity" data-num="@t.TableNum"
+                                                       checked="@(Model.Input.TableId == t.TableId)" />
+                                                <div class="table-cell-name">Bàn @t.TableNum</div>
+                                                <div class="table-cell-meta">Sức chứa @t.Capacity</div>
+                                                <span class="table-cell-status st-free">Trống</span>
+                                            </label>
+                                        }
+                                    }
+                                </div>
                             </div>
-
-                            <ul class="booking-list">
-                                @foreach (var booking in Model.ExistingBookings)
-                                {
-                                    <li class="booking-item">
-                                        Bàn ID: @booking.TableId -
-                                        Khách: @booking.GuestName -
-                                        SĐT: @booking.GuestPhone
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    }
+                        }
+                    </div>
 
                 </div>
             </div>
@@ -392,3 +532,165 @@
     </form>
 
 </div>
+
+@section Scripts {
+    <script id="areaSeatData" type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AreaSeatInfos.ToDictionary(a => a.TableType.ToString(), a => new { tables = a.TableCount, seats = a.TotalSeats, min = a.MinCapacity, max = a.MaxCapacity })))</script>
+    <script id="availabilityData" type="application/json">@Html.Raw(Model.AvailabilityJson)</script>
+    <script>
+        (function () {
+            var sel = document.getElementById('tableTypeSelect');
+            var info = document.getElementById('areaSeatInfo');
+            var countEl = document.getElementById('availableCount');
+            var panelEl = document.getElementById('tablePanel');
+            var dateEl = document.getElementById('Input_BookingDate');
+            var timeEl = document.getElementById('Input_BookingTime');
+            var durEl = document.getElementById('Input_DurationMinutes');
+            var autoRadio = document.getElementById('autoAssignRadio');
+            if (!sel) return;
+
+            var seatData = {};
+            try { seatData = JSON.parse(document.getElementById('areaSeatData').textContent); } catch (e) { }
+
+            var state = { areas: [] };
+            try { state = JSON.parse(document.getElementById('availabilityData').textContent) || { areas: [] }; } catch (e) { }
+
+            function esc(s) {
+                return String(s).replace(/[&<>"]/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+                });
+            }
+
+            // Nếu ngày đặt là hôm nay -> chặn chọn giờ đã qua (min động); ngày tương lai -> cho mọi giờ
+            function pad(n) { return (n < 10 ? '0' : '') + n; }
+            function syncTimeMin() {
+                if (!timeEl || !dateEl) return;
+                var n = new Date();
+                var today = n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate());
+                if (dateEl.value === today) {
+                    timeEl.min = pad(n.getHours()) + ':' + pad(n.getMinutes());
+                } else {
+                    timeEl.removeAttribute('min');
+                }
+            }
+
+            // Gợi ý số bàn / ghế của khu vực đang chọn
+            function updateAreaHint() {
+                if (!info) return;
+                var d = seatData[sel.value];
+                if (!d) { info.textContent = ''; return; }
+                info.innerHTML = 'Khu vực này có <b>' + d.tables + ' bàn</b> · tổng <b>' + d.seats +
+                    ' ghế</b> · mỗi bàn ' + d.min + '–' + d.max + ' khách';
+            }
+
+            // Số bàn còn trống của khu vực đang chọn (theo khung giờ hiện tại)
+            function freeCountForArea(type) {
+                var n = 0;
+                (state.areas || []).forEach(function (a) {
+                    if (a.type === type) {
+                        (a.tables || []).forEach(function (t) { if (!t.booked) n++; });
+                    }
+                });
+                return n;
+            }
+
+            function updateCount() {
+                if (countEl) countEl.textContent = freeCountForArea(sel.value);
+            }
+
+            // Làm nổi khu vực đang chọn ở panel bên phải
+            function highlightArea() {
+                if (!panelEl) return;
+                panelEl.querySelectorAll('.area-block').forEach(function (b) {
+                    b.classList.toggle('area-active', b.getAttribute('data-area') === sel.value);
+                });
+            }
+
+            function selectedTableId() {
+                var r = document.querySelector('input[name="Input.TableId"]:checked');
+                return (r && r.value) ? r.value : null;
+            }
+
+            // Dựng lại panel tình trạng bàn từ dữ liệu mới (giữ lại bàn đang chọn nếu còn trống)
+            function buildPanel(data, selId) {
+                var html = '';
+                (data.areas || []).forEach(function (area) {
+                    html += '<div class="area-block" data-area="' + esc(area.type) + '">';
+                    html += '<div class="area-block-title">' + esc(area.name) + '</div>';
+                    html += '<div class="table-grid">';
+                    (area.tables || []).forEach(function (t) {
+                        if (t.booked) {
+                            html += '<div class="table-cell booked">'
+                                + '<div class="table-cell-name">Bàn ' + esc(t.num) + '</div>'
+                                + '<div class="table-cell-meta">Sức chứa ' + t.cap + '</div>'
+                                + '<span class="table-cell-status st-booked">Đã đặt</span></div>';
+                        } else {
+                            var checked = (selId != null && String(selId) === String(t.id)) ? ' checked' : '';
+                            html += '<label class="table-cell free">'
+                                + '<input type="radio" name="Input.TableId" value="' + t.id + '" class="table-radio"'
+                                + ' data-type="' + esc(area.type) + '" data-cap="' + t.cap + '" data-num="' + esc(t.num) + '"' + checked + ' />'
+                                + '<div class="table-cell-name">Bàn ' + esc(t.num) + '</div>'
+                                + '<div class="table-cell-meta">Sức chứa ' + t.cap + '</div>'
+                                + '<span class="table-cell-status st-free">Trống</span></label>';
+                        }
+                    });
+                    html += '</div></div>';
+                });
+                return html;
+            }
+
+            // Đổi ngày/giờ/thời lượng -> gọi server lấy trạng thái bàn mới rồi vẽ lại ngay
+            var reqSeq = 0, debounce = null;
+            function scheduleFetch() { clearTimeout(debounce); debounce = setTimeout(fetchData, 120); }
+            function fetchData() {
+                if (!panelEl) return;
+                var mySeq = ++reqSeq;
+                var url = '?handler=Availability'
+                    + '&date=' + encodeURIComponent(dateEl ? dateEl.value : '')
+                    + '&time=' + encodeURIComponent(timeEl ? timeEl.value : '')
+                    + '&duration=' + encodeURIComponent(durEl ? durEl.value : '90');
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (json) {
+                        if (mySeq !== reqSeq || !json) return; // bỏ qua phản hồi cũ
+                        state = json;
+                        var selId = selectedTableId();
+                        panelEl.innerHTML = buildPanel(json, selId);
+                        // Bàn đang chọn nay đã bị đặt -> quay về "tự động"
+                        if (selId != null && !panelEl.querySelector('input[name="Input.TableId"]:checked') && autoRadio) {
+                            autoRadio.checked = true;
+                        }
+                        updateCount();
+                        highlightArea();
+                    })
+                    .catch(function () { });
+            }
+
+            [dateEl, timeEl, durEl].forEach(function (el) { if (el) el.addEventListener('change', scheduleFetch); });
+            if (dateEl) dateEl.addEventListener('change', syncTimeMin);
+
+            // Đổi khu vực bằng dropdown -> về "tự động" + cập nhật gợi ý & số bàn trống
+            sel.addEventListener('change', function () {
+                if (autoRadio) autoRadio.checked = true;
+                updateAreaHint();
+                updateCount();
+                highlightArea();
+            });
+
+            // Chọn 1 bàn ở panel -> tự điền khu vực của bàn đó sang form
+            if (panelEl) panelEl.addEventListener('change', function (e) {
+                var r = e.target;
+                if (r && r.name === 'Input.TableId' && r.value) {
+                    if (r.dataset.type) sel.value = r.dataset.type;
+                    updateAreaHint();
+                    updateCount();
+                    highlightArea();
+                }
+            });
+
+            updateAreaHint();
+            updateCount();
+            highlightArea();
+            syncTimeMin();
+        })();
+    </script>
+}

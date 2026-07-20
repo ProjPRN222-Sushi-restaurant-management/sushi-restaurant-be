@@ -390,6 +390,44 @@
 
     <div class="section-card">
         <div class="section-card-header">
+            Tình trạng theo khu vực
+        </div>
+
+        <div class="table-responsive">
+            <table class="table availability-table">
+                <thead>
+                    <tr>
+                        <th>Khu vực</th>
+                        <th class="text-center">Số bàn</th>
+                        <th class="text-center">Tổng ghế</th>
+                        <th class="text-center">Bàn đã đặt</th>
+                        <th class="text-center">Bàn trống</th>
+                        <th class="text-center">Ghế trống</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var area in Model.AreaStats)
+                    {
+                        <tr>
+                            <td class="fw-bold">@area.AreaName</td>
+                            <td class="text-center">@area.TableCount</td>
+                            <td class="text-center">@area.TotalSeats</td>
+                            <td class="text-center">
+                                <span class="status-pill danger-pill">@area.BookedTables</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="status-pill success-pill">@area.AvailableTables</span>
+                            </td>
+                            <td class="text-center fw-bold text-success">@area.AvailableSeats</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-card-header">
             Tình trạng theo khung giờ
         </div>
 
@@ -483,7 +521,9 @@
                                 <td class="fw-bold text-danger">#@booking.BookingId</td>
                                 <td class="fw-bold">@booking.GuestName</td>
                                 <td>@booking.GuestPhone</td>
-                                <td>@booking.BookingTime.ToString("HH:mm")</td>
+                                <td>
+                                    @booking.BookingTime.ToString("HH:mm")–@booking.BookingTime.AddMinutes(booking.DurationMinutes > 0 ? booking.DurationMinutes : 90).ToString("HH:mm")
+                                </td>
                                 <td>@booking.GuestCount</td>
                                 <td>@booking.TableId</td>
 

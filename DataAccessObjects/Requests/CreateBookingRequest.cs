@@ -7,6 +7,12 @@ namespace DataAccessObjects.Requests
         public DateOnly BookingDate { get; set; }
         public TimeOnly BookingTime { get; set; }
 
+        // Thời lượng dùng bữa (phút) — dùng để kiểm tra trùng khoảng thời gian
+        public int DurationMinutes { get; set; } = 90;
+
+        // Bàn được chọn thủ công (null = để hệ thống tự gán bàn phù hợp)
+        public long? TableId { get; set; }
+
         public int AdultCount { get; set; }
         public int ChildCount { get; set; }
 

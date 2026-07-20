@@ -41,6 +41,9 @@ public class AvailabilityModel : PageModel
     
     public List<TimeSlotInfo> TimeSlots { get; set; } = [];
 
+    // Thống kê theo khu vực (số bàn, tổng ghế, đã đặt, còn trống) trong ngày
+    public List<AreaStat> AreaStats { get; set; } = [];
+
     [BindProperty(SupportsGet = true)]
     public int PageNumber { get; set; } = 1;
 
@@ -86,16 +89,38 @@ public class AvailabilityModel : PageModel
         }
 
         // Calculate overall occupancy for the day
-        var totalBookingsToday = Bookings.Items.Count;
-        BookedTablesCount = Bookings
-            .Items
+        // Tính trên TOÀN BỘ booking trong ngày (không chỉ trang hiện tại của
+        // danh sách phân trang) và LOẠI các đơn đã HỦY (CANCELLED).
+        var bookedTableIds = allBookings
+            .Where(b => b.BookingStatus != BookingStatusEnum.CANCELLED)
             .Select(b => b.TableId)
             .Distinct()
-            .Count();
+            .ToHashSet();
+
+        BookedTablesCount = bookedTableIds.Count;
         AvailableTablesCount = TotalTables - BookedTablesCount;
         OccupancyRate = TotalTables > 0
             ? Math.Round((decimal)BookedTablesCount / TotalTables * 100)
             : 0;
+
+        // Thống kê theo khu vực + sức chứa (đồng bộ với tiêu chí "bàn phù hợp")
+        AreaStats = allTables
+            .GroupBy(t => t.TableType)
+            .OrderBy(g => g.Key)
+            .Select(g =>
+            {
+                var free = g.Where(t => !bookedTableIds.Contains(t.TableId)).ToList();
+                return new AreaStat
+                {
+                    AreaName = GetAreaName(g.Key),
+                    TableCount = g.Count(),
+                    TotalSeats = g.Sum(t => t.Capacity),
+                    BookedTables = g.Count(t => bookedTableIds.Contains(t.TableId)),
+                    AvailableTables = free.Count,
+                    AvailableSeats = free.Sum(t => t.Capacity),
+                };
+            })
+            .ToList();
     }
 
     public async Task<IActionResult> OnPostUpdateStatusAsync(
@@ -225,12 +250,30 @@ public class AvailabilityModel : PageModel
         return (int)Math.Floor(totalAmount / AmountPerLoyaltyPoint);
     }
 
+    private static string GetAreaName(TableTypeEnum type) => type switch
+    {
+        TableTypeEnum.NORMAL => "Bàn thường",
+        TableTypeEnum.VIP => "VIP",
+        TableTypeEnum.BAR => "Quầy bar",
+        _ => type.ToString()
+    };
+
     public class TimeSlotInfo
     {
         public TimeOnly Time { get; set; }
         public int BookedCount { get; set; }
         public int AvailableCount { get; set; }
         public decimal OccupancyPercentage { get; set; }
+    }
+
+    public class AreaStat
+    {
+        public string AreaName { get; set; } = "";
+        public int TableCount { get; set; }
+        public int TotalSeats { get; set; }
+        public int BookedTables { get; set; }
+        public int AvailableTables { get; set; }
+        public int AvailableSeats { get; set; }
     }
 }
 

@@ -46,11 +46,27 @@ public class BookingService : IBookingService
     {
         ValidateCreateBookingRequest(request);
 
-        var table = await FindAvailableTableAsync(request, ct);
-        if (table == null)
+        RestaurantTable? table;
+
+        if (request.TableId.HasValue)
         {
-            // Thay vì throw Exception chung chung, hãy dùng một Exception có định danh
-            throw new InvalidOperationException("Không còn bàn trống phù hợp trong khung giờ này.");
+            // Nhân viên chủ động chọn bàn -> chỉ cần bàn còn trống (không trùng khung giờ)
+            var allTables = await _tableRepository.GetAllTablesAsync(ct);
+            table = allTables.FirstOrDefault(t => t.TableId == request.TableId.Value);
+
+            if (table == null)
+                throw new InvalidOperationException("Bàn được chọn không tồn tại.");
+
+            if (!await IsTableFreeAsync(table.TableId, request, ct))
+                throw new InvalidOperationException(
+                    $"Bàn {table.TableNum} đã có người đặt trùng khung giờ này. Vui lòng chọn bàn khác.");
+        }
+        else
+        {
+            // Không chọn -> hệ thống tự gán bàn phù hợp theo khu vực + sức chứa
+            table = await FindAvailableTableAsync(request, ct);
+            if (table == null)
+                throw new InvalidOperationException("Không còn bàn trống phù hợp trong khung giờ này.");
         }
 
         var customer = await CreateOrUpdateCustomerAsync(request, ct);
@@ -62,6 +78,7 @@ public class BookingService : IBookingService
             GuestPhone = request.GuestPhone.Trim(),
             BookingDate = request.BookingDate,
             BookingTime = request.BookingTime,
+            DurationMinutes = request.DurationMinutes > 0 ? request.DurationMinutes : 90,
             GuestCount = request.AdultCount + request.ChildCount,
             TableId = table.TableId,
             BookingStatus = BookingStatusEnum.PENDING,
@@ -100,12 +117,15 @@ public class BookingService : IBookingService
         var bookings = await _bookingRepository.GetByDateAsync(
             request.BookingDate, ct);
 
+        var reqStart = ToMinutes(request.BookingTime);
+        var reqEnd = reqStart + (request.DurationMinutes > 0 ? request.DurationMinutes : 90);
+
+        // Bàn bị chiếm nếu có booking (chưa hủy) TRÙNG KHOẢNG thời gian yêu cầu
         var bookedTableIds = bookings
-            .Where(b =>
-                b.BookingTime == request.BookingTime &&
-                b.BookingStatus != BookingStatusEnum.CANCELLED)
+            .Where(b => b.BookingStatus != BookingStatusEnum.CANCELLED)
+            .Where(b => Overlaps(reqStart, reqEnd, b))
             .Select(b => b.TableId)
-            .ToList();
+            .ToHashSet();
 
         var guestCount = request.AdultCount + request.ChildCount;
 
@@ -116,6 +136,28 @@ public class BookingService : IBookingService
                 !bookedTableIds.Contains(t.TableId))
             .OrderBy(t => t.Capacity)
             .ToList();
+    }
+
+    // Hai khoảng [s1,e1) và [s2,e2) trùng nhau khi s1 < e2 && s2 < e1 (đơn vị: phút tính từ 0h)
+    private static bool Overlaps(int reqStart, int reqEnd, Booking existing)
+    {
+        var bStart = ToMinutes(existing.BookingTime);
+        var bEnd = bStart + (existing.DurationMinutes > 0 ? existing.DurationMinutes : 90);
+        return reqStart < bEnd && bStart < reqEnd;
+    }
+
+    private static int ToMinutes(TimeOnly t) => (int)t.ToTimeSpan().TotalMinutes;
+
+    // Bàn còn trống nếu KHÔNG có booking (chưa hủy) nào của bàn đó trùng khoảng yêu cầu
+    private async Task<bool> IsTableFreeAsync(long tableId, CreateBookingRequest request, CancellationToken ct)
+    {
+        var bookings = await _bookingRepository.GetByDateAsync(request.BookingDate, ct);
+        var reqStart = ToMinutes(request.BookingTime);
+        var reqEnd = reqStart + (request.DurationMinutes > 0 ? request.DurationMinutes : 90);
+        return !bookings.Any(b =>
+            b.TableId == tableId &&
+            b.BookingStatus != BookingStatusEnum.CANCELLED &&
+            Overlaps(reqStart, reqEnd, b));
     }
 
     public async Task UpdateBookingStatusAsync(
@@ -201,6 +243,13 @@ public class BookingService : IBookingService
 
         if (request.AdultCount + request.ChildCount <= 0)
             throw new ArgumentException("Số lượng khách phải lớn hơn 0.", nameof(request.AdultCount));
+
+        // Chặn đặt bàn cho thời điểm đã qua (so tới phút, tránh chặn nhầm ngay phút hiện tại)
+        var now = DateTime.Now;
+        var currentMinute = now.AddSeconds(-now.Second).AddMilliseconds(-now.Millisecond);
+        if (request.BookingDate.ToDateTime(request.BookingTime) < currentMinute)
+            throw new InvalidOperationException(
+                "Không thể đặt bàn cho thời điểm đã qua. Vui lòng chọn ngày/giờ từ hiện tại trở đi.");
     }
 
     public async Task<BookingOrderHistoryResult> GetBookingOrderHistoryAsync(

@@ -28,8 +28,8 @@ public class TableAvailabilityService : ITableAvailabilityService
 
         var bookedTableIds = bookings
             .Where(b =>
-                b.BookingTime == time &&
-                b.BookingStatus != BookingStatusEnum.CANCELLED)
+                b.BookingStatus != BookingStatusEnum.CANCELLED &&
+                CoversMoment(time, b))
             .Select(b => b.TableId)
             .ToList();
 
@@ -47,8 +47,8 @@ public class TableAvailabilityService : ITableAvailabilityService
 
         return bookings
             .Where(b =>
-                b.BookingTime == time &&
-                b.BookingStatus != BookingStatusEnum.CANCELLED)
+                b.BookingStatus != BookingStatusEnum.CANCELLED &&
+                CoversMoment(time, b))
             .Select(b => b.TableId)
             .Distinct()
             .Count();
@@ -79,13 +79,22 @@ public class TableAvailabilityService : ITableAvailabilityService
 
         var tableBookingCount = bookings
             .Where(b =>
-                b.BookingTime == time &&
-                b.BookingStatus != BookingStatusEnum.CANCELLED)
+                b.BookingStatus != BookingStatusEnum.CANCELLED &&
+                CoversMoment(time, b))
             .GroupBy(b => b.TableId)
             .ToDictionary(
                 g => g.Key,
                 g => g.Count());
 
         return tableBookingCount;
+    }
+
+    // Booking có "phủ" thời điểm time không: bStart <= time < bStart + duration (phút từ 0h)
+    private static bool CoversMoment(TimeOnly time, Booking b)
+    {
+        var t = (int)time.ToTimeSpan().TotalMinutes;
+        var s = (int)b.BookingTime.ToTimeSpan().TotalMinutes;
+        var e = s + (b.DurationMinutes > 0 ? b.DurationMinutes : 90);
+        return s <= t && t < e;
     }
 }

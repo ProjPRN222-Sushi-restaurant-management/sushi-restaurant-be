@@ -82,6 +82,20 @@
             background: #fff7ed;
         }
 
+    /* Pill số lượng: có nền + chữ đậm rõ (badge Bootstrap mặc định chữ trắng nên bị "tàng hình") */
+    .qty-badge {
+        display: inline-block;
+        min-width: 36px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 800;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
     .money {
         font-weight: 800;
         color: #dc2626;
@@ -216,9 +230,7 @@
                                         <strong>@detail.MenuItem.ItemName</strong>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge rounded-pill text-bg-light px-3 py-2">
-                                            @detail.Quantity
-                                        </span>
+                                        <span class="qty-badge">@detail.Quantity</span>
                                     </td>
                                     <td class="text-end">
                                         @detail.UnitPrice.ToString("N0") đ

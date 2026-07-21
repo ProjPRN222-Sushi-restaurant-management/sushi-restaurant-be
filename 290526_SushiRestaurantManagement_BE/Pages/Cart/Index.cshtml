@@ -360,8 +360,23 @@
 
         <div class="total-panel">
             <div>
-                <div class="total-label">Tổng tiền dự kiến</div>
-                <div class="text-muted small">Tạm tính trước khi gửi order</div>
+                <div class="total-label">Thanh toán dự kiến</div>
+                <div class="text-muted small">
+                    Tạm tính: @Model.SubtotalAmount.ToString("N0") đ
+                </div>
+                <div class="text-muted small">
+                    Hạng thẻ: @Model.CustomerMembershipLevel
+                    (@Model.DiscountPercent.ToString("0.##")% giảm)
+                </div>
+                @if (Model.DiscountAmount > 0)
+                {
+                    <div class="text-muted small">
+                        Giảm giá: -@Model.DiscountAmount.ToString("N0") đ
+                    </div>
+                }
+                <div class="text-muted small">
+                    Điểm nhận khi hoàn tất: @Model.EarnedPoints điểm
+                </div>
             </div>
 
             <div class="total-amount">

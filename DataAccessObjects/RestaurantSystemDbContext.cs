@@ -236,6 +236,14 @@ public partial class RestaurantSystemDbContext : DbContext
                 .HasColumnType("timestamp")
                 .HasColumnName("created_at");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.DiscountAmount)
+                .HasPrecision(12, 2)
+                .HasColumnName("discount_amount");
+            entity.Property(e => e.DiscountPercent)
+                .HasPrecision(5, 2)
+                .HasColumnName("discount_percent");
+            entity.Property(e => e.EarnedLoyaltyPoints)
+                .HasColumnName("earned_loyalty_points");
             entity.Property(e => e.ReceivedAt)
                 .HasColumnType("timestamp")
                 .HasColumnName("received_at");
@@ -250,11 +258,19 @@ public partial class RestaurantSystemDbContext : DbContext
             entity.Property(e => e.InvoiceStaffName)
                 .HasMaxLength(150)
                 .HasColumnName("invoice_staff_name");
+            entity.Property(e => e.MembershipLevelApplied)
+                .HasConversion<String>()
+                .HasMaxLength(20)
+                .HasDefaultValue(MembershipLevelEnum.NONE)
+                .HasColumnName("membership_level_applied");
             entity.Property(e => e.OrderStatus)
                 .HasConversion<String>()
                 .HasMaxLength(20)
                 .HasDefaultValue(OrderStatusEnum.PENDING)
                 .HasColumnName("order_status");
+            entity.Property(e => e.SubtotalAmount)
+                .HasPrecision(12, 2)
+                .HasColumnName("subtotal_amount");
             entity.Property(e => e.TableId).HasColumnName("table_id");
             entity.Property(e => e.TotalAmount)
                 .HasPrecision(12, 2)

@@ -65,7 +65,12 @@ namespace Repositories.Implementations
             existingOrder.CustomerId = order.CustomerId;
             existingOrder.TableId = order.TableId;
             existingOrder.OrderStatus = order.OrderStatus;
+            existingOrder.SubtotalAmount = order.SubtotalAmount;
+            existingOrder.MembershipLevelApplied = order.MembershipLevelApplied;
+            existingOrder.DiscountPercent = order.DiscountPercent;
+            existingOrder.DiscountAmount = order.DiscountAmount;
             existingOrder.TotalAmount = order.TotalAmount;
+            existingOrder.EarnedLoyaltyPoints = order.EarnedLoyaltyPoints;
             existingOrder.CreatedAt = order.CreatedAt;
             existingOrder.CompletedAt = order.CompletedAt;
             existingOrder.ReceivedStaffId = order.ReceivedStaffId;

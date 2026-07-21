@@ -24,6 +24,9 @@
             Model.Order.InvoiceStaffName ??
             "-";
         var ticketIssuedAt = Model.Order.ReceivedAt ?? Model.Order.InvoiceIssuedAt;
+        var subtotalAmount = Model.Order.SubtotalAmount > 0
+            ? Model.Order.SubtotalAmount
+            : Model.Order.OrderItems.Sum(x => x.TotalPrice);
         var orderStatusClass = Model.Order.OrderStatus switch
         {
             BusinessObjects.Enums.OrderStatusEnum.PENDING => "status-pending",
@@ -197,9 +200,38 @@
                         </div>
 
                         <div class="info-line">
-                            <span class="info-label">Tổng tiền</span>
+                            <span class="info-label">Tạm tính</span>
+                            <span class="info-value">
+                                @subtotalAmount.ToString("N0") đ
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Hạng áp dụng</span>
+                            <span class="info-value">
+                                @Model.Order.MembershipLevelApplied
+                                (@Model.Order.DiscountPercent.ToString("0.##")%)
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Giảm giá</span>
+                            <span class="info-value">
+                                -@Model.Order.DiscountAmount.ToString("N0") đ
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Tổng thanh toán</span>
                             <span class="info-value money-value">
                                 @Model.Order.TotalAmount.ToString("N0") đ
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Điểm cộng</span>
+                            <span class="info-value">
+                                @Model.Order.EarnedLoyaltyPoints điểm
                             </span>
                         </div>
                     </div>
@@ -224,6 +256,20 @@
                             <span class="info-label">SĐT</span>
                             <span class="info-value">
                                 @(customer?.Phone ?? "-")
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Hạng hiện tại</span>
+                            <span class="info-value">
+                                @(customer?.MembershipLevel.ToString() ?? "-")
+                            </span>
+                        </div>
+
+                        <div class="info-line">
+                            <span class="info-label">Điểm hiện tại</span>
+                            <span class="info-value">
+                                @(customer != null ? $"{customer.LoyaltyPoints} điểm" : "-")
                             </span>
                         </div>
                     </div>

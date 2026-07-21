@@ -14,11 +14,22 @@ public partial class Order
 
     public OrderStatusEnum OrderStatus { get; set; }
 
+    public decimal SubtotalAmount { get; set; }
+
+    public MembershipLevelEnum MembershipLevelApplied { get; set; }
+
+    public decimal DiscountPercent { get; set; }
+
+    public decimal DiscountAmount { get; set; }
+
     public decimal TotalAmount { get; set; }
+
+    public int EarnedLoyaltyPoints { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? CompletedAt { get; set; }
+
     public long? ReceivedStaffId { get; set; }
 
     public string? ReceivedStaffName { get; set; }
@@ -35,7 +46,9 @@ public partial class Order
     public virtual Customer? Customer { get; set; }
 
     public virtual Staff? InvoiceStaff { get; set; }
+
     public virtual Staff? ReceivedStaff { get; set; }
+
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public virtual RestaurantTable? Table { get; set; }

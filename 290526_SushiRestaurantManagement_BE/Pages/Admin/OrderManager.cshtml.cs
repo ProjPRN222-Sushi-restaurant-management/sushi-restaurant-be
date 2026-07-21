@@ -2,6 +2,7 @@ using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
+using Services.Policies;
 
 using OrderEntity = BusinessObjects.Models.Order;
 
@@ -9,8 +10,6 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 {
     public class OrderManagerModel : AdminPageModel
     {
-        private const decimal AmountPerLoyaltyPoint = 10000m;
-
         private readonly IOrderService _orderService;
         private readonly IBookingService _bookingService;
         private readonly ICustomerService _customerService;
@@ -148,6 +147,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             }
 
             var previousStatus = order.OrderStatus;
+            status = NormalizeRequestedOrderStatus(order, status);
 
             order.OrderStatus = status;
 
@@ -201,13 +201,35 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             };
         }
 
+        private static OrderStatusEnum NormalizeRequestedOrderStatus(
+            OrderEntity order,
+            OrderStatusEnum requestedStatus)
+        {
+            if (requestedStatus != OrderStatusEnum.PENDING &&
+                requestedStatus != OrderStatusEnum.PREPARING)
+            {
+                return requestedStatus;
+            }
+
+            if (order.Booking == null)
+            {
+                return requestedStatus;
+            }
+
+            var bookingStatus = BookingStatusPolicy.GetActiveStatus(
+                order.Booking,
+                DateTime.Now);
+
+            return BookingStatusPolicy.ToOrderStatus(bookingStatus);
+        }
+
         private async Task SyncCustomerLoyaltyPointsAsync(
             OrderEntity order,
             OrderStatusEnum previousStatus,
             OrderStatusEnum newStatus)
         {
             var pointDelta = CalculatePointDelta(
-                order.TotalAmount,
+                order,
                 previousStatus,
                 newStatus);
 
@@ -228,11 +250,13 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         }
 
         private static int CalculatePointDelta(
-            decimal totalAmount,
+            OrderEntity order,
             OrderStatusEnum previousStatus,
             OrderStatusEnum newStatus)
         {
-            var points = CalculateEarnedPoints(totalAmount);
+            var points = order.EarnedLoyaltyPoints > 0
+                ? order.EarnedLoyaltyPoints
+                : LoyaltyPolicy.CalculateEarnedPoints(order.TotalAmount);
 
             if (previousStatus != OrderStatusEnum.COMPLETED &&
                 newStatus == OrderStatusEnum.COMPLETED)
@@ -248,17 +272,6 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 
             return 0;
         }
-
-        private static int CalculateEarnedPoints(decimal totalAmount)
-        {
-            if (totalAmount <= 0)
-            {
-                return 0;
-            }
-
-            return (int)Math.Floor(totalAmount / AmountPerLoyaltyPoint);
-        }
-
         private void ApplyInvoiceIssuer(OrderEntity order)
         {
             if (order.InvoiceIssuedAt.HasValue)

@@ -4,6 +4,7 @@ using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Interfaces;
+using Services.Policies;
 
 namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
 {
@@ -30,7 +31,31 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
 
         public BusinessObjects.Models.Order? SavedOrder { get; set; }
 
-        public decimal TotalAmount => CartItems.Sum(x => x.Total);
+        public MembershipLevelEnum CustomerMembershipLevel { get; set; }
+
+        public int CustomerLoyaltyPoints { get; set; }
+
+        public decimal SubtotalAmount =>
+            SavedOrder != null && SavedOrder.SubtotalAmount > 0
+                ? SavedOrder.SubtotalAmount
+                : CartItems.Sum(x => x.Total);
+
+        public decimal DiscountPercent =>
+            SavedOrder?.DiscountPercent ??
+            LoyaltyPolicy.GetDiscountPercent(CustomerMembershipLevel);
+
+        public decimal DiscountAmount =>
+            SavedOrder?.DiscountAmount ??
+            LoyaltyPolicy.CalculateDiscountAmount(SubtotalAmount, CustomerMembershipLevel);
+
+        public decimal TotalAmount =>
+            SavedOrder?.TotalAmount ??
+            LoyaltyPolicy.CalculatePayableAmount(SubtotalAmount, CustomerMembershipLevel);
+
+        public int EarnedPoints =>
+            SavedOrder != null && SavedOrder.EarnedLoyaltyPoints > 0
+                ? SavedOrder.EarnedLoyaltyPoints
+                : LoyaltyPolicy.CalculateEarnedPoints(TotalAmount);
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -39,6 +64,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
                 try
                 {
                     SavedOrder = await _orderService.GetOrderByIdAsync(OrderId.Value);
+                    CustomerMembershipLevel = SavedOrder.MembershipLevelApplied;
+                    CustomerLoyaltyPoints =
+                        SavedOrder.Customer?.LoyaltyPoints ??
+                        SavedOrder.Booking?.Customer?.LoyaltyPoints ??
+                        0;
                     CartItems = SavedOrder.OrderItems.Select(x => new CartItemViewModel
                     {
                         MenuItemId = x.MenuItemId,
@@ -58,6 +88,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             }
 
             CartItems = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
+            await LoadCustomerLoyaltyContextAsync();
             return Page();
         }
 
@@ -88,13 +119,33 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             }
 
             var now = DateTime.Now;
+            var membershipLevel = booking?.Customer?.MembershipLevel ?? MembershipLevelEnum.NONE;
+            var subtotalAmount = CartItems.Sum(x => x.Total);
+            var discountPercent = LoyaltyPolicy.GetDiscountPercent(membershipLevel);
+            var discountAmount = LoyaltyPolicy.CalculateDiscountAmount(
+                subtotalAmount,
+                membershipLevel);
+            var totalAmount = LoyaltyPolicy.CalculatePayableAmount(
+                subtotalAmount,
+                membershipLevel);
+            var earnedPoints = LoyaltyPolicy.CalculateEarnedPoints(totalAmount);
+            var bookingStatus = booking != null
+                ? BookingStatusPolicy.GetActiveStatus(booking, now)
+                : BookingStatusEnum.PREPARING;
+            var orderStatus = BookingStatusPolicy.ToOrderStatus(bookingStatus);
+
             var order = new BusinessObjects.Models.Order
             {
                 BookingId = bookingId,
                 CustomerId = booking?.CustomerId,
                 TableId = tableId,
-                TotalAmount = TotalAmount,
-                OrderStatus = OrderStatusEnum.PREPARING,
+                SubtotalAmount = subtotalAmount,
+                MembershipLevelApplied = membershipLevel,
+                DiscountPercent = discountPercent,
+                DiscountAmount = discountAmount,
+                TotalAmount = totalAmount,
+                EarnedLoyaltyPoints = earnedPoints,
+                OrderStatus = orderStatus,
                 CreatedAt = now,
                 ReceivedAt = now,
                 ReceivedStaffId = TryGetCurrentStaffId(),
@@ -116,7 +167,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             {
                 await _bookingService.UpdateBookingStatusAsync(
                     bookingId.Value,
-                    BookingStatusEnum.PREPARING);
+                    bookingStatus);
             }
 
             HttpContext.Session.Remove("CART");
@@ -139,6 +190,26 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             }
 
             return null;
+        }
+
+        private async Task LoadCustomerLoyaltyContextAsync()
+        {
+            if (!long.TryParse(HttpContext.Session.GetString("BOOKING_ID"), out var bookingId))
+            {
+                return;
+            }
+
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(bookingId);
+                CustomerMembershipLevel = booking.Customer?.MembershipLevel ?? MembershipLevelEnum.NONE;
+                CustomerLoyaltyPoints = booking.Customer?.LoyaltyPoints ?? 0;
+            }
+            catch (KeyNotFoundException)
+            {
+                CustomerMembershipLevel = MembershipLevelEnum.NONE;
+                CustomerLoyaltyPoints = 0;
+            }
         }
     }
 }

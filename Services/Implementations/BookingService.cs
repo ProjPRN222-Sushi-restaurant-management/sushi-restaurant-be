@@ -259,9 +259,10 @@ public class BookingService : IBookingService
 
         var orders = await _orderRepository.GetOrdersByBookingIdAsync(bookingId);
 
-        var temporaryTotal = orders
-            .SelectMany(o => o.OrderItems)
-            .Sum(d => d.Quantity * d.UnitPrice);
+        var temporaryTotal = orders.Sum(o =>
+            o.TotalAmount > 0
+                ? o.TotalAmount
+                : o.OrderItems.Sum(d => d.Quantity * d.UnitPrice));
 
         return new BookingOrderHistoryResult
         {

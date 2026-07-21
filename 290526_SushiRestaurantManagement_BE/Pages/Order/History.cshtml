@@ -82,7 +82,6 @@
             background: #fff7ed;
         }
 
-    /* Pill số lượng: có nền + chữ đậm rõ (badge Bootstrap mặc định chữ trắng nên bị "tàng hình") */
     .qty-badge {
         display: inline-block;
         min-width: 36px;
@@ -296,6 +295,24 @@
                                 <span class="order-receipt-label">Trạng thái</span>
                                 <span>@order.OrderStatus</span>
                             </div>
+
+                            <div class="order-receipt-line">
+                                <span class="order-receipt-label">Hạng áp dụng</span>
+                                <span>@order.MembershipLevelApplied</span>
+                            </div>
+
+                            @if (order.DiscountAmount > 0)
+                            {
+                                <div class="order-receipt-line">
+                                    <span class="order-receipt-label">Giảm giá</span>
+                                    <span>-@order.DiscountAmount.ToString("N0") đ</span>
+                                </div>
+                            }
+
+                            <div class="order-receipt-line">
+                                <span class="order-receipt-label">Điểm cộng</span>
+                                <span>@order.EarnedLoyaltyPoints điểm</span>
+                            </div>
                         </div>
                     }
                 </div>
@@ -326,7 +343,7 @@
                 </div>
 
                 <div class="total-box text-end">
-                    <strong>Tổng thanh toán tạm thời:</strong>
+                    <strong>Tổng thanh toán sau giảm:</strong>
                     <span class="money ms-2">@Model.TemporaryTotal.ToString("N0") đ</span>
                 </div>
             </div>

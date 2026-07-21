@@ -3,15 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
+using Services.Policies;
 
 namespace Services.Implementations;
 
-/// <summary>
-/// Background service that periodically updates table status and sends reminders
-/// Runs every 5 minutes to check for:
-/// 1. Expired bookings (update table status from BOOKED to AVAILABLE)
-/// 2. Upcoming bookings (send reminder notifications)
-/// </summary>
 public class TableStatusUpdateHostedService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
@@ -56,32 +51,27 @@ public class TableStatusUpdateHostedService : BackgroundService
         {
             using var scope = _serviceProvider.CreateScope();
             var bookingService = scope.ServiceProvider.GetRequiredService<IBookingService>();
-            var tableService = scope.ServiceProvider.GetRequiredService<IRestaurantTableService>();
+            var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
 
             var allBookings = await bookingService.GetAllBookingsAsync(stoppingToken);
 
             var now = DateTime.Now;
+            var nowDate = DateOnly.FromDateTime(now);
+            var nowTime = TimeOnly.FromDateTime(now);
 
-            // Get bookings that have passed their booking time and are still active
             var expiredBookings = allBookings
                 .Where(b =>
-                    b.BookingDate < DateOnly.FromDateTime(now) ||
-                    (b.BookingDate == DateOnly.FromDateTime(now) &&
-                     b.BookingTime < TimeOnly.FromDateTime(now)) &&
                     (b.BookingStatus == BookingStatusEnum.PENDING ||
-                     b.BookingStatus == BookingStatusEnum.PREPARING ||
-                     b.BookingStatus == BookingStatusEnum.COMPLETED))
+                     b.BookingStatus == BookingStatusEnum.PREPARING) &&
+                    (b.BookingDate < nowDate ||
+                     (b.BookingDate == nowDate &&
+                      b.BookingTime < nowTime)))
                 .ToList();
 
             foreach (var booking in expiredBookings)
             {
-                // Update active booking status to COMPLETED after its time has passed.
-                if (booking.BookingStatus == BookingStatusEnum.PENDING ||
-                    booking.BookingStatus == BookingStatusEnum.PREPARING)
-                {
-                    booking.BookingStatus = BookingStatusEnum.COMPLETED;
-                    await bookingService.UpdateAsync(booking, stoppingToken);
-                }
+                booking.BookingStatus = BookingStatusEnum.COMPLETED;
+                await bookingService.UpdateAsync(booking, stoppingToken);
             }
 
             if (expiredBookings.Any())
@@ -89,6 +79,42 @@ public class TableStatusUpdateHostedService : BackgroundService
                 await bookingService.SaveChangesAsync(stoppingToken);
                 _logger.LogInformation(
                     $"Updated {expiredBookings.Count} expired bookings at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            }
+
+            var activeFutureBookings = allBookings
+                .Where(b =>
+                    b.BookingStatus == BookingStatusEnum.PENDING ||
+                    b.BookingStatus == BookingStatusEnum.PREPARING)
+                .Where(b =>
+                    b.BookingDate > nowDate ||
+                    (b.BookingDate == nowDate &&
+                     b.BookingTime > nowTime))
+                .ToList();
+
+            var normalizedCount = 0;
+
+            foreach (var booking in activeFutureBookings)
+            {
+                var targetStatus = BookingStatusPolicy.GetActiveStatus(booking, now);
+
+                if (booking.BookingStatus != targetStatus)
+                {
+                    booking.BookingStatus = targetStatus;
+                    await bookingService.UpdateAsync(booking, stoppingToken);
+                    normalizedCount++;
+                }
+
+                await SyncActiveOrderStatusesAsync(
+                    orderService,
+                    booking.BookingId,
+                    targetStatus);
+            }
+
+            if (normalizedCount > 0)
+            {
+                await bookingService.SaveChangesAsync(stoppingToken);
+                _logger.LogInformation(
+                    $"Normalized {normalizedCount} booking statuses at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             }
         }
         catch (Exception ex)
@@ -111,7 +137,6 @@ public class TableStatusUpdateHostedService : BackgroundService
             var nowDate = DateOnly.FromDateTime(now);
             var nowTime = TimeOnly.FromDateTime(now);
 
-            // Get bookings that are coming up in the next 30 minutes
             var upcomingBookings = allBookings
                 .Where(b =>
                     b.BookingDate == nowDate &&
@@ -141,6 +166,32 @@ public class TableStatusUpdateHostedService : BackgroundService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error sending booking reminders");
+        }
+    }
+
+    private static async Task SyncActiveOrderStatusesAsync(
+        IOrderService orderService,
+        long bookingId,
+        BookingStatusEnum bookingStatus)
+    {
+        var orderStatus = BookingStatusPolicy.ToOrderStatus(bookingStatus);
+        var orders = await orderService.GetOrdersByBookingIdAsync(bookingId);
+
+        foreach (var order in orders)
+        {
+            if (order.OrderStatus != OrderStatusEnum.PENDING &&
+                order.OrderStatus != OrderStatusEnum.PREPARING)
+            {
+                continue;
+            }
+
+            if (order.OrderStatus == orderStatus)
+            {
+                continue;
+            }
+
+            order.OrderStatus = orderStatus;
+            await orderService.UpdateOrderAsync(order);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Admin.CustomerManagerModel
+@using Services.Policies
 
 @{
     Layout = "_AdminLayout";
@@ -84,6 +85,7 @@
                         <th>Họ và Tên</th>
                         <th>Số điện thoại</th>
                         <th>Hạng thành viên</th>
+                        <th>Giảm giá</th>
                         <th>Điểm</th>
                         <th>Trạng thái</th>
                         <th class="text-center">Hành động</th>
@@ -111,6 +113,13 @@
                             <td>
                                 <span class="membership-pill">
                                     @customer.MembershipLevel
+                                </span>
+                            </td>
+
+                            
+                            <td>
+                                <span class="points-pill">
+                                    @LoyaltyPolicy.GetDiscountPercent(customer.MembershipLevel).ToString("0.##")%
                                 </span>
                             </td>
 
@@ -160,7 +169,7 @@
                     @if (!Model.CustomerList.Items.Any())
                     {
                         <tr>
-                            <td colspan="7" class="text-center empty-row">
+                            <td colspan="8" class="text-center empty-row">
                                 Không tìm thấy khách hàng nào.
                             </td>
                         </tr>

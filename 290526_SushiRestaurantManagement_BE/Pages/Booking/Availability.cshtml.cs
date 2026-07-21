@@ -3,6 +3,7 @@ using BusinessObjects.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services.Interfaces;
+using Services.Policies;
 
 using OrderEntity = BusinessObjects.Models.Order;
 
@@ -10,8 +11,6 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Booking;
 
 public class AvailabilityModel : PageModel
 {
-    private const decimal AmountPerLoyaltyPoint = 10000m;
-
     private readonly ITableAvailabilityService _tableAvailabilityService;
     private readonly IRestaurantTableService _tableService;
     private readonly IBookingService _bookingService;
@@ -59,6 +58,7 @@ public class AvailabilityModel : PageModel
 
         // Load bookings for selected date
         var allBookings = (await _bookingService.GetByDateAsync(SelectedDate)).ToList();
+        await NormalizeActiveStatusesAsync(allBookings);
         Bookings = PaginatedList<BusinessObjects.Models.Booking>.Create(allBookings, PageNumber, PageSize);
 
         // Initialize time slots (typical restaurant hours: 11:00 - 22:00)
@@ -137,14 +137,16 @@ public class AvailabilityModel : PageModel
 
         var previousStatus = booking.BookingStatus;
 
-        if (previousStatus != status)
+        var targetStatus = NormalizeRequestedStatus(booking, status);
+
+        if (previousStatus != targetStatus)
         {
-            booking.BookingStatus = status;
+            booking.BookingStatus = targetStatus;
 
             await _bookingService.UpdateAsync(booking);
             await _bookingService.SaveChangesAsync();
 
-            await SyncRelatedOrdersAsync(bookingId, booking.CustomerId, status);
+            await SyncRelatedOrdersAsync(bookingId, booking.CustomerId, targetStatus);
         }
 
         return RedirectToPage("/Booking/Availability", new
@@ -188,6 +190,77 @@ public class AvailabilityModel : PageModel
         }
     }
 
+    private async Task NormalizeActiveStatusesAsync(
+        IReadOnlyList<BusinessObjects.Models.Booking> bookings)
+    {
+        var changed = false;
+
+        foreach (var booking in bookings)
+        {
+            if (booking.BookingStatus != BookingStatusEnum.PENDING &&
+                booking.BookingStatus != BookingStatusEnum.PREPARING)
+            {
+                continue;
+            }
+
+            var targetStatus = BookingStatusPolicy.GetActiveStatus(booking, DateTime.Now);
+
+            if (booking.BookingStatus == targetStatus)
+            {
+                await SyncActiveOrderStatusesAsync(booking.BookingId, targetStatus);
+                continue;
+            }
+
+            booking.BookingStatus = targetStatus;
+            await _bookingService.UpdateAsync(booking);
+            await SyncActiveOrderStatusesAsync(booking.BookingId, targetStatus);
+            changed = true;
+        }
+
+        if (changed)
+        {
+            await _bookingService.SaveChangesAsync();
+        }
+    }
+
+    private async Task SyncActiveOrderStatusesAsync(
+        long bookingId,
+        BookingStatusEnum bookingStatus)
+    {
+        var orderStatus = BookingStatusPolicy.ToOrderStatus(bookingStatus);
+        var orders = await _orderService.GetOrdersByBookingIdAsync(bookingId);
+
+        foreach (var order in orders)
+        {
+            if (order.OrderStatus != OrderStatusEnum.PENDING &&
+                order.OrderStatus != OrderStatusEnum.PREPARING)
+            {
+                continue;
+            }
+
+            if (order.OrderStatus == orderStatus)
+            {
+                continue;
+            }
+
+            order.OrderStatus = orderStatus;
+            await _orderService.UpdateOrderAsync(order);
+        }
+    }
+
+    private static BookingStatusEnum NormalizeRequestedStatus(
+        BusinessObjects.Models.Booking booking,
+        BookingStatusEnum requestedStatus)
+    {
+        if (requestedStatus != BookingStatusEnum.PENDING &&
+            requestedStatus != BookingStatusEnum.PREPARING)
+        {
+            return requestedStatus;
+        }
+
+        return BookingStatusPolicy.GetActiveStatus(booking, DateTime.Now);
+    }
+
     private static OrderStatusEnum MapBookingStatusToOrderStatus(
         BookingStatusEnum bookingStatus)
     {
@@ -207,7 +280,7 @@ public class AvailabilityModel : PageModel
         OrderStatusEnum newStatus)
     {
         var pointDelta = CalculatePointDelta(
-            order.TotalAmount,
+            order,
             previousStatus,
             newStatus);
 
@@ -228,11 +301,13 @@ public class AvailabilityModel : PageModel
     }
 
     private static int CalculatePointDelta(
-        decimal totalAmount,
+        OrderEntity order,
         OrderStatusEnum previousStatus,
         OrderStatusEnum newStatus)
     {
-        var points = CalculateEarnedPoints(totalAmount);
+        var points = order.EarnedLoyaltyPoints > 0
+            ? order.EarnedLoyaltyPoints
+            : LoyaltyPolicy.CalculateEarnedPoints(order.TotalAmount);
 
         if (previousStatus != OrderStatusEnum.COMPLETED &&
             newStatus == OrderStatusEnum.COMPLETED)
@@ -248,17 +323,6 @@ public class AvailabilityModel : PageModel
 
         return 0;
     }
-
-    private static int CalculateEarnedPoints(decimal totalAmount)
-    {
-        if (totalAmount <= 0)
-        {
-            return 0;
-        }
-
-        return (int)Math.Floor(totalAmount / AmountPerLoyaltyPoint);
-    }
-
     private static string GetAreaName(TableTypeEnum type) => type switch
     {
         TableTypeEnum.NORMAL => "Bàn thường",

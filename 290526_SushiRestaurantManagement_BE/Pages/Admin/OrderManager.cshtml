@@ -122,6 +122,13 @@
                                 <span class="amount-pill">
                                     @order.TotalAmount.ToString("N0") đ
                                 </span>
+                                @if (order.DiscountAmount > 0)
+                                {
+                                    <div class="customer-phone">
+                                        @order.MembershipLevelApplied giảm @order.DiscountPercent.ToString("0.##")%
+                                        (-@order.DiscountAmount.ToString("N0") đ)
+                                    </div>
+                                }
                             </td>
 
                             <td>

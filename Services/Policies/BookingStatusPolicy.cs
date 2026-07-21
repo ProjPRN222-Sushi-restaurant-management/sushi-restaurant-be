@@ -39,4 +39,14 @@ public static class BookingStatusPolicy
             _ => OrderStatusEnum.PENDING
         };
     }
+
+    public static TableStatusEnum ToTableStatus(BookingStatusEnum bookingStatus)
+    {
+        return bookingStatus switch
+        {
+            BookingStatusEnum.PREPARING => TableStatusEnum.OCCUPIED,
+            BookingStatusEnum.PENDING => TableStatusEnum.BOOKED,
+            _ => TableStatusEnum.AVAILABLE
+        };
+    }
 }

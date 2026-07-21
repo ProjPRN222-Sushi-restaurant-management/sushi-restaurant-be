@@ -52,6 +52,7 @@ public class TableStatusUpdateHostedService : BackgroundService
             using var scope = _serviceProvider.CreateScope();
             var bookingService = scope.ServiceProvider.GetRequiredService<IBookingService>();
             var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+            var tableService = scope.ServiceProvider.GetRequiredService<IRestaurantTableService>();
 
             var allBookings = await bookingService.GetAllBookingsAsync(stoppingToken);
 
@@ -72,6 +73,10 @@ public class TableStatusUpdateHostedService : BackgroundService
             {
                 booking.BookingStatus = BookingStatusEnum.COMPLETED;
                 await bookingService.UpdateAsync(booking, stoppingToken);
+                await tableService.UpdateTableStatusAsync(
+                    booking.TableId,
+                    TableStatusEnum.AVAILABLE,
+                    stoppingToken);
             }
 
             if (expiredBookings.Any())
@@ -103,6 +108,11 @@ public class TableStatusUpdateHostedService : BackgroundService
                     await bookingService.UpdateAsync(booking, stoppingToken);
                     normalizedCount++;
                 }
+
+                await tableService.UpdateTableStatusAsync(
+                    booking.TableId,
+                    BookingStatusPolicy.ToTableStatus(targetStatus),
+                    stoppingToken);
 
                 await SyncActiveOrderStatusesAsync(
                     orderService,

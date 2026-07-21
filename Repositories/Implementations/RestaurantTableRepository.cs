@@ -33,5 +33,28 @@ namespace Repositories.Implementations
 
             return table ?? throw new KeyNotFoundException($"Table {id} not found.");
         }
+
+        public async Task<bool> UpdateTableAsync(
+            RestaurantTable table,
+            CancellationToken ct = default)
+        {
+            var existingTable = await _context.RestaurantTables
+                .FirstOrDefaultAsync(t => t.TableId == table.TableId, ct);
+
+            if (existingTable == null)
+            {
+                return false;
+            }
+
+            existingTable.TableNum = table.TableNum;
+            existingTable.TableType = table.TableType;
+            existingTable.Capacity = table.Capacity;
+            existingTable.TableStatus = table.TableStatus;
+            existingTable.CreatedAt = table.CreatedAt;
+            existingTable.DeletedAt = table.DeletedAt;
+
+            await _context.SaveChangesAsync(ct);
+            return true;
+        }
     }
 }

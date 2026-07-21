@@ -1,202 +1,28 @@
 ﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Order.HistoryModel
+@using BusinessObjects.Enums
 
-<style>
-    .order-history-page {
-        padding: 10px 0 30px;
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/order-history.css" asp-append-version="true" />
+}
 
-    .page-title {
-        font-weight: 800;
-        color: #991b1b;
-        margin-bottom: 22px;
-    }
 
-    .booking-card,
-    .order-card {
-        border: none;
-        border-radius: 22px;
-        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-        overflow: hidden;
-    }
-
-    .booking-header {
-        background: linear-gradient(135deg, #dc2626, #f97316);
-        color: #fff;
-        padding: 18px 22px;
-    }
-
-        .booking-header h5 {
-            margin: 0;
-            font-weight: 800;
-        }
-
-    .booking-info {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 14px;
-    }
-
-    .info-box {
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 14px 16px;
-    }
-
-    .info-label {
-        font-size: 0.82rem;
-        color: #64748b;
-        margin-bottom: 4px;
-        font-weight: 600;
-    }
-
-    .info-value {
-        color: #1f2937;
-        font-weight: 700;
-    }
-
-    .order-card .card-header {
-        background: #fff7ed;
-        border-bottom: 1px solid #fed7aa;
-        color: #9a3412;
-        font-weight: 800;
-        padding: 16px 20px;
-    }
-
-    .order-table {
-        margin-bottom: 0;
-        vertical-align: middle;
-    }
-
-        .order-table thead th {
-            background: #f8fafc;
-            color: #475569;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .order-table tbody tr:hover {
-            background: #fff7ed;
-        }
-
-    .qty-badge {
-        display: inline-block;
-        min-width: 36px;
-        padding: 4px 12px;
-        border-radius: 999px;
-        background: #fff7ed;
-        border: 1px solid #fed7aa;
-        color: #9a3412;
-        font-weight: 800;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .money {
-        font-weight: 800;
-        color: #dc2626;
-    }
-
-    .order-receipts {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 12px;
-        margin-bottom: 18px;
-    }
-
-    .order-receipt {
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        background: #f8fafc;
-        padding: 14px 16px;
-    }
-
-    .order-receipt-title {
-        color: #991b1b;
-        font-weight: 900;
-        margin-bottom: 8px;
-    }
-
-    .order-receipt-line {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        font-size: 0.92rem;
-        margin-top: 5px;
-    }
-
-    .order-receipt-label {
-        color: #64748b;
-        font-weight: 700;
-    }
-
-    .staff-link {
-        color: #0f766e;
-        font-weight: 900;
-        text-decoration: none;
-    }
-
-        .staff-link:hover {
-            color: #115e59;
-            text-decoration: underline;
-        }
-
-    .total-box {
-        margin-top: 18px;
-        border: none;
-        border-radius: 18px;
-        background: linear-gradient(135deg, #ecfeff, #eff6ff);
-        color: #0f172a;
-        padding: 18px 22px;
-        font-size: 1.05rem;
-    }
-
-    .empty-order {
-        border: none;
-        border-radius: 18px;
-        background: #fff7ed;
-        color: #9a3412;
-        padding: 18px 22px;
-        font-weight: 700;
-    }
-
-    .action-bar {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 22px;
-    }
-
-    .btn-order-more,
-    .btn-back {
-        border-radius: 999px;
-        padding: 10px 20px;
-        font-weight: 700;
-    }
-
-    .btn-order-more {
-        background: linear-gradient(135deg, #16a34a, #22c55e);
-        border: none;
-    }
-
-    .btn-back {
-        background: #f1f5f9;
-        border: 1px solid #cbd5e1;
-        color: #334155;
-    }
-
-        .btn-back:hover {
-            background: #e2e8f0;
-            color: #0f172a;
-        }
-</style>
-
-<div class="order-history-page">
+<div class="order-history-page @(Model.BillPrint ? "bill-print-mode" : "")">
 
     <h2 class="page-title">Lịch sử order</h2>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
 
     @if (Model.Booking != null)
     {
@@ -320,6 +146,13 @@
                 <div class="table-responsive">
                     <table class="table order-table align-middle">
                         <thead>
+                            <tr>
+                                <th>Món</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             @foreach (var detail in Model.Orders.SelectMany(o => o.OrderItems))
                             {
@@ -349,8 +182,91 @@
             </div>
         </div>
     }
+    @if (Model.Orders.Any() && Model.Booking != null)
+    {
+        var billOrders = Model.Orders.ToList();
+        var billSubtotal = billOrders.Sum(o =>
+            o.SubtotalAmount > 0
+                ? o.SubtotalAmount
+                : o.OrderItems.Sum(i => i.TotalPrice));
+        var billDiscount = billOrders.Sum(o => o.DiscountAmount);
+        var billPaidAt = billOrders
+            .OrderByDescending(o => o.CompletedAt ?? o.InvoiceIssuedAt ?? o.CreatedAt)
+            .FirstOrDefault()?.CompletedAt ?? DateTime.Now;
+        var billStaffName = billOrders
+            .Select(o =>
+                o.InvoiceStaff?.FullName ??
+                o.InvoiceStaffName ??
+                o.ReceivedStaff?.FullName ??
+                o.ReceivedStaffName)
+            .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? "Không xác định";
+
+        <section class="payment-bill" aria-label="Bill thanh toán">
+            <h1 class="bill-title">Sushi Restaurant</h1>
+            <div class="bill-subtitle">Hóa đơn thanh toán</div>
+
+            <div class="bill-meta">
+                <div class="bill-line"><span>Booking</span><strong>#@Model.Booking.BookingId</strong></div>
+                <div class="bill-line"><span>Bàn</span><strong>@Model.Booking.TableId</strong></div>
+                <div class="bill-line"><span>Khách hàng</span><strong>@Model.Booking.GuestName</strong></div>
+                <div class="bill-line"><span>SĐT</span><strong>@Model.Booking.GuestPhone</strong></div>
+                <div class="bill-line"><span>Nhân viên</span><strong>@billStaffName</strong></div>
+                <div class="bill-line"><span>Giờ thanh toán</span><strong>@billPaidAt.ToString("dd/MM/yyyy HH:mm")</strong></div>
+            </div>
+
+            <table class="bill-table">
+                <thead>
+                    <tr>
+                        <th>Món</th>
+                        <th class="bill-qty">SL</th>
+                        <th class="bill-money">Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in billOrders.SelectMany(o => o.OrderItems))
+                    {
+                        <tr>
+                            <td>
+                                <div class="bill-dish">@detail.MenuItem.ItemName</div>
+                                @if (!string.IsNullOrWhiteSpace(detail.Note))
+                                {
+                                    <div class="bill-note">@detail.Note</div>
+                                }
+                            </td>
+                            <td class="bill-qty">@detail.Quantity</td>
+                            <td class="bill-money">@detail.TotalPrice.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="bill-total">
+                <div class="bill-line"><span>Tạm tính</span><strong>@billSubtotal.ToString("N0") đ</strong></div>
+                <div class="bill-line"><span>Giảm giá</span><strong>-@billDiscount.ToString("N0") đ</strong></div>
+                <div class="bill-line bill-final"><span>Thanh toán</span><strong>@Model.TemporaryTotal.ToString("N0") đ</strong></div>
+                <div class="bill-line"><span>Điểm cộng</span><strong>@billOrders.Sum(o => o.EarnedLoyaltyPoints) điểm</strong></div>
+            </div>
+
+            <div class="bill-footer">Cảm ơn quý khách và hẹn gặp lại</div>
+        </section>
+    }
 
     <div class="action-bar">
+        @if (Model.Orders.Any() && Model.Booking != null)
+        {
+            var isCompleted = Model.Orders.All(o => o.OrderStatus == OrderStatusEnum.COMPLETED);
+
+            <form method="post"
+                  asp-page-handler="PayAndPrintBill"
+                  asp-route-bookingId="@Model.Booking.BookingId"
+                  class="m-0"
+                  onsubmit="return confirm('Xác nhận thanh toán booking này? Sau khi thanh toán, booking sẽ COMPLETED và bàn trở về AVAILABLE.');">
+                <button type="submit" class="btn btn-pay-bill">
+                    <i class="fa-solid fa-receipt me-2"></i>
+                    @(isCompleted ? "Xuất hóa đơn" : "Thanh toán + xuất bill")
+                </button>
+            </form>
+        }
         <a asp-page="/Menu/Index"
            asp-route-bookingId="@Model.Booking?.BookingId"
            asp-route-tableId="@Model.Booking?.TableId"
@@ -365,3 +281,12 @@
     </div>
 
 </div>
+
+@if (Model.BillPrint)
+{
+    <script>
+        window.addEventListener('load', function () {
+            window.print();
+        });
+    </script>
+}

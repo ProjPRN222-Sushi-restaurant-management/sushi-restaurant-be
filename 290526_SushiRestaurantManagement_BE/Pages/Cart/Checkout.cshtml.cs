@@ -12,13 +12,16 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
     {
         private readonly IOrderService _orderService;
         private readonly IBookingService _bookingService;
+        private readonly IRestaurantTableService _tableService;
 
         public CheckoutModel(
             IOrderService orderService,
-            IBookingService bookingService)
+            IBookingService bookingService,
+            IRestaurantTableService tableService)
         {
             _orderService = orderService;
             _bookingService = bookingService;
+            _tableService = tableService;
         }
 
         public List<CartItemViewModel> CartItems { get; set; } = [];
@@ -168,6 +171,13 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
                 await _bookingService.UpdateBookingStatusAsync(
                     bookingId.Value,
                     bookingStatus);
+            }
+
+            if (tableId.HasValue)
+            {
+                await _tableService.UpdateTableStatusAsync(
+                    tableId.Value,
+                    BookingStatusPolicy.ToTableStatus(bookingStatus));
             }
 
             HttpContext.Session.Remove("CART");

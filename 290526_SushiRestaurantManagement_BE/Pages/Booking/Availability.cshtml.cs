@@ -145,6 +145,7 @@ public class AvailabilityModel : PageModel
 
             await _bookingService.UpdateAsync(booking);
             await _bookingService.SaveChangesAsync();
+            await UpdateTableStatusForBookingAsync(booking, targetStatus);
 
             await SyncRelatedOrdersAsync(bookingId, booking.CustomerId, targetStatus);
         }
@@ -208,12 +209,14 @@ public class AvailabilityModel : PageModel
             if (booking.BookingStatus == targetStatus)
             {
                 await SyncActiveOrderStatusesAsync(booking.BookingId, targetStatus);
+                await UpdateTableStatusForBookingAsync(booking, targetStatus);
                 continue;
             }
 
             booking.BookingStatus = targetStatus;
             await _bookingService.UpdateAsync(booking);
             await SyncActiveOrderStatusesAsync(booking.BookingId, targetStatus);
+            await UpdateTableStatusForBookingAsync(booking, targetStatus);
             changed = true;
         }
 
@@ -221,6 +224,15 @@ public class AvailabilityModel : PageModel
         {
             await _bookingService.SaveChangesAsync();
         }
+    }
+
+    private async Task UpdateTableStatusForBookingAsync(
+        BusinessObjects.Models.Booking booking,
+        BookingStatusEnum bookingStatus)
+    {
+        await _tableService.UpdateTableStatusAsync(
+            booking.TableId,
+            BookingStatusPolicy.ToTableStatus(bookingStatus));
     }
 
     private async Task SyncActiveOrderStatusesAsync(

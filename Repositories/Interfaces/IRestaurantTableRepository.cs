@@ -11,5 +11,6 @@ namespace Repositories.Interfaces
     {
         Task<IReadOnlyList<RestaurantTable>> GetAllTablesAsync(CancellationToken ct = default);
         Task<RestaurantTable> GetTableById(int id, CancellationToken ct = default);
+        Task<bool> UpdateTableAsync(RestaurantTable table, CancellationToken ct = default);
     }
 }

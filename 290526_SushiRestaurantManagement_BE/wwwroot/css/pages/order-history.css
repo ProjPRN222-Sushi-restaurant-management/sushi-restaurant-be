@@ -1,0 +1,312 @@
+﻿.order-history-page {
+        padding: 10px 0 30px;
+    }
+
+    .page-title {
+        font-weight: 800;
+        color: #991b1b;
+        margin-bottom: 22px;
+    }
+
+    .booking-card,
+    .order-card {
+        border: none;
+        border-radius: 22px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+    }
+
+    .booking-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+        padding: 18px 22px;
+    }
+
+        .booking-header h5 {
+            margin: 0;
+            font-weight: 800;
+        }
+
+    .booking-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+    }
+
+    .info-box {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 14px 16px;
+    }
+
+    .info-label {
+        font-size: 0.82rem;
+        color: #64748b;
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .info-value {
+        color: #1f2937;
+        font-weight: 700;
+    }
+
+    .order-card .card-header {
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 800;
+        padding: 16px 20px;
+    }
+
+    .order-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .order-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .order-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .qty-badge {
+        display: inline-block;
+        min-width: 36px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 800;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .money {
+        font-weight: 800;
+        color: #dc2626;
+    }
+
+    .order-receipts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .order-receipt {
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        background: #f8fafc;
+        padding: 14px 16px;
+    }
+
+    .order-receipt-title {
+        color: #991b1b;
+        font-weight: 900;
+        margin-bottom: 8px;
+    }
+
+    .order-receipt-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 0.92rem;
+        margin-top: 5px;
+    }
+
+    .order-receipt-label {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .staff-link {
+        color: #0f766e;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+        .staff-link:hover {
+            color: #115e59;
+            text-decoration: underline;
+        }
+
+    .total-box {
+        margin-top: 18px;
+        border: none;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #ecfeff, #eff6ff);
+        color: #0f172a;
+        padding: 18px 22px;
+        font-size: 1.05rem;
+    }
+
+    .empty-order {
+        border: none;
+        border-radius: 18px;
+        background: #fff7ed;
+        color: #9a3412;
+        padding: 18px 22px;
+        font-weight: 700;
+    }
+
+    .action-bar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+    }
+
+    .btn-order-more,
+    .btn-back {
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-weight: 700;
+    }
+
+    .btn-order-more {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        border: none;
+    }
+
+    .btn-back {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+    }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+    .btn-pay-bill {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #059669, #16a34a);
+        color: #ffffff;
+    }
+
+        .btn-pay-bill:hover {
+            color: #ffffff;
+        }
+
+    .payment-bill {
+        display: none;
+    }
+
+    @media print {
+        @page {
+            size: 80mm auto;
+            margin: 6mm;
+        }
+
+        body * {
+            visibility: hidden !important;
+        }
+
+        .payment-bill,
+        .payment-bill * {
+            visibility: visible !important;
+        }
+
+        .payment-bill {
+            display: block !important;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 80mm;
+            background: #ffffff !important;
+            color: #000000 !important;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+        }
+
+        .bill-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .bill-subtitle,
+        .bill-footer {
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .bill-meta,
+        .bill-total {
+            border-top: 1px dashed #000000;
+            padding: 6px 0;
+            margin-top: 6px;
+        }
+
+        .bill-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 2px 0;
+        }
+
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+
+        .bill-table th,
+        .bill-table td {
+            border-bottom: 1px dashed #000000;
+            padding: 5px 0;
+            vertical-align: top;
+        }
+
+        .bill-qty {
+            width: 24px;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .bill-money {
+            width: 54px;
+            text-align: right;
+            font-weight: 900;
+        }
+
+        .bill-dish,
+        .bill-final {
+            font-weight: 900;
+        }
+
+        .bill-note {
+            margin-top: 2px;
+            font-size: 10px;
+            font-style: italic;
+        }
+
+        .bill-final {
+            border-top: 1px dashed #000000;
+            padding-top: 5px;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .bill-footer {
+            margin-top: 10px;
+            padding-top: 6px;
+            border-top: 1px dashed #000000;
+        }
+    }

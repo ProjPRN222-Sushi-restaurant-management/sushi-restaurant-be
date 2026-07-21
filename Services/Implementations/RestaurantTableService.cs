@@ -1,3 +1,4 @@
+using BusinessObjects.Enums;
 using BusinessObjects.Models;
 using Repositories.Interfaces;
 using Services.Interfaces;
@@ -18,4 +19,14 @@ public class RestaurantTableService : IRestaurantTableService
 
     public Task<RestaurantTable> GetTableByIdAsync(int id, CancellationToken ct = default)
         => _restaurantTableRepository.GetTableById(id, ct);
+
+    public async Task<bool> UpdateTableStatusAsync(
+        long tableId,
+        TableStatusEnum status,
+        CancellationToken ct = default)
+    {
+        var table = await _restaurantTableRepository.GetTableById((int)tableId, ct);
+        table.TableStatus = status;
+        return await _restaurantTableRepository.UpdateTableAsync(table, ct);
+    }
 }

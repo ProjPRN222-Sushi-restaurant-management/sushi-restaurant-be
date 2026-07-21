@@ -13,15 +13,18 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         private readonly IOrderService _orderService;
         private readonly IBookingService _bookingService;
         private readonly ICustomerService _customerService;
+        private readonly IRestaurantTableService _tableService;
 
         public OrderManagerModel(
             IOrderService orderService,
             IBookingService bookingService,
-            ICustomerService customerService)
+            ICustomerService customerService,
+            IRestaurantTableService tableService)
         {
             _orderService = orderService;
             _bookingService = bookingService;
             _customerService = customerService;
+            _tableService = tableService;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -174,6 +177,14 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 await _bookingService.UpdateBookingStatusAsync(
                     order.BookingId.Value,
                     MapOrderStatusToBookingStatus(status));
+            }
+
+            if (status == OrderStatusEnum.COMPLETED &&
+                order.TableId.HasValue)
+            {
+                await _tableService.UpdateTableStatusAsync(
+                    order.TableId.Value,
+                    TableStatusEnum.AVAILABLE);
             }
 
             await SyncCustomerLoyaltyPointsAsync(order, previousStatus, status);

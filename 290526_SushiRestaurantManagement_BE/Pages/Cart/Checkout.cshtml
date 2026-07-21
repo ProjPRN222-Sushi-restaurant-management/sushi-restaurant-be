@@ -142,21 +142,21 @@
         text-align: right;
     }
 
-    .btn-submit-order {
+    .btn-print-ticket {
         border: none;
         border-radius: 999px;
         padding: 12px 26px;
         font-weight: 900;
-        background: linear-gradient(135deg, #16a34a, #22c55e);
+        background: linear-gradient(135deg, #d97706, #f97316);
         color: #ffffff;
-        box-shadow: 0 14px 28px rgba(22, 163, 74, 0.24);
+        box-shadow: 0 14px 28px rgba(217, 119, 6, 0.24);
         transition: all 0.2s ease;
     }
 
-        .btn-submit-order:hover {
+        .btn-print-ticket:hover {
             color: #ffffff;
             transform: translateY(-2px);
-            box-shadow: 0 18px 34px rgba(22, 163, 74, 0.32);
+            box-shadow: 0 18px 34px rgba(217, 119, 6, 0.32);
         }
 
     .empty-cart {
@@ -166,6 +166,113 @@
         color: #9a3412;
         padding: 20px 24px;
         font-weight: 800;
+    }
+
+    .kitchen-ticket {
+        display: none;
+    }
+
+    @@media print {
+        @@page {
+            size: 80mm auto;
+            margin: 6mm;
+        }
+
+        html,
+        body {
+            width: 80mm;
+            margin: 0;
+            padding: 0;
+            background: #ffffff !important;
+            color: #000000 !important;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+        }
+
+        body * {
+            visibility: hidden !important;
+        }
+
+        .kitchen-ticket,
+        .kitchen-ticket * {
+            visibility: visible !important;
+        }
+
+        .kitchen-ticket {
+            display: block !important;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        .ticket-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0 0 6px;
+        }
+
+        .ticket-meta {
+            border-top: 1px dashed #000000;
+            border-bottom: 1px dashed #000000;
+            padding: 6px 0;
+            margin-bottom: 8px;
+        }
+
+        .ticket-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 2px 0;
+        }
+
+        .ticket-label {
+            font-weight: 700;
+        }
+
+        .ticket-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ticket-table th,
+        .ticket-table td {
+            border-bottom: 1px dashed #000000;
+            padding: 5px 0;
+            vertical-align: top;
+        }
+
+        .ticket-table th {
+            font-size: 10px;
+            text-transform: uppercase;
+            text-align: left;
+        }
+
+        .ticket-table .ticket-qty {
+            width: 24px;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .ticket-dish {
+            font-weight: 900;
+        }
+
+        .ticket-note {
+            margin-top: 2px;
+            font-size: 10px;
+            font-style: italic;
+        }
+
+        .ticket-footer {
+            text-align: center;
+            margin-top: 10px;
+            padding-top: 6px;
+            border-top: 1px dashed #000000;
+            font-weight: 700;
+        }
     }
 </style>
 
@@ -189,8 +296,79 @@
         </div>
     }
 
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
     @if (Model.CartItems.Any())
     {
+        <section class="kitchen-ticket" aria-label="Phiếu chế biến">
+            <h1 class="ticket-title">Phiếu chế biến</h1>
+
+            <div class="ticket-meta">
+                @if (Model.SavedOrder != null)
+                {
+                    <div class="ticket-line">
+                        <span class="ticket-label">Order</span>
+                        <span>#@Model.SavedOrder.OrderId</span>
+                    </div>
+                    <div class="ticket-line">
+                        <span class="ticket-label">Trạng thái</span>
+                        <span>@Model.SavedOrder.OrderStatus</span>
+                    </div>
+                    @if (Model.SavedOrder.TableId.HasValue)
+                    {
+                        <div class="ticket-line">
+                            <span class="ticket-label">Bàn</span>
+                            <span>@Model.SavedOrder.TableId</span>
+                        </div>
+                    }
+                }
+                <div class="ticket-line">
+                    <span class="ticket-label">Số món</span>
+                    <span>@((Model.SavedOrder?.CreatedAt ?? DateTime.Now).ToString("dd/MM/yyyy HH:mm"))</span>
+                </div>
+            </div>
+
+            <table class="ticket-table">
+                <thead>
+                    <tr>
+                        <th>Món</th>
+                        <th class="ticket-qty">SL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <tr>
+                            <td>
+                                <div class="ticket-dish">
+                                    @item.ItemName
+                                </div>
+
+                                @if (!string.IsNullOrWhiteSpace(item.Note))
+                                {
+                                    <div class="ticket-note">
+                                        @item.Note
+                                    </div>
+                                }
+                            </td>
+                            <td class="ticket-qty">
+                                @item.Quantity
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="ticket-footer">
+                Dùng cho bộ phận bếp
+            </div>
+        </section>
+
         <div class="checkout-card">
             <div class="checkout-card-header">
                 Danh sách món trong giỏ
@@ -236,13 +414,24 @@
             </div>
         </div>
 
-        <form method="post">
-            <div class="submit-area">
-                <button class="btn-submit-order">
-                    Gửi order
+        <div class="submit-area">
+            @if (Model.SavedOrder != null)
+            {
+                <button type="button" class="btn-print-ticket" onclick="window.print()">
+                    <i class="fa-solid fa-print me-2"></i>
+                    In lại phiếu chế biến
                 </button>
-            </div>
-        </form>
+            }
+            else
+            {
+                <form method="post" id="sendOrderPrintForm">
+                    <button type="submit" class="btn-print-ticket" id="sendOrderPrintButton">
+                        <i class="fa-solid fa-print me-2"></i>
+                        In phiếu chế biến
+                    </button>
+                </form>
+            }
+        </div>
     }
     else
     {
@@ -252,3 +441,23 @@
     }
 
 </div>
+@if (Model.Print && Model.SavedOrder != null)
+{
+    <script>
+        window.addEventListener('load', function () {
+            window.print();
+        });
+    </script>
+}
+
+<script>
+    const sendOrderPrintForm = document.getElementById('sendOrderPrintForm');
+    const sendOrderPrintButton = document.getElementById('sendOrderPrintButton');
+
+    if (sendOrderPrintForm && sendOrderPrintButton) {
+        sendOrderPrintForm.addEventListener('submit', function () {
+            sendOrderPrintButton.disabled = true;
+            sendOrderPrintButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Đang gửi order...';
+        });
+    }
+</script>

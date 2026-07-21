@@ -37,12 +37,15 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
             long menuItemId,
             int quantity,
             string? note,
+            string? wasabiOption,
+            string? gingerOption,
             long? bookingId,
             long? tableId)
         {
             if (quantity < 1)
                 quantity = 1;
 
+            var structuredNote = BuildStructuredNote(note, wasabiOption, gingerOption);
             var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>(CartSessionKey) ?? [];
 
             var menuItem = await _menuItemService.GetMenuItemByIdAsync((int)menuItemId);
@@ -51,7 +54,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
             {
                 var existing = cart.FirstOrDefault(x =>
                     x.MenuItemId == menuItemId &&
-                    x.Note == note);
+                    x.Note == structuredNote);
 
                 if (existing == null)
                 {
@@ -61,7 +64,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
                         ItemName = menuItem.ItemName,
                         UnitPrice = menuItem.Price,
                         Quantity = quantity,
-                        Note = note
+                        Note = structuredNote
                     });
                 }
                 else
@@ -124,5 +127,36 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
                 note = x.Note
             })
         };
+
+        private static string? BuildStructuredNote(string? note, string? wasabiOption, string? gingerOption)
+        {
+            var options = new List<string>();
+
+            var wasabi = NormalizeYesNo(wasabiOption);
+            if (wasabi != null)
+                options.Add($"Wasabi: {wasabi}");
+
+            var ginger = NormalizeYesNo(gingerOption);
+            if (ginger != null)
+                options.Add($"Gừng hồng: {ginger}");
+
+            if (options.Count > 0)
+                return string.Join("; ", options);
+
+            note = note?.Trim();
+            return string.IsNullOrWhiteSpace(note) ? null : note;
+        }
+
+        private static string? NormalizeYesNo(string? value)
+        {
+            value = value?.Trim();
+
+            return value switch
+            {
+                "Có" or "Co" or "Yes" or "true" or "True" => "Có",
+                "Không" or "Khong" or "No" or "false" or "False" => "Không",
+                _ => null
+            };
+        }
     }
 }

@@ -186,30 +186,42 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             });
         }
 
-        //public async Task<IActionResult> OnPostDeleteCategoryAsync(long categoryId)
-        //{
-        //    try
-        //    {
-        //        var hasItems = await _itemService.HasMenuItemsByCategoryAsync(categoryId);
+        public async Task<IActionResult> OnPostDeleteCategoryAsync(long categoryId)
+        {
+            try
+            {
+                var hasMenuItems = await _itemService.HasMenuItemsByCategoryAsync(categoryId);
+                if (hasMenuItems)
+                {
+                    TempData["Error"] = "Khong the xoa danh muc dang co mon an.";
+                    return RedirectToMenuManagerAfterCategoryDelete(categoryId);
+                }
 
-        //        if (hasItems)
-        //        {
-        //            TempData["Error"] = "Không thể xóa danh mục này vì vẫn còn món ăn thuộc danh mục.";
-        //            return RedirectToPage("/Admin/MenuManager");
-        //        }
+                var result = await _categoryService.DeleteMenuCategoryAsync(categoryId);
+                TempData[result ? "Success" : "Error"] = result
+                    ? "Da xoa danh muc thanh cong."
+                    : "Khong the xoa danh muc nay.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Loi he thong: " + ex.Message;
+            }
 
-        //        var result = await _categoryService.DeleteMenuCategoryAsync(categoryId);
+            return RedirectToMenuManagerAfterCategoryDelete(categoryId);
+        }
 
-        //        TempData[result ? "Success" : "Error"] =
-        //            result ? "Xóa danh mục thành công!" : "Không thể xóa danh mục.";
+        private IActionResult RedirectToMenuManagerAfterCategoryDelete(long deletedCategoryId)
+        {
+            var selectedCategoryId = SelectedCategoryId == deletedCategoryId
+                ? null
+                : SelectedCategoryId;
 
-        //        return RedirectToPage("/Admin/MenuManager");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["Error"] = "Lỗi khi xóa danh mục: " + ex.Message;
-        //        return RedirectToPage("/Admin/MenuManager");
-        //    }
-        //}
+            return RedirectToPage("/Admin/MenuManager", new
+            {
+                selectedCategoryId,
+                searchString = SearchString,
+                PageNumber
+            });
+        }
     }
 }

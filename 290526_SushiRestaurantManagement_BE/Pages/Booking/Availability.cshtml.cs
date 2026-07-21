@@ -170,6 +170,15 @@ public class AvailabilityModel : PageModel
                 ? DateTime.Now
                 : null;
 
+            if (newOrderStatus == OrderStatusEnum.COMPLETED)
+            {
+                ApplyInvoiceIssuer(order);
+            }
+            else
+            {
+                ClearInvoiceIssuer(order);
+            }
+
             await _orderService.UpdateOrderAsync(order);
             await SyncCustomerLoyaltyPointsAsync(
                 order,
@@ -257,6 +266,34 @@ public class AvailabilityModel : PageModel
         TableTypeEnum.BAR => "Quầy bar",
         _ => type.ToString()
     };
+
+    private void ApplyInvoiceIssuer(OrderEntity order)
+    {
+        if (order.InvoiceIssuedAt.HasValue)
+        {
+            return;
+        }
+
+        order.InvoiceIssuedAt = DateTime.Now;
+        order.InvoiceStaffName = HttpContext.Session.GetString("StaffName") ?? "Không xác định";
+
+        if (long.TryParse(HttpContext.Session.GetString("StaffId"), out var staffId) &&
+            staffId > 0)
+        {
+            order.InvoiceStaffId = staffId;
+        }
+        else
+        {
+            order.InvoiceStaffId = null;
+        }
+    }
+
+    private static void ClearInvoiceIssuer(OrderEntity order)
+    {
+        order.InvoiceIssuedAt = null;
+        order.InvoiceStaffId = null;
+        order.InvoiceStaffName = null;
+    }
 
     public class TimeSlotInfo
     {

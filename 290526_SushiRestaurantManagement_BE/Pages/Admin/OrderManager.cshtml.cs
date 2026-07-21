@@ -64,13 +64,17 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 
                     ||
 
-                    o.BookingId.ToString()
+                    (o.BookingId.HasValue &&
+                     o.BookingId.Value.ToString()
                      .Contains(keyword)
+                    )
 
                     ||
 
-                    o.TableId.ToString()
+                    (o.TableId.HasValue &&
+                     o.TableId.Value.ToString()
                      .Contains(keyword)
+                    )
 
                     ||
 
@@ -152,11 +156,15 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             {
                 order.CompletedAt =
                     DateTime.Now;
+
+                ApplyInvoiceIssuer(order);
             }
             else
             {
                 order.CompletedAt = null;
+                ClearInvoiceIssuer(order);
             }
+
 
             await _orderService
                 .UpdateOrderAsync(order);
@@ -249,6 +257,44 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             }
 
             return (int)Math.Floor(totalAmount / AmountPerLoyaltyPoint);
+        }
+
+        private void ApplyInvoiceIssuer(OrderEntity order)
+        {
+            if (order.InvoiceIssuedAt.HasValue)
+            {
+                return;
+            }
+
+            order.InvoiceIssuedAt = DateTime.Now;
+
+            if (order.ReceivedStaffId.HasValue ||
+                !string.IsNullOrWhiteSpace(order.ReceivedStaffName))
+            {
+                order.InvoiceStaffId = order.ReceivedStaffId;
+                order.InvoiceStaffName =
+                    order.ReceivedStaff?.FullName ??
+                    order.ReceivedStaffName ??
+                    "Khong xac dinh";
+                return;
+            }
+
+            order.InvoiceStaffName = HttpContext.Session.GetString("StaffName") ?? "Khong xac dinh";
+
+            if (long.TryParse(HttpContext.Session.GetString("StaffId"), out var staffId) &&
+                staffId > 0)
+            {
+                order.InvoiceStaffId = staffId;
+                return;
+            }
+
+            order.InvoiceStaffId = null;
+        }
+        private static void ClearInvoiceIssuer(OrderEntity order)
+        {
+            order.InvoiceIssuedAt = null;
+            order.InvoiceStaffId = null;
+            order.InvoiceStaffName = null;
         }
     }
 }

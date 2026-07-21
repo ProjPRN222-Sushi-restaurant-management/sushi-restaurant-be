@@ -1,4 +1,4 @@
-using _290526_SushiRestaurantManagement_BE.Helpers;
+﻿using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Enums;
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +22,43 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
 
         public List<CartItemViewModel> CartItems { get; set; } = [];
 
+        [BindProperty(SupportsGet = true)]
+        public int? OrderId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public bool Print { get; set; }
+
+        public BusinessObjects.Models.Order? SavedOrder { get; set; }
+
         public decimal TotalAmount => CartItems.Sum(x => x.Total);
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
+            if (OrderId.HasValue)
+            {
+                try
+                {
+                    SavedOrder = await _orderService.GetOrderByIdAsync(OrderId.Value);
+                    CartItems = SavedOrder.OrderItems.Select(x => new CartItemViewModel
+                    {
+                        MenuItemId = x.MenuItemId,
+                        ItemName = x.MenuItem?.ItemName ?? $"Món #{x.MenuItemId}",
+                        UnitPrice = x.UnitPrice,
+                        Quantity = x.Quantity,
+                        Note = x.Note
+                    }).ToList();
+                }
+                catch (KeyNotFoundException)
+                {
+                    TempData["Error"] = "Không tìm thấy order vừa gửi.";
+                    return RedirectToPage("/Cart/Index");
+                }
+
+                return Page();
+            }
+
             CartItems = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -35,7 +67,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
 
             if (!CartItems.Any())
             {
-                TempData["Error"] = "Gi? h�ng ?ang tr?ng.";
+                TempData["Error"] = "Giỏ hàng đang trống.";
                 return RedirectToPage("/Cart/Index");
             }
 
@@ -55,14 +87,18 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
                 tableId ??= booking?.TableId;
             }
 
+            var now = DateTime.Now;
             var order = new BusinessObjects.Models.Order
             {
                 BookingId = bookingId,
                 CustomerId = booking?.CustomerId,
                 TableId = tableId,
                 TotalAmount = TotalAmount,
-                OrderStatus = OrderStatusEnum.PENDING,
-                CreatedAt = DateTime.Now,
+                OrderStatus = OrderStatusEnum.PREPARING,
+                CreatedAt = now,
+                ReceivedAt = now,
+                ReceivedStaffId = TryGetCurrentStaffId(),
+                ReceivedStaffName = HttpContext.Session.GetString("StaffName") ?? "Không xác định",
                 OrderItems = CartItems.Select(x => new OrderItem
                 {
                     MenuItemId = x.MenuItemId,
@@ -76,11 +112,33 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             await _orderService.AddOrderAsync(order);
             await _orderService.SaveChangesAsync();
 
+            if (bookingId.HasValue)
+            {
+                await _bookingService.UpdateBookingStatusAsync(
+                    bookingId.Value,
+                    BookingStatusEnum.PREPARING);
+            }
+
             HttpContext.Session.Remove("CART");
 
-            TempData["OrderSuccess"] = $"G?i order th�nh c�ng! M� order #{order.OrderId}";
+            TempData["OrderSuccess"] = $"Gửi order thành công! Mã order #{order.OrderId}";
 
-            return RedirectToPage("/Cart/Checkout");
+            return RedirectToPage("/Cart/Checkout", new
+            {
+                orderId = order.OrderId,
+                print = true
+            });
+        }
+
+        private long? TryGetCurrentStaffId()
+        {
+            if (long.TryParse(HttpContext.Session.GetString("StaffId"), out var staffId) &&
+                staffId > 0)
+            {
+                return staffId;
+            }
+
+            return null;
         }
     }
 }

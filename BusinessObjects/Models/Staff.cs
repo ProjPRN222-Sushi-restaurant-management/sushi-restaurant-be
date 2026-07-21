@@ -15,7 +15,10 @@ public partial class Staff
 
     public bool IsActive { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+     public DateTime? CreatedAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }
+
+    public virtual ICollection<Order> IssuedInvoices { get; set; } = new List<Order>();
+    public virtual ICollection<Order> ReceivedOrders { get; set; } = new List<Order>();
 }

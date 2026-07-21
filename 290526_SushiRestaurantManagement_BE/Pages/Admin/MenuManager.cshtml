@@ -321,9 +321,9 @@
     }
 
     .category-link,
-    .category-item {
+    .category-row {
         border-radius: 16px;
-        padding: 13px 15px;
+        padding: 0;
         font-weight: 800;
         text-decoration: none;
         border: 1px solid #e5e7eb;
@@ -336,10 +336,56 @@
     }
 
         .category-link:hover,
-        .category-item:hover {
+        .category-row:hover {
             background: #fff7ed;
             color: #dc2626;
             transform: translateX(3px);
+        }
+
+    .category-link {
+        padding: 13px 15px;
+    }
+
+    .category-item {
+        flex: 1;
+        min-width: 0;
+        padding: 13px 8px 13px 15px;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .category-delete-form {
+        flex: none;
+        margin: 0;
+        padding-right: 8px;
+    }
+
+    .btn-delete-category {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        color: rgba(185, 28, 28, .34);
+        transition: all .18s ease;
+    }
+
+        .btn-delete-category:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+            transform: scale(1.06);
+        }
+
+    .category-active .btn-delete-category {
+        color: rgba(255, 255, 255, .55);
+    }
+
+        .category-active .btn-delete-category:hover {
+            background: rgba(255, 255, 255, .18);
+            color: #ffffff;
         }
 
     .category-active {
@@ -643,12 +689,39 @@
                     {
                         var isActive = Model.SelectedCategoryId == cat.CategoryId;
 
-                        <a asp-page="/Admin/MenuManager"
-                           asp-route-SelectedCategoryId="@cat.CategoryId"
-                           asp-route-SearchString="@Model.SearchString"
-                           class="category-item @(isActive ? "category-active" : "")">
-                            <span>@cat.CategoryName</span>
-                        </a>
+                        <div class="category-row @(isActive ? "category-active" : "")">
+                            <a asp-page="/Admin/MenuManager"
+                               asp-route-SelectedCategoryId="@cat.CategoryId"
+                               asp-route-SearchString="@Model.SearchString"
+                               class="category-item">
+                                <span>@cat.CategoryName</span>
+                            </a>
+
+                            <form method="post"
+                                  asp-page-handler="DeleteCategory"
+                                  class="category-delete-form"
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
+                                <input type="hidden"
+                                       name="categoryId"
+                                       value="@cat.CategoryId" />
+                                <input type="hidden"
+                                       name="SelectedCategoryId"
+                                       value="@Model.SelectedCategoryId" />
+                                <input type="hidden"
+                                       name="SearchString"
+                                       value="@Model.SearchString" />
+                                <input type="hidden"
+                                       name="PageNumber"
+                                       value="@Model.PageNumber" />
+
+                                <button type="submit"
+                                        class="btn-delete-category"
+                                        title="Xóa danh mục"
+                                        aria-label="Xóa danh mục @cat.CategoryName">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
                     }
                 </div>
             </div>

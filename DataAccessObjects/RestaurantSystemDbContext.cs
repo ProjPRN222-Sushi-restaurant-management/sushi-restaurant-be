@@ -216,6 +216,10 @@ public partial class RestaurantSystemDbContext : DbContext
 
             entity.HasIndex(e => e.CustomerId, "fk_order_customer");
 
+            entity.HasIndex(e => e.InvoiceStaffId, "fk_order_invoice_staff");
+
+            entity.HasIndex(e => e.ReceivedStaffId, "fk_order_received_staff");
+
             entity.HasIndex(e => e.TableId, "fk_order_table");
 
             entity.HasIndex(e => e.OrderStatus, "idx_order_status");
@@ -230,6 +234,20 @@ public partial class RestaurantSystemDbContext : DbContext
                 .HasColumnType("timestamp")
                 .HasColumnName("created_at");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.ReceivedAt)
+                .HasColumnType("timestamp")
+                .HasColumnName("received_at");
+            entity.Property(e => e.ReceivedStaffId).HasColumnName("received_staff_id");
+            entity.Property(e => e.ReceivedStaffName)
+                .HasMaxLength(150)
+                .HasColumnName("received_staff_name");
+            entity.Property(e => e.InvoiceIssuedAt)
+                .HasColumnType("timestamp")
+                .HasColumnName("invoice_issued_at");
+            entity.Property(e => e.InvoiceStaffId).HasColumnName("invoice_staff_id");
+            entity.Property(e => e.InvoiceStaffName)
+                .HasMaxLength(150)
+                .HasColumnName("invoice_staff_name");
             entity.Property(e => e.OrderStatus)
                 .HasConversion<String>()
                 .HasMaxLength(20)
@@ -247,6 +265,14 @@ public partial class RestaurantSystemDbContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("fk_order_customer");
+
+            entity.HasOne(d => d.InvoiceStaff).WithMany(p => p.IssuedInvoices)
+                .HasForeignKey(d => d.InvoiceStaffId)
+                .HasConstraintName("fk_order_invoice_staff");
+
+            entity.HasOne(d => d.ReceivedStaff).WithMany(p => p.ReceivedOrders)
+                .HasForeignKey(d => d.ReceivedStaffId)
+                .HasConstraintName("fk_order_received_staff");
 
             entity.HasOne(d => d.Table).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.TableId)

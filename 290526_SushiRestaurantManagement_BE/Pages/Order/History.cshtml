@@ -101,6 +101,50 @@
         color: #dc2626;
     }
 
+    .order-receipts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .order-receipt {
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        background: #f8fafc;
+        padding: 14px 16px;
+    }
+
+    .order-receipt-title {
+        color: #991b1b;
+        font-weight: 900;
+        margin-bottom: 8px;
+    }
+
+    .order-receipt-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 0.92rem;
+        margin-top: 5px;
+    }
+
+    .order-receipt-label {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .staff-link {
+        color: #0f766e;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+        .staff-link:hover {
+            color: #115e59;
+            text-decoration: underline;
+        }
+
     .total-box {
         margin-top: 18px;
         border: none;
@@ -212,16 +256,53 @@
             </div>
 
             <div class="card-body">
+                <div class="order-receipts">
+                    @foreach (var order in Model.Orders.OrderBy(o => o.CreatedAt ?? DateTime.MinValue))
+                    {
+                        var receivedStaffId = order.ReceivedStaffId ?? order.InvoiceStaffId;
+                        var receivedStaffName =
+                            order.ReceivedStaff?.FullName ??
+                            order.ReceivedStaffName ??
+                            order.InvoiceStaff?.FullName ??
+                            order.InvoiceStaffName ??
+                            "Chưa xác định";
+                        var receivedAt = order.ReceivedAt ?? order.CreatedAt;
+
+                        <div class="order-receipt">
+                            <div class="order-receipt-title">Order #@order.OrderId</div>
+
+                            <div class="order-receipt-line">
+                                <span class="order-receipt-label">Nhân viên nhận</span>
+                                @if (receivedStaffId.HasValue)
+                                {
+                                    <a asp-page="/Admin/EditStaff"
+                                       asp-route-id="@receivedStaffId.Value"
+                                       class="staff-link">
+                                        @receivedStaffName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>@receivedStaffName</span>
+                                }
+                            </div>
+
+                            <div class="order-receipt-line">
+                                <span class="order-receipt-label">Thời gian nhận</span>
+                                <span>@(receivedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
+                            </div>
+
+                            <div class="order-receipt-line">
+                                <span class="order-receipt-label">Trạng thái</span>
+                                <span>@order.OrderStatus</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+
                 <div class="table-responsive">
                     <table class="table order-table align-middle">
                         <thead>
-                            <tr>
-                                <th>Món</th>
-                                <th class="text-center">Số lượng</th>
-                                <th class="text-end">Đơn giá</th>
-                                <th class="text-end">Thành tiền</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             @foreach (var detail in Model.Orders.SelectMany(o => o.OrderItems))
                             {

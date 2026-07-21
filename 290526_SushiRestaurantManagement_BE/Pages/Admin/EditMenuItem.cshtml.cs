@@ -44,7 +44,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 return NotFound();
             }
 
-            existingItem.ItemName = MenuItem.ItemName?.Trim();
+            existingItem.ItemName = MenuItem.ItemName?.Trim() ?? existingItem.ItemName;
             existingItem.CategoryId = MenuItem.CategoryId;
             existingItem.Price = MenuItem.Price;
 

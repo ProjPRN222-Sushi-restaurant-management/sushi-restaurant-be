@@ -21,6 +21,8 @@ namespace Repositories.Implementations
                 .AsNoTracking()
                 .Include(o => o.Customer)
                 .Include(o => o.Table)
+                .Include(o => o.InvoiceStaff)
+                .Include(o => o.ReceivedStaff)
                 .Include(o => o.Booking)
                     .ThenInclude(b => b.Customer)
                 .OrderByDescending(o => o.OrderId)
@@ -35,6 +37,8 @@ namespace Repositories.Implementations
                 .AsNoTracking()
                 .Include(o => o.Customer)
                 .Include(o => o.Table)
+                .Include(o => o.InvoiceStaff)
+                .Include(o => o.ReceivedStaff)
                 .Include(o => o.Booking)
                     .ThenInclude(b => b.Customer)
                 .Include(o => o.OrderItems)
@@ -66,6 +70,12 @@ namespace Repositories.Implementations
             existingOrder.TotalAmount = order.TotalAmount;
             existingOrder.CreatedAt = order.CreatedAt;
             existingOrder.CompletedAt = order.CompletedAt;
+            existingOrder.ReceivedStaffId = order.ReceivedStaffId;
+            existingOrder.ReceivedStaffName = order.ReceivedStaffName;
+            existingOrder.ReceivedAt = order.ReceivedAt;
+            existingOrder.InvoiceStaffId = order.InvoiceStaffId;
+            existingOrder.InvoiceStaffName = order.InvoiceStaffName;
+            existingOrder.InvoiceIssuedAt = order.InvoiceIssuedAt;
 
             await _context.SaveChangesAsync(ct);
             return true;
@@ -79,6 +89,8 @@ namespace Repositories.Implementations
         public async Task<IEnumerable<Order>> GetOrdersByBookingIdAsync(long bookingId)
         {
             return await _context.Orders
+                .Include(o => o.InvoiceStaff)
+                .Include(o => o.ReceivedStaff)
                 .Include(o => o.OrderItems)
                     .ThenInclude(od => od.MenuItem)
                 .Where(o => o.BookingId == bookingId)

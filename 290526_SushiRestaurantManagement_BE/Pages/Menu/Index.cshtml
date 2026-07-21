@@ -175,9 +175,67 @@
             box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.15);
         }
 
-    .menu-add-form textarea {
+    @* .menu-add-form textarea {
         min-height: 86px;
         resize: vertical;
+    } *@
+
+    .quick-option-panel {
+        display: grid;
+        gap: 10px;
+    }
+
+    .quick-option-group {
+        display: grid;
+        gap: 7px;
+    }
+
+    .quick-option-title {
+        color: #475569;
+        font-size: 0.84rem;
+        font-weight: 800;
+    }
+
+    .quick-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .quick-option-input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .quick-option-label {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #dbe3ef;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #334155;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.18s ease;
+    }
+
+        .quick-option-label:hover {
+            border-color: #f97316;
+            background: #fff7ed;
+        }
+
+    .quick-option-input:checked + .quick-option-label {
+        border-color: #dc2626;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #ffffff;
+        box-shadow: 0 8px 18px rgba(220, 38, 38, 0.18);
+    }
+
+    .quick-option-input:focus + .quick-option-label {
+        box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.18);
     }
 
     .btn-add-cart {
@@ -526,10 +584,58 @@
                         </div>
 
                         <div class="mb-2">
-                            <label class="form-label-custom">Tùy chọn</label>
-                            <textarea name="note"
-                                  class="form-control"
-                                  placeholder="Không wasabi, ít cơm, thêm gừng, dị ứng hải sản..."></textarea>
+                            <label class="form-label-custom">Tùy chọn món</label>
+                            <input type="hidden" name="note" value="Wasabi: Có; Gừng hồng: Có" />
+
+                            <div class="quick-option-panel">
+                                <div class="quick-option-group">
+                                    <div class="quick-option-title">
+                                        <i class="fa-solid fa-leaf me-1"></i>
+                                        Wasabi
+                                    </div>
+
+                                    <div class="quick-options" role="radiogroup" aria-label="Wasabi">
+                                        <input class="quick-option-input"
+                                               type="radio"
+                                               id="wasabi-@item.MenuItemId-co"
+                                               name="wasabiOption"
+                                               value="Có"
+                                               checked />
+                                        <label class="quick-option-label" for="wasabi-@item.MenuItemId-co">Có</label>
+
+                                        <input class="quick-option-input"
+                                               type="radio"
+                                               id="wasabi-@item.MenuItemId-khong"
+                                               name="wasabiOption"
+                                               value="Không" />
+                                        <label class="quick-option-label" for="wasabi-@item.MenuItemId-khong">Không</label>
+                                    </div>
+                                </div>
+
+                                <div class="quick-option-group">
+                                    <div class="quick-option-title">
+                                        <i class="fa-solid fa-seedling me-1"></i>
+                                        Gừng hồng
+                                    </div>
+
+                                    <div class="quick-options" role="radiogroup" aria-label="Gừng hồng">
+                                        <input class="quick-option-input"
+                                               type="radio"
+                                               id="ginger-@item.MenuItemId-co"
+                                               name="gingerOption"
+                                               value="Có"
+                                               checked />
+                                        <label class="quick-option-label" for="ginger-@item.MenuItemId-co">Có</label>
+
+                                        <input class="quick-option-input"
+                                               type="radio"
+                                               id="ginger-@item.MenuItemId-khong"
+                                               name="gingerOption"
+                                               value="Không" />
+                                        <label class="quick-option-label" for="ginger-@item.MenuItemId-khong">Không</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <button class="btn-add-cart">
@@ -673,6 +779,28 @@
                 toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2200);
             }
 
+            function getCheckedValue(form, name) {
+                var input = form.querySelector('input[name="' + name + '"]:checked');
+                return input ? input.value : '';
+            }
+
+            function syncStructuredNote(form) {
+                var noteEl = form.querySelector('input[name="note"]');
+                if (!noteEl) return;
+
+                var wasabi = getCheckedValue(form, 'wasabiOption') || 'Có';
+                var ginger = getCheckedValue(form, 'gingerOption') || 'Có';
+                noteEl.value = 'Wasabi: ' + wasabi + '; Gừng hồng: ' + ginger;
+            }
+
+            function resetQuickOptions(form) {
+                var wasabiYes = form.querySelector('input[name="wasabiOption"][value="Có"]');
+                var gingerYes = form.querySelector('input[name="gingerOption"][value="Có"]');
+                if (wasabiYes) wasabiYes.checked = true;
+                if (gingerYes) gingerYes.checked = true;
+                syncStructuredNote(form);
+            }
+
             function removeItem(id, note) {
                 var body = new URLSearchParams();
                 body.append('menuItemId', id);
@@ -723,8 +851,17 @@
 
             // Thêm vào giỏ bằng AJAX -> không reload trang, không nhảy về đầu trang
             document.querySelectorAll('form.menu-add-form').forEach(function (form) {
+                syncStructuredNote(form);
+
+                form.querySelectorAll('input[name="wasabiOption"], input[name="gingerOption"]').forEach(function (input) {
+                    input.addEventListener('change', function () {
+                        syncStructuredNote(form);
+                    });
+                });
+
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
+                    syncStructuredNote(form);
 
                     var btn = form.querySelector('.btn-add-cart');
                     var original = btn ? btn.innerHTML : '';
@@ -746,8 +883,7 @@
                         bump();
                         showToast('Đã thêm ' + (form.getAttribute('data-name') || 'món') + ' vào giỏ');
 
-                        var noteEl = form.querySelector('textarea[name="note"]');
-                        if (noteEl) noteEl.value = '';
+                        resetQuickOptions(form);
                         var qtyEl = form.querySelector('input[name="quantity"]');
                         if (qtyEl) qtyEl.value = 1;
 

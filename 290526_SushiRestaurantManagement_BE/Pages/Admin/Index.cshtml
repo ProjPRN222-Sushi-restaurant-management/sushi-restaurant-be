@@ -581,24 +581,20 @@
                                 </td>
 
                                 <td class="pe-3">
-                                    @if (b.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.PENDING)
-                                    {
-                                        <span class="booking-status status-pending">
-                                            @b.BookingStatus
-                                        </span>
+                                    @{
+                                        var bookingStatusClass = b.BookingStatus switch
+                                        {
+                                            BusinessObjects.Enums.BookingStatusEnum.PENDING => "status-pending",
+                                            BusinessObjects.Enums.BookingStatusEnum.PREPARING => "status-preparing",
+                                            BusinessObjects.Enums.BookingStatusEnum.COMPLETED => "status-completed",
+                                            BusinessObjects.Enums.BookingStatusEnum.CANCELLED => "status-cancelled",
+                                            _ => "status-other"
+                                        };
                                     }
-                                    else if (b.BookingStatus == BusinessObjects.Enums.BookingStatusEnum.CANCELLED)
-                                    {
-                                        <span class="booking-status status-cancelled">
-                                            @b.BookingStatus
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="booking-status status-completed">
-                                            @b.BookingStatus
-                                        </span>
-                                    }
+
+                                    <span class="booking-status app-status @bookingStatusClass">
+                                        @b.BookingStatus
+                                    </span>
                                 </td>
                             </tr>
                         }

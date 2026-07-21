@@ -20,6 +20,7 @@ namespace Repositories.Implementations
         {
             return await _context.MenuCategories
                 .AsNoTracking()
+                .Where(c => c.DeletedAt == null)
                 .OrderBy(c => c.CategoryId)
                 .ToListAsync(ct);
         }
@@ -30,7 +31,7 @@ namespace Repositories.Implementations
         {
             return await _context.MenuCategories
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.CategoryId == id, ct);
+                .FirstOrDefaultAsync(c => c.CategoryId == id && c.DeletedAt == null, ct);
         }
 
         public async Task<bool> AddMenuCategoryAsync(
@@ -63,7 +64,7 @@ namespace Repositories.Implementations
             if (category == null)
                 return false;
 
-            _context.MenuCategories.Remove(category);
+            category.DeletedAt = DateTime.Now;
             await _context.SaveChangesAsync();
 
             return true;

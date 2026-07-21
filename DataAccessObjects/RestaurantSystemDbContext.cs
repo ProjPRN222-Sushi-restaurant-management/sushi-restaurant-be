@@ -37,15 +37,17 @@ public partial class RestaurantSystemDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // Đọc chuỗi kết nối từ appsettings.json
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
 
-            string connectionString = configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
+            }
 
-            // MySQL
             optionsBuilder.UseMySql(
                 connectionString,
                 ServerVersion.AutoDetect(connectionString)

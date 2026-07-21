@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json;
 using BusinessObjects.Enums;
 using BusinessObjects.Models;
@@ -67,7 +67,6 @@ public class CreateModel : PageModel
             return Page();
         }
 
-        // Chặn đặt bàn cho thời điểm đã qua (server-side, không thể bị bỏ qua từ client)
         var nowMinute = DateTime.Now;
         nowMinute = nowMinute.AddSeconds(-nowMinute.Second).AddMilliseconds(-nowMinute.Millisecond);
         if (Input.BookingDate.ToDateTime(Input.BookingTime) < nowMinute)

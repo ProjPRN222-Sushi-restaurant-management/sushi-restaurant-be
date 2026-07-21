@@ -1,0 +1,346 @@
+﻿.order-detail-page {
+        padding: 4px 0 30px;
+    }
+
+    .order-detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .order-title {
+        margin: 0;
+        color: #991b1b;
+        font-weight: 900;
+    }
+
+    .order-subtitle {
+        margin-top: 4px;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .btn-back {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 22px;
+        background: #f1f5f9;
+        color: #334155;
+        font-weight: 900;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: translateY(-2px);
+        }
+
+    .detail-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-print-ticket {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 22px;
+        background: linear-gradient(135deg, #d97706, #f97316);
+        color: #ffffff;
+        font-weight: 900;
+        transition: all .2s ease;
+    }
+
+        .btn-print-ticket:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(217, 119, 6, .22);
+        }
+
+    .detail-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+        height: 100%;
+    }
+
+    .detail-card-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+    }
+
+    .detail-card-body {
+        padding: 22px;
+    }
+
+    .info-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 11px 0;
+        border-bottom: 1px dashed #e5e7eb;
+    }
+
+        .info-line:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        color: #64748b;
+        font-weight: 800;
+    }
+
+    .info-value {
+        color: #1f2937;
+        font-weight: 900;
+        text-align: right;
+    }
+
+    .money-value {
+        color: #dc2626;
+        font-weight: 950;
+    }
+
+    .invoice-staff-link {
+        color: #1d4ed8;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+        .invoice-staff-link:hover {
+            color: #dc2626;
+            text-decoration: underline;
+        }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 13px;
+        background: #fff7ed;
+        color: #9a3412;
+        font-weight: 900;
+        font-size: .86rem;
+    }
+
+    .order-items-card {
+        margin-top: 24px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+    }
+
+    .order-items-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .item-count-badge {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+        font-size: .85rem;
+    }
+
+    .detail-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .detail-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: .86rem;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .detail-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .detail-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .dish-name {
+        color: #1f2937;
+        font-weight: 900;
+    }
+
+    .qty-pill,
+    .price-pill,
+    .note-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: .84rem;
+        font-weight: 800;
+    }
+
+    .qty-pill {
+        background: #f8fafc;
+        color: #334155;
+        border: 1px solid #e5e7eb;
+    }
+
+    .price-pill {
+        background: #fff7ed;
+        color: #dc2626;
+    }
+
+    .note-tag {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .empty-order {
+        padding: 28px;
+        color: #64748b;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .kitchen-ticket {
+        display: none;
+    }
+
+    @media print {
+        @page {
+            size: 80mm auto;
+            margin: 6mm;
+        }
+
+        html,
+        body {
+            width: 80mm;
+            margin: 0;
+            padding: 0;
+            background: #ffffff !important;
+            color: #000000 !important;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+        }
+
+        .admin-sidebar,
+        .order-detail-page > :not(.kitchen-ticket),
+        .detail-actions,
+        .btn-back,
+        .btn-print-ticket {
+            display: none !important;
+        }
+
+        .main-content,
+        .content-card,
+        .order-detail-page {
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 0 !important;
+            width: 100% !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            background: #ffffff !important;
+        }
+
+        .kitchen-ticket {
+            display: block !important;
+            width: 100%;
+        }
+
+        .ticket-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0 0 6px;
+        }
+
+        .ticket-meta {
+            border-top: 1px dashed #000000;
+            border-bottom: 1px dashed #000000;
+            padding: 6px 0;
+            margin-bottom: 8px;
+        }
+
+        .ticket-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 2px 0;
+        }
+
+        .ticket-label {
+            font-weight: 700;
+        }
+
+        .ticket-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ticket-table th,
+        .ticket-table td {
+            border-bottom: 1px dashed #000000;
+            padding: 5px 0;
+            vertical-align: top;
+        }
+
+        .ticket-table th {
+            font-size: 10px;
+            text-transform: uppercase;
+            text-align: left;
+        }
+
+        .ticket-table .ticket-qty {
+            width: 24px;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .ticket-dish {
+            font-weight: 900;
+        }
+
+        .ticket-note {
+            margin-top: 2px;
+            font-size: 10px;
+            font-style: italic;
+        }
+
+        .ticket-footer {
+            text-align: center;
+            margin-top: 10px;
+            padding-top: 6px;
+            border-top: 1px dashed #000000;
+            font-weight: 700;
+        }
+    }

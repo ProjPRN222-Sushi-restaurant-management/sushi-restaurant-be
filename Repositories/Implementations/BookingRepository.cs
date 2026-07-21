@@ -16,10 +16,12 @@ namespace Repositories.Implementations
 
         public async Task<Booking> GetBookingByIdAsync(int id, CancellationToken ct = default)
         {
-            return await _context.Bookings
+            var booking = await _context.Bookings
                 .Include(b => b.Customer)
                 .Include(b => b.Table)
                 .FirstOrDefaultAsync(b => b.BookingId == id, ct);
+
+            return booking ?? throw new KeyNotFoundException($"Booking {id} not found.");
         }
 
         public async Task<IReadOnlyList<Booking>> GetAllBookingsAsync(CancellationToken ct = default)

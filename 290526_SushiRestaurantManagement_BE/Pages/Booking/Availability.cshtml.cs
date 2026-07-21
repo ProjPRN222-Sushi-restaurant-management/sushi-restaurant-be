@@ -1,4 +1,4 @@
-using _290526_SushiRestaurantManagement_BE.Helpers;
+﻿using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -314,32 +314,3 @@ public class AvailabilityModel : PageModel
     }
 }
 
-//using BusinessObjects.Enums;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc.RazorPages;
-
-//namespace _290526_SushiRestaurantManagement_BE.Pages.Booking;
-
-//public class AvailabilityModel : PageModel
-//{
-//    private readonly IBookingService _bookingService;
-
-//    public AvailabilityModel(
-//        IBookingService bookingService)
-//    {
-//        _bookingService = bookingService;
-//    }
-
-//    public async Task<IActionResult> OnPostUpdateStatusAsync(
-//        long bookingId,
-//        BookingStatusEnum status,
-//        DateOnly selectedDate)
-//    {
-//        await _bookingService.UpdateBookingStatusAsync(bookingId, status);
-
-//        return RedirectToPage("/Booking/Availability", new
-//        {
-//            selectedDate = selectedDate.ToString("yyyy-MM-dd")
-//        });
-//    }
-//}

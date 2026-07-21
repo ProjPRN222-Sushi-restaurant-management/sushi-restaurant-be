@@ -89,7 +89,6 @@ public class BookingService : IBookingService
         await _bookingRepository.AddAsync(booking, ct);
         await _bookingRepository.SaveChangesAsync(ct);
 
-        // Gửi thông báo an toàn (Không để lỗi gửi tin nhắn làm ảnh hưởng đến kết quả đặt bàn)
         try
         {
             var bookingDateTime = booking.BookingDate.ToDateTime(booking.BookingTime);
@@ -100,9 +99,8 @@ public class BookingService : IBookingService
                 booking.GuestName
             );
         }
-        catch (Exception ex)
+        catch
         {
-            // _logger.LogError(ex, "Gửi tin nhắn xác nhận thất bại cho Booking #{BookingId}", booking.BookingId);
         }
 
         return booking;
@@ -120,7 +118,6 @@ public class BookingService : IBookingService
         var reqStart = ToMinutes(request.BookingTime);
         var reqEnd = reqStart + (request.DurationMinutes > 0 ? request.DurationMinutes : 90);
 
-        // Bàn bị chiếm nếu có booking (chưa hủy) TRÙNG KHOẢNG thời gian yêu cầu
         var bookedTableIds = bookings
             .Where(b => b.BookingStatus != BookingStatusEnum.CANCELLED)
             .Where(b => Overlaps(reqStart, reqEnd, b))
@@ -138,7 +135,6 @@ public class BookingService : IBookingService
             .ToList();
     }
 
-    // Hai khoảng [s1,e1) và [s2,e2) trùng nhau khi s1 < e2 && s2 < e1 (đơn vị: phút tính từ 0h)
     private static bool Overlaps(int reqStart, int reqEnd, Booking existing)
     {
         var bStart = ToMinutes(existing.BookingTime);
@@ -148,7 +144,6 @@ public class BookingService : IBookingService
 
     private static int ToMinutes(TimeOnly t) => (int)t.ToTimeSpan().TotalMinutes;
 
-    // Bàn còn trống nếu KHÔNG có booking (chưa hủy) nào của bàn đó trùng khoảng yêu cầu
     private async Task<bool> IsTableFreeAsync(long tableId, CreateBookingRequest request, CancellationToken ct)
     {
         var bookings = await _bookingRepository.GetByDateAsync(request.BookingDate, ct);
@@ -244,7 +239,6 @@ public class BookingService : IBookingService
         if (request.AdultCount + request.ChildCount <= 0)
             throw new ArgumentException("Số lượng khách phải lớn hơn 0.", nameof(request.AdultCount));
 
-        // Chặn đặt bàn cho thời điểm đã qua (so tới phút, tránh chặn nhầm ngay phút hiện tại)
         var now = DateTime.Now;
         var currentMinute = now.AddSeconds(-now.Second).AddMilliseconds(-now.Millisecond);
         if (request.BookingDate.ToDateTime(request.BookingTime) < currentMinute)

@@ -23,8 +23,7 @@ namespace Repositories.Implementations
                 .Include(o => o.Table)
                 .Include(o => o.InvoiceStaff)
                 .Include(o => o.ReceivedStaff)
-                .Include(o => o.Booking)
-                    .ThenInclude(b => b.Customer)
+                .Include(o => o.Booking!.Customer)
                 .OrderByDescending(o => o.OrderId)
                 .ToListAsync(ct);
         }
@@ -39,8 +38,7 @@ namespace Repositories.Implementations
                 .Include(o => o.Table)
                 .Include(o => o.InvoiceStaff)
                 .Include(o => o.ReceivedStaff)
-                .Include(o => o.Booking)
-                    .ThenInclude(b => b.Customer)
+                .Include(o => o.Booking!.Customer)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.MenuItem)
                 .FirstOrDefaultAsync(o => o.OrderId == id, ct);

@@ -69,7 +69,6 @@ namespace Repositories.Implementations
             }
             catch (Exception)
             {
-                // Log the exception as needed
                 return false;
             }
         }
@@ -89,7 +88,6 @@ namespace Repositories.Implementations
             }
             catch (Exception)
             {
-                // Log the exception as needed
                 return false;
             }
         }

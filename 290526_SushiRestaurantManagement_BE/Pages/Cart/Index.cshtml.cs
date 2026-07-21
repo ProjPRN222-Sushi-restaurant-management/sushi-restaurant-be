@@ -1,4 +1,4 @@
-Ôªøusing _290526_SushiRestaurantManagement_BE.Helpers;
+using _290526_SushiRestaurantManagement_BE.Helpers;
 using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -71,7 +71,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             if (tableId != null)
                 HttpContext.Session.SetString("TABLE_ID", tableId.Value.ToString());
 
-            TempData["Success"] = "ƒê√£ th√™m m√≥n v√†o gi·ªè h√†ng.";
+            TempData["Success"] = "–„ thÍm mÛn v‡o gi? h‡ng.";
 
             return RedirectToPage("/Menu/Index", new
             {
@@ -110,17 +110,6 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
 
             return RedirectToPage();
         }
-
-        //public IActionResult OnPostRemove(long menuItemId)
-        //{
-        //    var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
-
-        //    cart.RemoveAll(x => x.MenuItemId == menuItemId);
-
-        //    HttpContext.Session.SetObject("CART", cart);
-
-        //    return RedirectToPage();
-        //}
         public IActionResult OnPostRemove(long menuItemId, string? note)
         {
             var cart = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];

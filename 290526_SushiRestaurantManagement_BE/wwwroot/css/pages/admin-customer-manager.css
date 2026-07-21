@@ -1,0 +1,302 @@
+﻿.customer-page {
+        padding: 4px 0 30px;
+    }
+
+    .customer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .customer-title {
+        margin: 0;
+        color: #991b1b;
+        font-weight: 900;
+    }
+
+    .customer-subtitle {
+        margin-top: 4px;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .btn-add-customer {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 22px;
+        color: #fff;
+        font-weight: 900;
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        box-shadow: 0 14px 28px rgba(220, 38, 38, .24);
+        transition: all .2s ease;
+    }
+
+        .btn-add-customer:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(220, 38, 38, .34);
+        }
+
+    .admin-alert {
+        border: none;
+        border-radius: 18px;
+        padding: 15px 18px;
+        font-weight: 700;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, .06);
+    }
+
+    .alert-success.admin-alert {
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        color: #166534;
+    }
+
+    .alert-danger.admin-alert {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .search-card,
+    .customer-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, .08);
+        overflow: hidden;
+    }
+
+    .search-card {
+        padding: 22px;
+        margin-bottom: 24px;
+    }
+
+    .search-input {
+        border-radius: 999px;
+        border: 1px solid #dbe3ef;
+        padding: 11px 18px;
+        font-weight: 600;
+    }
+
+        .search-input:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .btn-search {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 22px;
+        color: #fff;
+        font-weight: 900;
+        background: linear-gradient(135deg, #111827, #374151);
+    }
+
+    .customer-card-header {
+        padding: 18px 22px;
+        background: #fff7ed;
+        border-bottom: 1px solid #fed7aa;
+        color: #9a3412;
+        font-weight: 900;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .customer-count-badge {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+        font-size: .85rem;
+    }
+
+    .customer-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .customer-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: .86rem;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px;
+        }
+
+        .customer-table tbody td {
+            padding: 15px 14px;
+            color: #334155;
+        }
+
+        .customer-table tbody tr:hover {
+            background: #fff7ed;
+        }
+
+    .customer-id {
+        color: #dc2626;
+        font-weight: 900;
+    }
+
+    .customer-name {
+        color: #1f2937;
+        font-weight: 900;
+    }
+
+    .phone-pill,
+    .membership-pill,
+    .points-pill,
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: .84rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .phone-pill {
+        background: #f8fafc;
+        color: #334155;
+        border: 1px solid #e5e7eb;
+    }
+
+    .membership-pill {
+        background: #fff7ed;
+        color: #9a3412;
+    }
+
+    .points-pill {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-deleted {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .action-group {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        border: none;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: .84rem;
+        font-weight: 900;
+        text-decoration: none;
+        transition: all .18s ease;
+    }
+
+    .btn-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+        .btn-edit:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+    .empty-row {
+        padding: 30px;
+        color: #64748b;
+        font-weight: 800;
+    }
+
+    .customer-modal .modal-content {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, .18);
+    }
+
+    .customer-modal .modal-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+        padding: 20px 24px;
+    }
+
+    .customer-modal .modal-title {
+        font-weight: 900;
+    }
+
+    .customer-modal .modal-body {
+        padding: 24px;
+    }
+
+    .customer-modal .form-label {
+        font-weight: 800;
+        color: #475569;
+    }
+
+    .customer-modal .form-control {
+        border-radius: 15px;
+        border: 1px solid #dbe3ef;
+        padding: 11px 13px;
+        font-weight: 600;
+    }
+
+        .customer-modal .form-control:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 .2rem rgba(249, 115, 22, .15);
+        }
+
+    .customer-modal .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        padding: 18px 24px;
+    }
+
+    .btn-modal-cancel,
+    .btn-modal-save {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-weight: 900;
+    }
+
+    .btn-modal-cancel {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .btn-modal-save {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+    }
+
+    @media (max-width: 576px) {
+        .btn-add-customer,
+        .btn-search {
+            width: 100%;
+        }
+    }

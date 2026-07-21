@@ -4,7 +4,6 @@
     var isLoggedIn = Context.Session.GetString("StaffId") != null;
     var staffPhone = Context.Session.GetString("StaffPhone") ?? "";
 
-    // Check acc admin
     var isAdmin = isLoggedIn && staffPhone == "0999999999";
 }
 

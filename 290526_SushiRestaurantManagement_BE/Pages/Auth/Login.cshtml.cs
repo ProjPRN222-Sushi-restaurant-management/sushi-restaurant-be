@@ -9,7 +9,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
     public class LoginModel : PageModel
     {
         private readonly RestaurantSystemDbContext _context;
-        private readonly IConfiguration _configuration; 
+        private readonly IConfiguration _configuration;
 
         public LoginModel(RestaurantSystemDbContext context, IConfiguration configuration)
         {
@@ -22,38 +22,38 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
 
         public string? ErrorMessage { get; set; }
 
-        public void OnGet() { }
+        public void OnGet()
+        {
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
+            {
                 return Page();
+            }
 
             var phone = Input.Phone.Trim();
-
-            // 1. KI?M TRA T�I KHO?N ADMIN FIX C?NG TR??C
             var adminPhone = _configuration["AdminAccount:Phone"];
             var adminPassword = _configuration["AdminAccount:Password"];
-            var adminName = _configuration["AdminAccount:FullName"] ?? "Admin";
+            var adminName = _configuration["AdminAccount:FullName"] ?? "Quản trị viên";
 
             if (phone == adminPhone && Input.Password == adminPassword)
             {
-                // L?u session ph�n quy?n Admin
-                HttpContext.Session.SetString("StaffId", "0"); // ID m?c ??nh cho Admin c?ng
+                HttpContext.Session.SetString("StaffId", "0");
                 HttpContext.Session.SetString("StaffName", adminName);
                 HttpContext.Session.SetString("StaffPhone", phone);
-                HttpContext.Session.SetString("StaffRole", "Admin"); // ?�nh d?u vai tr�
+                HttpContext.Session.SetString("StaffRole", "Admin");
 
-                return RedirectToPage("/Admin/Index"); // ?i?u h??ng th?ng v�o Dashboard Admin
+                return RedirectToPage("/Admin/Index");
             }
 
-            // 2. N?U KH�NG PH?I ADMIN TH� KI?M TRA STAFF TRONG DATABASE NH? C?
             var staff = await _context.Staffs
                 .FirstOrDefaultAsync(s => s.Phone == phone && s.IsActive);
 
             if (staff == null || string.IsNullOrWhiteSpace(staff.PasswordHash))
             {
-                ErrorMessage = "Invalid phone or password.";
+                ErrorMessage = "Số điện thoại hoặc mật khẩu không đúng.";
                 return Page();
             }
 
@@ -70,20 +70,20 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             }
             catch
             {
-                ErrorMessage = "Password hash in database is invalid.";
+                ErrorMessage = "Mật khẩu trong hệ thống không hợp lệ.";
                 return Page();
             }
 
             if (!isValidPassword)
             {
-                ErrorMessage = "Invalid phone or password.";
+                ErrorMessage = "Số điện thoại hoặc mật khẩu không đúng.";
                 return Page();
             }
 
             HttpContext.Session.SetString("StaffId", staff.StaffId.ToString());
             HttpContext.Session.SetString("StaffName", staff.FullName ?? "");
             HttpContext.Session.SetString("StaffPhone", staff.Phone ?? "");
-            HttpContext.Session.SetString("StaffRole", "Staff"); // T�i kho?n nh�n vi�n th�ng th??ng
+            HttpContext.Session.SetString("StaffRole", "Staff");
 
             return RedirectToPage("/Booking/Create");
         }
@@ -96,10 +96,10 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
 
         public class LoginInput
         {
-            [Required(ErrorMessage = "Phone is required")]
+            [Required(ErrorMessage = "Vui lòng nhập số điện thoại.")]
             public string Phone { get; set; } = "";
 
-            [Required(ErrorMessage = "Password is required")]
+            [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
             public string Password { get; set; } = "";
         }
     }

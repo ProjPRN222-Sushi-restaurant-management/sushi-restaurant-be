@@ -1,7 +1,7 @@
 using _290526_SushiRestaurantManagement_BE.Helpers;
+using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BusinessObjects.Models;
 using Services.Interfaces;
 
 namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
@@ -23,7 +23,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
 
-        public List<MenuCategory> Categories { get; set; } = new List<MenuCategory>();
+        public List<MenuCategory> Categories { get; set; } = new();
+
         public PaginatedList<MenuItem> DishList { get; set; } = new(new List<MenuItem>(), 0, 1, 15);
 
         [BindProperty(SupportsGet = true)]
@@ -37,72 +38,56 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             SearchString = searchString;
 
             var allCategories = await _categoryService.GetAllMenuCategoriesAsync();
-            if (allCategories != null)
-            {
-                Categories = allCategories.ToList();
-            }
+            Categories = allCategories?.ToList() ?? new List<MenuCategory>();
 
             var allMenuItems = await _itemService.GetAllMenuItemsAsync();
-            if (allMenuItems != null)
+            if (allMenuItems == null)
             {
-                var query = allMenuItems.AsQueryable();
-
-                if (SelectedCategoryId.HasValue)
-                {
-                    query = query.Where(d => d.CategoryId == SelectedCategoryId.Value);
-                }
-
-                if (!string.IsNullOrEmpty(SearchString))
-                {
-                    query = query.Where(d => d.ItemName.Contains(SearchString.Trim(), StringComparison.OrdinalIgnoreCase));
-                }
-
-                var orderedDishes = query.OrderBy(d => d.MenuItemId).ToList();
-                DishList = PaginatedList<MenuItem>.Create(orderedDishes, PageNumber, PageSize);
+                return;
             }
+
+            var query = allMenuItems.AsQueryable();
+            if (SelectedCategoryId.HasValue)
+            {
+                query = query.Where(d => d.CategoryId == SelectedCategoryId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearchString))
+            {
+                query = query.Where(d =>
+                    d.ItemName.Contains(SearchString.Trim(), StringComparison.OrdinalIgnoreCase));
+            }
+
+            var orderedDishes = query.OrderBy(d => d.MenuItemId).ToList();
+            DishList = PaginatedList<MenuItem>.Create(orderedDishes, PageNumber, PageSize);
         }
 
         public async Task<IActionResult> OnPostAddCategoryAsync(string NewCategoryName)
         {
             if (string.IsNullOrWhiteSpace(NewCategoryName))
             {
-                TempData["Error"] = "T�n nh�m danh m?c kh�ng ???c ?? tr?ng.";
-                return RedirectToPage("/Admin/MenuManager", new
-                {
-                    selectedCategoryId = SelectedCategoryId,
-                    searchString = SearchString,
-                    PageNumber = PageNumber
-                });
+                TempData["Error"] = "Tên nhóm danh mục không được để trống.";
+                return RedirectToMenuManager();
             }
 
             try
             {
-                var newCat = new MenuCategory
+                var newCategory = new MenuCategory
                 {
                     CategoryName = NewCategoryName.Trim()
                 };
 
-                var result = await _categoryService.AddMenuCategoryAsync(newCat);
-                if (result)
-                {
-                    TempData["Success"] = "Th�m nh�m danh m?c m?i th�nh c�ng!";
-                }
-                else
-                {
-                    TempData["Error"] = "Th�m danh m?c th?t b?i. Vui l�ng ki?m tra l?i.";
-                }
+                var result = await _categoryService.AddMenuCategoryAsync(newCategory);
+                TempData[result ? "Success" : "Error"] = result
+                    ? "Thêm nhóm danh mục mới thành công."
+                    : "Thêm danh mục thất bại. Vui lòng kiểm tra lại.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "L?i h? th?ng: " + ex.Message;
+                TempData["Error"] = "Lỗi hệ thống: " + ex.Message;
             }
 
-            return RedirectToPage("/Admin/MenuManager", new
-            {
-                selectedCategoryId = SelectedCategoryId,
-                searchString = SearchString,
-                PageNumber = PageNumber
-            });
+            return RedirectToMenuManager();
         }
 
         public async Task<IActionResult> OnPostAddDishAsync(
@@ -114,13 +99,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         {
             if (string.IsNullOrWhiteSpace(NewDishName) || NewDishPrice < 0)
             {
-                TempData["Error"] = "Th�ng tin t�n m�n ho?c gi� b�n nh?p v�o kh�ng h?p l?.";
-                return RedirectToPage("/Admin/MenuManager", new
-                {
-                    selectedCategoryId = SelectedCategoryId,
-                    searchString = SearchString,
-                    PageNumber = PageNumber
-                });
+                TempData["Error"] = "Tên món hoặc giá bán không hợp lệ.";
+                return RedirectToMenuManager();
             }
 
             try
@@ -131,31 +111,23 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                     CategoryId = NewDishCategoryId,
                     Price = NewDishPrice,
                     Description = NewDishDescription?.Trim(),
-                    ImageUrl = string.IsNullOrWhiteSpace(NewDishImageUrl) ? "images/default_sushi.jpg" : NewDishImageUrl.Trim(),
+                    ImageUrl = string.IsNullOrWhiteSpace(NewDishImageUrl)
+                        ? "images/default_sushi.jpg"
+                        : NewDishImageUrl.Trim(),
                     IsAvailable = true
                 };
 
                 var result = await _itemService.AddMenuItemAsync(newItem);
-                if (result)
-                {
-                    TempData["Success"] = "Th�m m�n ?n m?i k�m h�nh ?nh v� m� t? th�nh c�ng!";
-                }
-                else
-                {
-                    TempData["Error"] = "Kh�ng th? th�m m�n ?n. Vui l�ng th? l?i.";
-                }
+                TempData[result ? "Success" : "Error"] = result
+                    ? "Thêm món ăn mới thành công."
+                    : "Không thể thêm món ăn. Vui lòng thử lại.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "L?i h? th?ng: " + ex.Message;
+                TempData["Error"] = "Lỗi hệ thống: " + ex.Message;
             }
 
-            return RedirectToPage("/Admin/MenuManager", new
-            {
-                selectedCategoryId = SelectedCategoryId,
-                searchString = SearchString,
-                PageNumber = PageNumber
-            });
+            return RedirectToMenuManager();
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
@@ -163,27 +135,16 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             try
             {
                 var result = await _itemService.DeleteMenuItemAsync(id);
-
-                if (result)
-                {
-                    TempData["Success"] = "?� ng?ng b�n m�n ?n th�nh c�ng!";
-                }
-                else
-                {
-                    TempData["Error"] = "Kh�ng th? ng?ng b�n m�n ?n n�y.";
-                }
+                TempData[result ? "Success" : "Error"] = result
+                    ? "Đã ngừng bán món ăn thành công."
+                    : "Không thể ngừng bán món ăn này.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "L?i h? th?ng: " + ex.Message;
+                TempData["Error"] = "Lỗi hệ thống: " + ex.Message;
             }
 
-            return RedirectToPage("/Admin/MenuManager", new
-            {
-                selectedCategoryId = SelectedCategoryId,
-                searchString = SearchString,
-                PageNumber = PageNumber
-            });
+            return RedirectToMenuManager();
         }
 
         public async Task<IActionResult> OnPostDeleteCategoryAsync(long categoryId)
@@ -193,22 +154,30 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 var hasMenuItems = await _itemService.HasMenuItemsByCategoryAsync(categoryId);
                 if (hasMenuItems)
                 {
-                    TempData["Error"] = "Khong the xoa danh muc dang co mon an.";
+                    TempData["Error"] = "Không thể xóa danh mục đang có món ăn.";
                     return RedirectToMenuManagerAfterCategoryDelete(categoryId);
                 }
 
                 var result = await _categoryService.DeleteMenuCategoryAsync(categoryId);
                 TempData[result ? "Success" : "Error"] = result
-                    ? "Da xoa danh muc thanh cong."
-                    : "Khong the xoa danh muc nay.";
+                    ? "Đã xóa danh mục thành công."
+                    : "Không thể xóa danh mục này.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Loi he thong: " + ex.Message;
+                TempData["Error"] = "Lỗi hệ thống: " + ex.Message;
             }
 
             return RedirectToMenuManagerAfterCategoryDelete(categoryId);
         }
+
+        private IActionResult RedirectToMenuManager() =>
+            RedirectToPage("/Admin/MenuManager", new
+            {
+                selectedCategoryId = SelectedCategoryId,
+                searchString = SearchString,
+                PageNumber
+            });
 
         private IActionResult RedirectToMenuManagerAfterCategoryDelete(long deletedCategoryId)
         {

@@ -133,9 +133,9 @@
 
         <div class="login-header">
             <div class="login-icon">🍣</div>
-            <h2 class="login-title">Login</h2>
+            <h2 class="login-title">Đăng nhập</h2>
             <div class="login-subtitle">
-                Đăng nhập vào hệ thống Sushi Restaurant
+                Đăng nhập vào hệ thống Nhà hàng Sushi
             </div>
         </div>
 
@@ -157,7 +157,7 @@
 
             <form method="post" class="login-form">
                 <div class="mb-3">
-                    <label class="form-label-custom">Phone</label>
+                    <label class="form-label-custom">Số điện thoại</label>
                     <input asp-for="Input.Phone"
                            class="form-control"
                            placeholder="Nhập số điện thoại..." />
@@ -165,7 +165,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label-custom">Password</label>
+                    <label class="form-label-custom">Mật khẩu</label>
                     <input asp-for="Input.Password"
                            type="password"
                            class="form-control"
@@ -174,16 +174,16 @@
                 </div>
 
                 <button class="btn-login">
-                    Login
+                    Đăng nhập
                 </button>
 
                 <div class="auth-links">
                     <a asp-page="/Auth/ForgotPassword" class="auth-link">
-                        Forgot password?
+                        Quên mật khẩu?
                     </a>
 
                     <a asp-page="/Auth/Register" class="auth-link">
-                        Register
+                        Đăng ký
                     </a>
                 </div>
             </form>

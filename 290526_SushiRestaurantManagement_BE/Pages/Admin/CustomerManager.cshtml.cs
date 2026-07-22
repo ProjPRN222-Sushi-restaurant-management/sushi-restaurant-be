@@ -45,7 +45,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         {
             if (string.IsNullOrWhiteSpace(NewFullName) || string.IsNullOrWhiteSpace(NewPhone))
             {
-                TempData["Error"] = "Please provide both full name and phone number.";
+                TempData["Error"] = "Vui lòng nhập đầy đủ họ tên và số điện thoại.";
                 return RedirectToPage();
             }
 
@@ -61,11 +61,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 };
 
                 await _customerService.AddCustomerAsync(customer);
-                TempData["Success"] = "Customer created successfully.";
+                TempData["Success"] = "Tạo khách hàng thành công.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Unable to create customer: " + ex.Message;
+                TempData["Error"] = "Không thể tạo khách hàng: " + ex.Message;
             }
 
             return RedirectToPage();
@@ -76,11 +76,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             try
             {
                 await _customerService.DeleteCustomerAsync(id);
-                TempData["Success"] = "Customer deleted successfully.";
+                TempData["Success"] = "Xóa khách hàng thành công.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Unable to delete customer: " + ex.Message;
+                TempData["Error"] = "Không thể xóa khách hàng: " + ex.Message;
             }
 
             return RedirectToPage();

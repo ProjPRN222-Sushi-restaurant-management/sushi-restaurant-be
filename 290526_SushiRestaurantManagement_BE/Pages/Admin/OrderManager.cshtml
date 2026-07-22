@@ -4,7 +4,7 @@
 
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Quản Lý Orders";
+    ViewData["Title"] = "Quản lý đơn hàng";
     ViewBag.PaginatedList = Model.Orders;
 }
 
@@ -18,7 +18,7 @@
     <div class="order-manager-header">
         <div>
             <h2 class="order-manager-title">
-                Quản Lý Orders
+                Quản lý đơn hàng
             </h2>
 
             <div class="order-manager-subtitle">
@@ -27,7 +27,7 @@
         </div>
 
         <div class="order-badge">
-            🧾 Order Control
+            🧾 Kiểm soát đơn hàng
         </div>
     </div>
 
@@ -38,7 +38,7 @@
                 <input type="text"
                        name="SearchString"
                        class="form-control"
-                       placeholder="Nhập ID, số điện thoại, booking, table"
+                       placeholder="Nhập mã đơn, số điện thoại, mã đặt bàn, bàn"
                        value="@Model.SearchString" />
             </div>
 
@@ -56,7 +56,7 @@
 
             <div class="col-sm-4">
                 <button type="submit" class="btn-filter w-100">
-                    Lọc orders
+                    Lọc đơn hàng
                 </button>
             </div>
         </form>
@@ -64,10 +64,10 @@
 
     <div class="order-card">
         <div class="order-card-header">
-            <span>Danh sách orders</span>
+            <span>Danh sách đơn hàng</span>
 
             <span class="order-count-badge">
-                @Model.Orders.Items.Count orders
+                @Model.Orders.Items.Count đơn
             </span>
         </div>
 
@@ -75,15 +75,15 @@
             <table class="table order-table">
                 <thead>
                     <tr>
-                        <th class="ps-3">Order ID</th>
-                        <th>Booking</th>
-                        <th>Table</th>
-                        <th>Customer</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Export by</th>
-                        <th>Created</th>
-                        <th class="text-center">Actions</th>
+                        <th class="ps-3">Mã đơn</th>
+                        <th>Đặt bàn</th>
+                        <th>Bàn</th>
+                        <th>Khách hàng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Nhân viên nhận</th>
+                        <th>Ngày tạo</th>
+                        <th class="text-center">Thao tác</th>
                     </tr>
                 </thead>
 
@@ -233,7 +233,7 @@
                     {
                         <tr>
                             <td colspan="8" class="text-center empty-row">
-                                Không tìm thấy order nào.
+                                Không tìm thấy đơn hàng nào.
                             </td>
                         </tr>
                     }

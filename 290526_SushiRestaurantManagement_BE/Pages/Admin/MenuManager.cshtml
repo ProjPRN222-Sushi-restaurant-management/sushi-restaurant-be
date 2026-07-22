@@ -3,7 +3,7 @@
 
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Quản Lý Thực Đơn";
+    ViewData["Title"] = "Quản lý thực đơn";
     ViewBag.PaginatedList = Model.DishList;
 }
 
@@ -22,7 +22,7 @@
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
-                    aria-label="Close"></button>
+                    aria-label="Đóng"></button>
         </div>
     }
 
@@ -34,7 +34,7 @@
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
-                    aria-label="Close"></button>
+                    aria-label="Đóng"></button>
         </div>
     }
 
@@ -42,7 +42,7 @@
         <div>
             <h2 class="menu-admin-title">
                 <i class="fa-solid fa-utensils me-2"></i>
-                Quản Lý Thực Đơn
+                Quản lý thực đơn
             </h2>
 
             <div class="menu-admin-subtitle">
@@ -56,7 +56,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#addCategoryModal">
                 <i class="fa-solid fa-folder-plus me-1"></i>
-                Thêm Danh Mục
+                Thêm danh mục
             </button>
 
             <button type="button"
@@ -64,7 +64,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#addDishModal">
                 <i class="fa-solid fa-circle-plus me-1"></i>
-                Thêm Món Mới
+                Thêm món mới
             </button>
         </div>
     </div>
@@ -75,7 +75,7 @@
                 <div class="admin-card-header">
                     <span>
                         <i class="fa-solid fa-folder me-2"></i>
-                        Danh Mục Nhóm Món
+                        Danh mục nhóm món
                     </span>
                 </div>
 
@@ -153,7 +153,7 @@
 
             <div class="admin-card">
                 <div class="admin-card-header">
-                    <span>Danh Sách Món Ăn</span>
+                    <span>Danh sách món ăn</span>
 
                     <span class="dish-count-badge">
                         @Model.DishList.Items.Count món
@@ -164,10 +164,10 @@
                     <table class="table menu-table">
                         <thead>
                             <tr>
-                                <th class="ps-3">Mã Món</th>
-                                <th>Tên Món Ăn</th>
-                                <th>Đơn Giá</th>
-                                <th>Trạng Thái</th>
+                                <th class="ps-3">Mã món</th>
+                                <th>Tên món ăn</th>
+                                <th>Đơn giá</th>
+                                <th>Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
@@ -268,7 +268,7 @@
 
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        Thêm Nhóm Danh Mục Mới
+                        Thêm nhóm danh mục mới
                     </h5>
 
                     <button type="button"
@@ -315,7 +315,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="fa-solid fa-circle-plus me-1"></i>
-                        Thêm Món Ăn Mới
+                        Thêm món ăn mới
                     </h5>
 
                     <button type="button"

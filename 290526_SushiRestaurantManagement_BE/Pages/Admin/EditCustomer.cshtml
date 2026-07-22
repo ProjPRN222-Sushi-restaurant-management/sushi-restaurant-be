@@ -204,7 +204,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label-custom">Loyalty points</label>
+                        <label class="form-label-custom">Điểm tích lũy</label>
                         <input asp-for="CustomerInfo.LoyaltyPoints"
                                type="number"
                                min="0"
@@ -214,7 +214,7 @@
                     <div class="mb-3">
                         <label class="form-label-custom">Trạng thái</label>
                         <input class="form-control @(Model.CustomerInfo.DeletedAt == null ? "status-input-active" : "status-input-deleted")"
-                               value="@(Model.CustomerInfo.DeletedAt == null ? "Active" : "Deleted")"
+                               value="@(Model.CustomerInfo.DeletedAt == null ? "Đang hoạt động" : "Đã xóa")"
                                disabled />
                     </div>
 

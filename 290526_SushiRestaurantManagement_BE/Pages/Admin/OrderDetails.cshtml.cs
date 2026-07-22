@@ -62,11 +62,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 order.InvoiceStaffName =
                     order.ReceivedStaff?.FullName ??
                     order.ReceivedStaffName ??
-                    "Khong xac dinh";
+                    "Không xác định";
                 return;
             }
 
-            order.InvoiceStaffName = HttpContext.Session.GetString("StaffName") ?? "Khong xac dinh";
+            order.InvoiceStaffName = HttpContext.Session.GetString("StaffName") ?? "Không xác định";
 
             if (long.TryParse(HttpContext.Session.GetString("StaffId"), out var staffId) &&
                 staffId > 0)

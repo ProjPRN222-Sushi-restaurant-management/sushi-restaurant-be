@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Order.HistoryModel
 @using BusinessObjects.Enums
 
@@ -6,60 +6,73 @@
     <link rel="stylesheet" href="~/css/pages/order-history.css" asp-append-version="true" />
 }
 
+@{
+    var allOrders = Model.Orders.OrderBy(o => o.CreatedAt ?? DateTime.MinValue).ToList();
+    var overviewOrder = allOrders.LastOrDefault();
+    var isTakeaway = Model.Booking == null && overviewOrder != null;
+    var orderItemsCount = allOrders.SelectMany(o => o.OrderItems).Sum(i => i.Quantity);
+    var discountTotal = allOrders.Sum(o => o.DiscountAmount);
+    var earnedPoints = allOrders.Sum(o => o.EarnedLoyaltyPoints);
+    var staffId = overviewOrder?.ReceivedStaffId ?? overviewOrder?.InvoiceStaffId;
+    var staffName =
+        overviewOrder?.ReceivedStaff?.FullName ??
+        overviewOrder?.ReceivedStaffName ??
+        overviewOrder?.InvoiceStaff?.FullName ??
+        overviewOrder?.InvoiceStaffName ??
+        "Chưa xác định";
+    var receivedAt = overviewOrder?.ReceivedAt ?? overviewOrder?.CreatedAt;
+    var customerName =
+        Model.Booking?.GuestName ??
+        overviewOrder?.Customer?.FullName ??
+        "Khách lẻ";
+    var customerPhone =
+        Model.Booking?.GuestPhone ??
+        overviewOrder?.Customer?.Phone ??
+        "";
+    var tableText = Model.Booking != null
+        ? $"Bàn {Model.Booking.TableId}"
+        : overviewOrder?.TableId?.ToString() ?? "";
+    var statusClass = overviewOrder == null
+        ? "status-other"
+        : overviewOrder.OrderStatus switch
+        {
+            OrderStatusEnum.PENDING => "status-pending",
+            OrderStatusEnum.PREPARING => "status-preparing",
+            OrderStatusEnum.COMPLETED => "status-completed",
+            OrderStatusEnum.CANCELLED => "status-cancelled",
+            _ => "status-other"
+        };
+}
 
 <div class="order-history-page @(Model.BillPrint ? "bill-print-mode" : "")">
-
     <h2 class="page-title">Lịch sử order</h2>
+
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">
-            @TempData["Success"]
-        </div>
+        <div class="alert alert-success">@TempData["Success"]</div>
     }
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">
-            @TempData["Error"]
-        </div>
+        <div class="alert alert-danger">@TempData["Error"]</div>
     }
 
-    @if (Model.Booking != null)
+    @if (Model.Booking != null || overviewOrder != null)
     {
-        var overviewOrders = Model.Orders.OrderBy(o => o.CreatedAt ?? DateTime.MinValue).ToList();
-        var overviewOrder = overviewOrders.LastOrDefault();
-        var overviewReceivedStaffId = overviewOrder?.ReceivedStaffId ?? overviewOrder?.InvoiceStaffId;
-        var overviewReceivedStaffName =
-            overviewOrder?.ReceivedStaff?.FullName ??
-            overviewOrder?.ReceivedStaffName ??
-            overviewOrder?.InvoiceStaff?.FullName ??
-            overviewOrder?.InvoiceStaffName ??
-            "Chưa xác định";
-        var overviewReceivedAt = overviewOrder?.ReceivedAt ?? overviewOrder?.CreatedAt;
-        var overviewItemsCount = overviewOrders.SelectMany(o => o.OrderItems).Sum(i => i.Quantity);
-        var overviewDiscount = overviewOrders.Sum(o => o.DiscountAmount);
-        var overviewPoints = overviewOrders.Sum(o => o.EarnedLoyaltyPoints);
-        var overviewLevel = overviewOrder?.MembershipLevelApplied.ToString() ?? "NONE";
-        var overviewStatusClass = overviewOrder == null
-            ? "status-other"
-            : overviewOrder.OrderStatus switch
-            {
-                OrderStatusEnum.PENDING => "status-pending",
-                OrderStatusEnum.PREPARING => "status-preparing",
-                OrderStatusEnum.COMPLETED => "status-completed",
-                OrderStatusEnum.CANCELLED => "status-cancelled",
-                _ => "status-other"
-            };
-
         <section class="history-overview-card mb-4">
             <div class="history-overview-header">
                 <div>
-                    <h5>Booking #@Model.Booking.BookingId</h5>
-                    <span>@overviewOrders.Count order | @overviewItemsCount món</span>
+                    <h5>
+                        @(Model.Booking != null
+                            ? $"Đặt bàn #{Model.Booking.BookingId}"
+                            : $"Đơn mua mang đi #{overviewOrder?.OrderId}")
+                    </h5>
+                    <span>@allOrders.Count đơn | @orderItemsCount món</span>
                 </div>
+
                 @if (overviewOrder != null)
                 {
-                    <span class="status-pill @overviewStatusClass">@overviewOrder.OrderStatus</span>
+                    <span class="status-pill @statusClass">@overviewOrder.OrderStatus</span>
                 }
             </div>
 
@@ -67,91 +80,91 @@
                 <div class="history-info-column">
                     <div class="history-info-row">
                         <span>Khách hàng</span>
-                        <strong>@Model.Booking.GuestName</strong>
+                        <strong>@customerName</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Số điện thoại</span>
-                        <strong>@Model.Booking.GuestPhone</strong>
+                        <strong>@customerPhone</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Bàn</span>
-                        <strong class="history-important">Bàn @Model.Booking.TableId</strong>
+                        <strong class="history-important">@tableText</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Ngày booking</span>
-                        <strong>@Model.Booking.BookingDate</strong>
+                        <strong>@(Model.Booking?.BookingDate.ToString("dd/MM/yyyy") ?? "")</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Giờ booking</span>
-                        <strong>@Model.Booking.BookingTime</strong>
+                        <strong>@(Model.Booking?.BookingTime.ToString("HH:mm") ?? "")</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Ghi chú</span>
-                        <strong>@(string.IsNullOrWhiteSpace(Model.Booking.Note) ? "-" : Model.Booking.Note)</strong>
+                        <strong>@(Model.Booking?.Note ?? "")</strong>
                     </div>
                 </div>
 
                 <div class="history-info-column">
                     <div class="history-info-row">
-                        <span>Order gần nhất</span>
-                        <strong class="history-important">@(overviewOrder != null ? $"#{overviewOrder.OrderId}" : "-")</strong>
+                        <span>Đơn gần nhất</span>
+                        <strong class="history-important">@(overviewOrder != null ? $"#{overviewOrder.OrderId}" : "")</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Nhân viên nhận</span>
-                    @if (overviewReceivedStaffId.HasValue)
-                    {
-                        <a asp-page="/Admin/EditStaff"
-                           asp-route-id="@overviewReceivedStaffId.Value"
-                           class="staff-link">
-                            @overviewReceivedStaffName
-                        </a>
-                    }
-                    else
-                    {
-                        <strong>@overviewReceivedStaffName</strong>
-                    }
+                        @if (staffId.HasValue)
+                        {
+                            <a asp-page="/Admin/EditStaff"
+                               asp-route-id="@staffId.Value"
+                               class="staff-link">
+                                @staffName
+                            </a>
+                        }
+                        else
+                        {
+                            <strong>@staffName</strong>
+                        }
                     </div>
 
                     <div class="history-info-row">
                         <span>Thời gian nhận</span>
-                        <strong>@(overviewReceivedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa nhận")</strong>
+                        <strong>@(receivedAt?.ToString("dd/MM/yyyy HH:mm") ?? "")</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Hạng áp dụng</span>
-                        <strong>@overviewLevel</strong>
+                        <strong>@(overviewOrder?.MembershipLevelApplied.ToString() ?? "NONE")</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Giảm giá</span>
-                        <strong>@(overviewDiscount > 0 ? $"-{overviewDiscount:N0} đ" : "-")</strong>
+                        <strong>@(discountTotal > 0 ? $"-{discountTotal:N0} đ" : "")</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Điểm cộng</span>
-                        <strong>@overviewPoints điểm</strong>
+                        <strong>@earnedPoints điểm</strong>
                     </div>
 
                     <div class="history-info-row">
                         <span>Thanh toán</span>
-                        <strong class="history-money">@(overviewOrders.Any() ? $"{Model.TemporaryTotal:N0} đ" : "-")</strong>
+                        <strong class="history-money">@(allOrders.Any() ? $"{Model.TemporaryTotal:N0} đ" : "")</strong>
                     </div>
                 </div>
             </div>
 
-            @if (overviewOrders.Count > 1)
+            @if (allOrders.Count > 1)
             {
                 <div class="history-order-line">
-                    <span>Các order</span>
-                    @foreach (var order in overviewOrders)
+                    <span>Các đơn</span>
+                    @foreach (var order in allOrders)
                     {
-                        var stripStaffName =
+                        var lineStaffName =
                             order.ReceivedStaff?.FullName ??
                             order.ReceivedStaffName ??
                             order.InvoiceStaff?.FullName ??
@@ -159,8 +172,8 @@
                             "Chưa xác định";
 
                         <span>
-                            <strong>Order #@order.OrderId</strong>
-                            (@order.OrderStatus, @stripStaffName)
+                            <strong>Đơn #@order.OrderId</strong>
+                            (@order.OrderStatus, @lineStaffName)
                         </span>
                     }
                 </div>
@@ -168,10 +181,10 @@
         </section>
     }
 
-    @if (!Model.Orders.Any())
+    @if (!allOrders.Any())
     {
         <div class="empty-order">
-            Booking này chưa có món nào được order.
+            Đơn này chưa có món nào.
         </div>
     }
     else
@@ -193,7 +206,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var detail in Model.Orders.SelectMany(o => o.OrderItems))
+                            @foreach (var detail in allOrders.SelectMany(o => o.OrderItems))
                             {
                                 <tr>
                                     <td>
@@ -206,7 +219,7 @@
                                         @detail.UnitPrice.ToString("N0") đ
                                     </td>
                                     <td class="text-end money">
-                                        @((detail.Quantity * detail.UnitPrice).ToString("N0")) đ
+                                        @detail.TotalPrice.ToString("N0") đ
                                     </td>
                                 </tr>
                             }
@@ -221,18 +234,18 @@
             </div>
         </div>
     }
-    @if (Model.Orders.Any() && Model.Booking != null)
+
+    @if (allOrders.Any())
     {
-        var billOrders = Model.Orders.ToList();
-        var billSubtotal = billOrders.Sum(o =>
+        var billSubtotal = allOrders.Sum(o =>
             o.SubtotalAmount > 0
                 ? o.SubtotalAmount
                 : o.OrderItems.Sum(i => i.TotalPrice));
-        var billDiscount = billOrders.Sum(o => o.DiscountAmount);
-        var billPaidAt = billOrders
+        var billDiscount = allOrders.Sum(o => o.DiscountAmount);
+        var billPaidAt = allOrders
             .OrderByDescending(o => o.CompletedAt ?? o.InvoiceIssuedAt ?? o.CreatedAt)
             .FirstOrDefault()?.CompletedAt ?? DateTime.Now;
-        var billStaffName = billOrders
+        var billStaffName = allOrders
             .Select(o =>
                 o.InvoiceStaff?.FullName ??
                 o.InvoiceStaffName ??
@@ -240,15 +253,15 @@
                 o.ReceivedStaffName)
             .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? "Không xác định";
 
-        <section class="payment-bill" aria-label="Bill thanh toán">
-            <h1 class="bill-title">Sushi Restaurant</h1>
+        <section class="payment-bill" aria-label="Hóa đơn thanh toán">
+            <h1 class="bill-title">Nhà hàng Sushi</h1>
             <div class="bill-subtitle">Hóa đơn thanh toán</div>
 
             <div class="bill-meta">
-                <div class="bill-line"><span>Booking</span><strong>#@Model.Booking.BookingId</strong></div>
-                <div class="bill-line"><span>Bàn</span><strong>@Model.Booking.TableId</strong></div>
-                <div class="bill-line"><span>Khách hàng</span><strong>@Model.Booking.GuestName</strong></div>
-                <div class="bill-line"><span>SĐT</span><strong>@Model.Booking.GuestPhone</strong></div>
+                <div class="bill-line"><span>Đặt bàn</span><strong>@(Model.Booking != null ? $"#{Model.Booking.BookingId}" : "")</strong></div>
+                <div class="bill-line"><span>Bàn</span><strong>@(Model.Booking?.TableId.ToString() ?? overviewOrder?.TableId?.ToString() ?? "")</strong></div>
+                <div class="bill-line"><span>Khách hàng</span><strong>@customerName</strong></div>
+                <div class="bill-line"><span>SĐT</span><strong>@customerPhone</strong></div>
                 <div class="bill-line"><span>Nhân viên</span><strong>@billStaffName</strong></div>
                 <div class="bill-line"><span>Giờ thanh toán</span><strong>@billPaidAt.ToString("dd/MM/yyyy HH:mm")</strong></div>
             </div>
@@ -262,7 +275,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var detail in billOrders.SelectMany(o => o.OrderItems))
+                    @foreach (var detail in allOrders.SelectMany(o => o.OrderItems))
                     {
                         <tr>
                             <td>
@@ -283,7 +296,7 @@
                 <div class="bill-line"><span>Tạm tính</span><strong>@billSubtotal.ToString("N0") đ</strong></div>
                 <div class="bill-line"><span>Giảm giá</span><strong>-@billDiscount.ToString("N0") đ</strong></div>
                 <div class="bill-line bill-final"><span>Thanh toán</span><strong>@Model.TemporaryTotal.ToString("N0") đ</strong></div>
-                <div class="bill-line"><span>Điểm cộng</span><strong>@billOrders.Sum(o => o.EarnedLoyaltyPoints) điểm</strong></div>
+                <div class="bill-line"><span>Điểm cộng</span><strong>@allOrders.Sum(o => o.EarnedLoyaltyPoints) điểm</strong></div>
             </div>
 
             <div class="bill-footer">Cảm ơn quý khách và hẹn gặp lại</div>
@@ -291,26 +304,28 @@
     }
 
     <div class="action-bar">
-        @if (Model.Orders.Any() && Model.Booking != null)
+        @if (allOrders.Any())
         {
-            var isCompleted = Model.Orders.All(o => o.OrderStatus == OrderStatusEnum.COMPLETED);
+            var isCompleted = allOrders.All(o => o.OrderStatus == OrderStatusEnum.COMPLETED);
 
             <form method="post"
                   asp-page-handler="PayAndPrintBill"
-                  asp-route-bookingId="@Model.Booking.BookingId"
+                  asp-route-bookingId="@Model.Booking?.BookingId"
+                  asp-route-orderId="@(isTakeaway ? overviewOrder?.OrderId : null)"
                   class="m-0"
-                  onsubmit="return confirm('Xác nhận thanh toán booking này? Sau khi thanh toán, booking sẽ COMPLETED và bàn trở về AVAILABLE.');">
+                  onsubmit="return confirm('Xác nhận thanh toán đơn này? Sau khi thanh toán, trạng thái sẽ chuyển sang COMPLETED.');">
                 <button type="submit" class="btn btn-pay-bill">
                     <i class="fa-solid fa-receipt me-2"></i>
-                    @(isCompleted ? "Xuất hóa đơn" : "Thanh toán + xuất bill")
+                    @(isCompleted ? "Xuất hóa đơn" : "Thanh toán + xuất hóa đơn")
                 </button>
             </form>
         }
+
         <a asp-page="/Menu/Index"
            asp-route-bookingId="@Model.Booking?.BookingId"
            asp-route-tableId="@Model.Booking?.TableId"
            class="btn btn-success btn-order-more">
-            Order thêm
+            Gọi thêm món
         </a>
 
         <a asp-page="/Booking/Reservations"
@@ -318,7 +333,6 @@
             Quay lại
         </a>
     </div>
-
 </div>
 
 @if (Model.BillPrint)

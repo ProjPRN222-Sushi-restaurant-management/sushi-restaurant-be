@@ -3,7 +3,7 @@
 
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Quản Lý Nhân Viên";
+    ViewData["Title"] = "Quản lý nhân viên";
     ViewBag.PaginatedList = Model.StaffList;
 }
 
@@ -22,7 +22,7 @@
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
-                    aria-label="Close"></button>
+                    aria-label="Đóng"></button>
         </div>
     }
 
@@ -34,7 +34,7 @@
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
-                    aria-label="Close"></button>
+                    aria-label="Đóng"></button>
         </div>
     }
 
@@ -42,7 +42,7 @@
         <div>
             <h2 class="staff-title">
                 <i class="fa-solid fa-user-tie me-2"></i>
-                Quản Lý Nhân Viên
+                Quản lý nhân viên
             </h2>
 
             <div class="staff-subtitle">
@@ -55,7 +55,7 @@
                 data-bs-toggle="modal"
                 data-bs-target="#addStaffModal">
             <i class="fa-solid fa-user-plus me-1"></i>
-            Thêm Nhân Viên
+            Thêm nhân viên
         </button>
     </div>
 
@@ -80,7 +80,7 @@
 
     <div class="staff-card">
         <div class="staff-card-header">
-            <span>Danh Sách Nhân Viên</span>
+            <span>Danh sách nhân viên</span>
 
             <span class="staff-count-badge">
                 @Model.StaffList.Items.Count nhân viên
@@ -92,10 +92,10 @@
                 <thead>
                     <tr>
                         <th class="ps-3">Mã NV</th>
-                        <th>Họ và Tên</th>
-                        <th>Số Điện Thoại</th>
-                        <th>Trạng Thái</th>
-                        <th>Ngày Tạo</th>
+                        <th>Họ và tên</th>
+                        <th>Số điện thoại</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
                         <th class="text-center">Hành động</th>
                     </tr>
                 </thead>
@@ -190,7 +190,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="fa-solid fa-user-plus me-2"></i>
-                        Thêm Nhân Viên Mới
+                        Thêm nhân viên mới
                     </h5>
 
                     <button type="button"

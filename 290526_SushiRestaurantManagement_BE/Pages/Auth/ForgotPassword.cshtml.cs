@@ -16,7 +16,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
         }
 
         [BindProperty]
-        [Required(ErrorMessage = "Phone is required")]
+        [Required(ErrorMessage = "Vui lòng nhập số điện thoại.")]
         public string Phone { get; set; } = "";
 
         public string? Message { get; set; }
@@ -35,7 +35,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
 
             if (staff == null)
             {
-                Message = "Phone number does not exist.";
+                Message = "Số điện thoại không tồn tại.";
                 return Page();
             }
 

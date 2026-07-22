@@ -25,7 +25,7 @@
         </div>
 
         <div class="dashboard-badge">
-            📊 Admin
+            📊 Quản trị
         </div>
     </div>
 
@@ -108,7 +108,7 @@
             </span>
 
             <span class="booking-count-badge">
-                @(Model.FilteredOrders?.Items.Count ?? 0) order
+                @(Model.FilteredOrders?.Items.Count ?? 0) đơn
             </span>
         </div>
 
@@ -116,7 +116,7 @@
             <table class="table booking-table">
                 <thead>
                     <tr>
-                        <th class="ps-3">Order</th>
+                        <th class="ps-3">Mã đơn</th>
                         <th>Ngày tạo</th>
                         <th>Loại đơn</th>
                         <th>Khách hàng</th>
@@ -178,7 +178,7 @@
                                     @if (order.BookingId.HasValue)
                                     {
                                         <span class="source-pill source-booking">
-                                            Booking #@order.BookingId
+                                            Đặt bàn #@order.BookingId
                                         </span>
                                     }
                                     else

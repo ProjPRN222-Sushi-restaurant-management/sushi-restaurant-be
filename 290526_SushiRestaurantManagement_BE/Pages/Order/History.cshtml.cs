@@ -1,6 +1,6 @@
+using BusinessObjects.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BusinessObjects.Enums;
 using Services.Interfaces;
 using Services.Policies;
 
@@ -35,11 +35,32 @@ public class HistoryModel : PageModel
     [BindProperty(SupportsGet = true)]
     public bool BillPrint { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(long bookingId)
+    public bool IsTakeawayOrder => Booking == null && Orders.Any();
+
+    public async Task<IActionResult> OnGetAsync(long? bookingId, long? orderId)
     {
+        if (orderId.HasValue)
+        {
+            var order = await _orderService.GetOrderByIdAsync((int)orderId.Value);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            Booking = order.Booking;
+            Orders = new List<BusinessObjects.Models.Order> { order };
+            TemporaryTotal = GetOrderPayableAmount(order);
+            return Page();
+        }
+
+        if (!bookingId.HasValue)
+        {
+            return NotFound();
+        }
+
         try
         {
-            var result = await _bookingService.GetBookingOrderHistoryAsync(bookingId);
+            var result = await _bookingService.GetBookingOrderHistoryAsync(bookingId.Value);
 
             Booking = result.Booking;
             Orders = result.Orders;
@@ -53,7 +74,62 @@ public class HistoryModel : PageModel
         }
     }
 
-    public async Task<IActionResult> OnPostPayAndPrintBillAsync(long bookingId)
+    public async Task<IActionResult> OnPostPayAndPrintBillAsync(long? bookingId, long? orderId)
+    {
+        if (orderId.HasValue)
+        {
+            return await PayAndPrintSingleOrderAsync(orderId.Value);
+        }
+
+        if (bookingId.HasValue)
+        {
+            return await PayAndPrintBookingOrdersAsync(bookingId.Value);
+        }
+
+        return NotFound();
+    }
+
+    private async Task<IActionResult> PayAndPrintSingleOrderAsync(long orderId)
+    {
+        try
+        {
+            var order = await _orderService.GetOrderByIdAsync((int)orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var previousStatus = order.OrderStatus;
+            order.OrderStatus = OrderStatusEnum.COMPLETED;
+            order.CompletedAt ??= DateTime.Now;
+            ApplyInvoiceIssuer(order);
+
+            await _orderService.UpdateOrderAsync(order);
+            await SyncCustomerLoyaltyPointsAsync(order, previousStatus, null);
+
+            if (order.TableId.HasValue)
+            {
+                await _tableService.UpdateTableStatusAsync(
+                    order.TableId.Value,
+                    TableStatusEnum.AVAILABLE);
+            }
+
+            TempData["Success"] = "Thanh toán thành công. Hóa đơn đã sẵn sàng để in.";
+
+            return RedirectToPage(new
+            {
+                orderId,
+                billPrint = true
+            });
+        }
+        catch
+        {
+            TempData["Error"] = "Không thể thanh toán đơn này.";
+            return RedirectToPage(new { orderId });
+        }
+    }
+
+    private async Task<IActionResult> PayAndPrintBookingOrdersAsync(long bookingId)
     {
         try
         {
@@ -62,7 +138,7 @@ public class HistoryModel : PageModel
 
             if (!orders.Any())
             {
-                TempData["Error"] = "Booking này chưa có order để thanh toán.";
+                TempData["Error"] = "Đặt bàn này chưa có đơn để thanh toán.";
                 return RedirectToPage(new { bookingId });
             }
 
@@ -86,7 +162,7 @@ public class HistoryModel : PageModel
                 booking.TableId,
                 TableStatusEnum.AVAILABLE);
 
-            TempData["Success"] = "Thanh toán thành công. Bill đã sẵn sàng để in.";
+            TempData["Success"] = "Thanh toán thành công. Hóa đơn đã sẵn sàng để in.";
 
             return RedirectToPage(new
             {
@@ -96,7 +172,7 @@ public class HistoryModel : PageModel
         }
         catch
         {
-            TempData["Error"] = "Không thể thanh toán booking này.";
+            TempData["Error"] = "Không thể thanh toán đặt bàn này.";
             return RedirectToPage(new { bookingId });
         }
     }
@@ -119,7 +195,7 @@ public class HistoryModel : PageModel
 
         var points = order.EarnedLoyaltyPoints > 0
             ? order.EarnedLoyaltyPoints
-            : LoyaltyPolicy.CalculateEarnedPoints(order.TotalAmount);
+            : LoyaltyPolicy.CalculateEarnedPoints(GetOrderPayableAmount(order));
 
         await _customerService.AdjustLoyaltyPointsAsync(
             customerId.Value,
@@ -156,5 +232,20 @@ public class HistoryModel : PageModel
         }
 
         order.InvoiceStaffId = null;
+    }
+
+    private static decimal GetOrderPayableAmount(BusinessObjects.Models.Order order)
+    {
+        if (order.TotalAmount > 0)
+        {
+            return order.TotalAmount;
+        }
+
+        if (order.SubtotalAmount > 0)
+        {
+            return order.SubtotalAmount - order.DiscountAmount;
+        }
+
+        return order.OrderItems.Sum(item => item.TotalPrice);
     }
 }

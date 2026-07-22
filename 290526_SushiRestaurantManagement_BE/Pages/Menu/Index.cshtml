@@ -34,6 +34,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/menu-index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/menu-controls.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/menu-card-controls.css" asp-append-version="true" />
 }
 
 
@@ -41,12 +42,12 @@
 
     <div class="menu-header">
         <div>
-            <h2 class="menu-title">Menu Sushi</h2>
+            <h2 class="menu-title">Thực đơn Sushi</h2>
             <div class="menu-subtitle">Chọn món cho booking hiện tại</div>
         </div>
 
         <div class="menu-badge">
-            🍣 Fresh Menu
+            🍣 Thực đơn tươi mới
         </div>
     </div>
 
@@ -72,7 +73,7 @@
             </div>
 
             <select name="categoryId" class="menu-category-select" aria-label="Lọc theo category">
-                <option value="">Tất cả category</option>
+                <option value="">Tất cả danh mục</option>
                 @foreach (var category in Model.Categories)
                 {
                     <option value="@category.CategoryId" selected="@(Model.CategoryId == category.CategoryId)">
@@ -90,7 +91,7 @@
                asp-route-bookingId="@Model.BookingId"
                asp-route-tableId="@Model.TableId"
                class="menu-reset-btn">
-                Reset
+                Đặt lại
             </a>
         </form>
 

@@ -30,8 +30,8 @@ public class ReservationsModel : PageModel
 
     public DateOnly SelectedDate { get; set; }
 
-    public PaginatedList<BusinessObjects.Models.Booking> Bookings { get; set; }
-        = new(new List<BusinessObjects.Models.Booking>(), 0, 1, 10);
+    public PaginatedList<OrderEntity> Orders { get; set; }
+        = new(new List<OrderEntity>(), 0, 1, 10);
 
     [BindProperty(SupportsGet = true)]
     public int PageNumber { get; set; } = 1;
@@ -42,59 +42,47 @@ public class ReservationsModel : PageModel
     {
         SelectedDate = selectedDate ?? DateOnly.FromDateTime(DateTime.Today);
 
-        var allBookings = (await _bookingService.GetByDateAsync(SelectedDate)).ToList();
-        await NormalizeActiveStatusesAsync(allBookings);
+        var startDateTime = SelectedDate.ToDateTime(TimeOnly.MinValue);
+        var endDateTime = SelectedDate.ToDateTime(TimeOnly.MaxValue);
 
-        Bookings = PaginatedList<BusinessObjects.Models.Booking>.Create(
-            allBookings,
+        var orders = (await _orderService.GetAllOrdersAsync())
+            .Where(order =>
+                order.CreatedAt.HasValue &&
+                order.CreatedAt.Value >= startDateTime &&
+                order.CreatedAt.Value <= endDateTime)
+            .OrderByDescending(order => order.CreatedAt ?? DateTime.MinValue)
+            .ThenByDescending(order => order.OrderId)
+            .ToList();
+
+        Orders = PaginatedList<OrderEntity>.Create(
+            orders,
             PageNumber,
             PageSize);
     }
 
     public async Task<IActionResult> OnPostUpdateStatusAsync(
-        long bookingId,
-        BookingStatusEnum status,
-        DateOnly selectedDate)
+        int orderId,
+        OrderStatusEnum status,
+        DateOnly selectedDate,
+        int pageNumber = 1)
     {
-        var booking = await _bookingService.GetBookingByIdAsync(bookingId);
-        var previousStatus = booking.BookingStatus;
-        var targetStatus = NormalizeRequestedStatus(booking, status);
+        var order = await _orderService.GetOrderByIdAsync(orderId);
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        var previousStatus = order.OrderStatus;
+        var targetStatus = NormalizeRequestedOrderStatus(order, status);
 
         if (previousStatus != targetStatus)
         {
-            booking.BookingStatus = targetStatus;
-
-            await _bookingService.UpdateAsync(booking);
-            await _bookingService.SaveChangesAsync();
-            await UpdateTableStatusForBookingAsync(booking, targetStatus);
-
-            await SyncRelatedOrdersAsync(bookingId, booking.CustomerId, targetStatus);
-        }
-
-        return RedirectToPage("/Booking/Reservations", new
-        {
-            selectedDate = selectedDate.ToString("yyyy-MM-dd")
-        });
-    }
-
-    private async Task SyncRelatedOrdersAsync(
-        long bookingId,
-        long? bookingCustomerId,
-        BookingStatusEnum bookingStatus)
-    {
-        var newOrderStatus = BookingStatusPolicy.ToOrderStatus(bookingStatus);
-        var orders = await _orderService.GetOrdersByBookingIdAsync(bookingId);
-
-        foreach (var order in orders)
-        {
-            var previousOrderStatus = order.OrderStatus;
-
-            order.OrderStatus = newOrderStatus;
-            order.CompletedAt = newOrderStatus == OrderStatusEnum.COMPLETED
+            order.OrderStatus = targetStatus;
+            order.CompletedAt = targetStatus == OrderStatusEnum.COMPLETED
                 ? DateTime.Now
                 : null;
 
-            if (newOrderStatus == OrderStatusEnum.COMPLETED)
+            if (targetStatus == OrderStatusEnum.COMPLETED)
             {
                 ApplyInvoiceIssuer(order);
             }
@@ -104,110 +92,84 @@ public class ReservationsModel : PageModel
             }
 
             await _orderService.UpdateOrderAsync(order);
-            await SyncCustomerLoyaltyPointsAsync(
-                order,
-                bookingCustomerId,
-                previousOrderStatus,
-                newOrderStatus);
+            await SyncRelatedBookingAndTableAsync(order, targetStatus);
+            await SyncCustomerLoyaltyPointsAsync(order, previousStatus, targetStatus);
         }
-    }
 
-    private async Task NormalizeActiveStatusesAsync(
-        IReadOnlyList<BusinessObjects.Models.Booking> bookings)
-    {
-        var changed = false;
-
-        foreach (var booking in bookings)
+        return RedirectToPage("/Booking/Reservations", new
         {
-            if (booking.BookingStatus != BookingStatusEnum.PENDING &&
-                booking.BookingStatus != BookingStatusEnum.PREPARING)
-            {
-                continue;
-            }
+            selectedDate = selectedDate.ToString("yyyy-MM-dd"),
+            PageNumber = pageNumber
+        });
+    }
 
-            var targetStatus = BookingStatusPolicy.GetActiveStatus(booking, DateTime.Now);
+    private async Task SyncRelatedBookingAndTableAsync(
+        OrderEntity order,
+        OrderStatusEnum orderStatus)
+    {
+        var bookingStatus = MapOrderStatusToBookingStatus(orderStatus);
 
-            if (booking.BookingStatus == targetStatus)
-            {
-                await SyncActiveOrderStatusesAsync(booking.BookingId, targetStatus);
-                await UpdateTableStatusForBookingAsync(booking, targetStatus);
-                continue;
-            }
-
-            booking.BookingStatus = targetStatus;
-            await _bookingService.UpdateAsync(booking);
-            await SyncActiveOrderStatusesAsync(booking.BookingId, targetStatus);
-            await UpdateTableStatusForBookingAsync(booking, targetStatus);
-            changed = true;
-        }
-
-        if (changed)
+        if (order.BookingId.HasValue)
         {
-            await _bookingService.SaveChangesAsync();
+            await _bookingService.UpdateBookingStatusAsync(
+                order.BookingId.Value,
+                bookingStatus);
         }
-    }
 
-    private async Task UpdateTableStatusForBookingAsync(
-        BusinessObjects.Models.Booking booking,
-        BookingStatusEnum bookingStatus)
-    {
-        await _tableService.UpdateTableStatusAsync(
-            booking.TableId,
-            BookingStatusPolicy.ToTableStatus(bookingStatus));
-    }
-
-    private async Task SyncActiveOrderStatusesAsync(
-        long bookingId,
-        BookingStatusEnum bookingStatus)
-    {
-        var orderStatus = BookingStatusPolicy.ToOrderStatus(bookingStatus);
-        var orders = await _orderService.GetOrdersByBookingIdAsync(bookingId);
-
-        foreach (var order in orders)
+        if (order.TableId.HasValue)
         {
-            if (order.OrderStatus != OrderStatusEnum.PENDING &&
-                order.OrderStatus != OrderStatusEnum.PREPARING)
-            {
-                continue;
-            }
-
-            if (order.OrderStatus == orderStatus)
-            {
-                continue;
-            }
-
-            order.OrderStatus = orderStatus;
-            await _orderService.UpdateOrderAsync(order);
+            await _tableService.UpdateTableStatusAsync(
+                order.TableId.Value,
+                BookingStatusPolicy.ToTableStatus(bookingStatus));
         }
     }
 
-    private static BookingStatusEnum NormalizeRequestedStatus(
-        BusinessObjects.Models.Booking booking,
-        BookingStatusEnum requestedStatus)
+    private static BookingStatusEnum MapOrderStatusToBookingStatus(
+        OrderStatusEnum status)
     {
-        if (requestedStatus != BookingStatusEnum.PENDING &&
-            requestedStatus != BookingStatusEnum.PREPARING)
+        return status switch
+        {
+            OrderStatusEnum.PREPARING => BookingStatusEnum.PREPARING,
+            OrderStatusEnum.COMPLETED => BookingStatusEnum.COMPLETED,
+            OrderStatusEnum.CANCELLED => BookingStatusEnum.CANCELLED,
+            _ => BookingStatusEnum.PENDING
+        };
+    }
+
+    private static OrderStatusEnum NormalizeRequestedOrderStatus(
+        OrderEntity order,
+        OrderStatusEnum requestedStatus)
+    {
+        if (requestedStatus != OrderStatusEnum.PENDING &&
+            requestedStatus != OrderStatusEnum.PREPARING)
         {
             return requestedStatus;
         }
 
-        return BookingStatusPolicy.GetActiveStatus(booking, DateTime.Now);
+        if (order.Booking == null)
+        {
+            return requestedStatus;
+        }
+
+        var bookingStatus = BookingStatusPolicy.GetActiveStatus(
+            order.Booking,
+            DateTime.Now);
+
+        return BookingStatusPolicy.ToOrderStatus(bookingStatus);
     }
 
     private async Task SyncCustomerLoyaltyPointsAsync(
         OrderEntity order,
-        long? bookingCustomerId,
         OrderStatusEnum previousStatus,
         OrderStatusEnum newStatus)
     {
         var pointDelta = CalculatePointDelta(order, previousStatus, newStatus);
-
         if (pointDelta == 0)
         {
             return;
         }
 
-        var customerId = order.CustomerId ?? bookingCustomerId;
+        var customerId = order.CustomerId ?? order.Booking?.CustomerId;
         if (!customerId.HasValue)
         {
             return;
@@ -250,17 +212,28 @@ public class ReservationsModel : PageModel
         }
 
         order.InvoiceIssuedAt = DateTime.Now;
+
+        if (order.ReceivedStaffId.HasValue ||
+            !string.IsNullOrWhiteSpace(order.ReceivedStaffName))
+        {
+            order.InvoiceStaffId = order.ReceivedStaffId;
+            order.InvoiceStaffName =
+                order.ReceivedStaff?.FullName ??
+                order.ReceivedStaffName ??
+                "Không xác định";
+            return;
+        }
+
         order.InvoiceStaffName = HttpContext.Session.GetString("StaffName") ?? "Không xác định";
 
         if (long.TryParse(HttpContext.Session.GetString("StaffId"), out var staffId) &&
             staffId > 0)
         {
             order.InvoiceStaffId = staffId;
+            return;
         }
-        else
-        {
-            order.InvoiceStaffId = null;
-        }
+
+        order.InvoiceStaffId = null;
     }
 
     private static void ClearInvoiceIssuer(OrderEntity order)

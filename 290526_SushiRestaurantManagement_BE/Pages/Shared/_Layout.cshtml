@@ -12,7 +12,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Sushi Restaurant</title>
+    <title>@ViewData["Title"] - Nhà hàng Sushi</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -34,6 +34,12 @@
             box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
         }
 
+        .nav-wrapper {
+            flex-wrap: nowrap;
+            gap: 18px;
+            max-width: 1360px;
+        }
+
         .brand-box {
             display: flex;
             align-items: center;
@@ -42,6 +48,8 @@
             font-weight: 800;
             color: #991b1b;
             letter-spacing: -0.5px;
+            flex: 0 0 auto;
+            white-space: nowrap;
         }
 
         .brand-icon {
@@ -59,8 +67,11 @@
         .nav-menu {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-left: 28px;
+            justify-content: center;
+            gap: 6px;
+            margin-left: 8px;
+            flex: 1 1 auto;
+            min-width: 0;
         }
 
             .nav-menu .nav-link {
@@ -68,14 +79,14 @@
                 font-weight: 800;
                 width: auto;
                 height: 40px;
-                padding: 0 12px;
+                padding: 0 10px;
                 border-radius: 999px;
                 transition: all 0.2s ease;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
                 gap: 7px;
-                font-size: 1rem;
+                font-size: 0.95rem;
                 position: relative;
             }
 
@@ -115,7 +126,8 @@
         .user-panel {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex: 0 0 auto;
         }
 
         .user-badge {
@@ -125,6 +137,7 @@
             border: 1px solid #e5e7eb;
             font-size: 0.92rem;
             color: #334155;
+            white-space: nowrap;
         }
 
         .admin-badge {
@@ -157,20 +170,21 @@
 
         @@media (max-width: 768px) {
             .nav-wrapper {
-                flex-direction: column;
-                align-items: flex-start !important;
-                gap: 16px;
+                align-items: center !important;
+                gap: 10px;
+                overflow-x: auto;
             }
 
             .nav-menu {
                 margin-left: 0;
-                flex-wrap: wrap;
+                flex: 0 0 auto;
+                flex-wrap: nowrap;
             }
 
             .user-panel {
-                width: 100%;
-                justify-content: space-between;
-                flex-wrap: wrap;
+                width: auto;
+                justify-content: flex-end;
+                flex-wrap: nowrap;
             }
 
             .page-shell {
@@ -191,17 +205,17 @@
 
                     <div class="brand-box">
                         <div class="brand-icon">🍣</div>
-                        <span>Sushi Restaurant</span>
+                        <span>Nhà hàng Sushi</span>
                     </div>
 
                     <div class="nav-menu">
                         <a class="nav-link" asp-page="/Booking/Create" title="Đặt bàn" aria-label="Đặt bàn">
                             <i class="fa-solid fa-calendar-plus"></i>
-                            <span>Booking</span>
+                            <span>Đặt bàn</span>
                         </a>
-                        <a class="nav-link" asp-page="/Menu/Index" title="Menu" aria-label="Menu">
+                        <a class="nav-link" asp-page="/Menu/Index" title="Thực đơn" aria-label="Thực đơn">
                             <i class="fa-solid fa-utensils"></i>
-                            <span>Menu</span>
+                            <span>Thực đơn</span>
                         </a>
                         <a class="nav-link" asp-page="/Cart/Index" title="Giỏ hàng" aria-label="Giỏ hàng">
                             <i class="fa-solid fa-cart-shopping"></i>
@@ -218,25 +232,25 @@
 
                         @if (isAdmin)
                         {
-                            <a class="nav-link admin-link fw-bold" asp-page="/Admin/Index" title="Dashboard" aria-label="Dashboard">
+                            <a class="nav-link admin-link fw-bold" asp-page="/Admin/Index" title="Thống kê" aria-label="Thống kê">
                                 <i class="fa-solid fa-chart-line"></i>
-                                <span>Dashboard</span>
+                                <span>Thống kê</span>
                             </a>
                         }
                     </div>
 
                     <div class="ms-auto user-panel">
                         <div class="user-badge">
-                            Hello, <strong>@Context.Session.GetString("StaffName")</strong>
+                            Xin chào, <strong>@Context.Session.GetString("StaffName")</strong>
                             @if (isAdmin)
                             {
-                                <span class="admin-badge">(Admin)</span>
+                                <span class="admin-badge">(Quản trị)</span>
                             }
                         </div>
 
                         <form method="post" asp-page="/Auth/Login" asp-page-handler="Logout" class="d-inline">
                             <button type="submit" class="btn btn-outline-danger btn-sm logout-btn">
-                                Logout
+                                Đăng xuất
                             </button>
                         </form>
                     </div>
@@ -254,8 +268,8 @@
 
     <footer class="app-footer text-muted">
         <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <span>&copy; 2026 - Sushi Restaurant</span>
-            <span>Fresh sushi, smooth service.</span>
+            <span>&copy; 2026 - Nhà hàng Sushi</span>
+            <span>Sushi tươi ngon, phục vụ mượt mà.</span>
         </div>
     </footer>
 

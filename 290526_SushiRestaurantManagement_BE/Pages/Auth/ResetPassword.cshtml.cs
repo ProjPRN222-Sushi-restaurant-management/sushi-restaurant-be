@@ -39,7 +39,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
 
             if (staff == null)
             {
-                ErrorMessage = "Account not found.";
+                ErrorMessage = "Không tìm thấy tài khoản.";
                 return Page();
             }
 
@@ -48,7 +48,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             _context.Staffs.Update(staff);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Password reset successfully. Please login.";
+            TempData["Success"] = "Đặt lại mật khẩu thành công. Vui lòng đăng nhập.";
             return RedirectToPage("/Auth/Login");
         }
     }
@@ -58,12 +58,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
         [Required]
         public string Phone { get; set; } = "";
 
-        [Required(ErrorMessage = "New password is required")]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu mới.")]
+        [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự.")]
         public string NewPassword { get; set; } = "";
 
-        [Required(ErrorMessage = "Confirm password is required")]
-        [Compare(nameof(NewPassword), ErrorMessage = "Password does not match")]
+        [Required(ErrorMessage = "Vui lòng xác nhận mật khẩu.")]
+        [Compare(nameof(NewPassword), ErrorMessage = "Mật khẩu xác nhận không khớp.")]
         public string ConfirmPassword { get; set; } = "";
     }
 }

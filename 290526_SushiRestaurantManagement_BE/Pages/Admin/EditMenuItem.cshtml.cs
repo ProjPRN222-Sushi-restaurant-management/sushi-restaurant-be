@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
-using DataAccessObjects; 
+using DataAccessObjects;
 
 namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 {
@@ -50,12 +50,11 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 
             existingItem.IsAvailable = IsAvailableInput;
 
-            // H?t món không ph?i xóa
             existingItem.DeletedAt = null;
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "C?p nh?t món ?n thành công!";
+            TempData["Success"] = "Cáº­p nháº­t mÃ³n Äƒn thÃ nh cÃ´ng.";
 
             return RedirectToPage("/Admin/MenuManager");
         }

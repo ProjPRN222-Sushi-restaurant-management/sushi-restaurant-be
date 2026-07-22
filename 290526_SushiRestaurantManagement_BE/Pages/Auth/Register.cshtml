@@ -182,12 +182,12 @@
                     <div class="admin-actions">
                         <a asp-page="/Admin/Index" class="btn btn-sm btn-outline-warning">
                             <i class="fa-solid fa-chart-line me-1"></i>
-                            Dashboard Admin
+                            Trang thống kê
                         </a>
 
                         <a asp-page="/Booking/Create" class="btn btn-sm btn-outline-light">
                             <i class="fa-solid fa-house-user me-1"></i>
-                            Màn hình Staff
+                            Màn hình nhân viên
                         </a>
                     </div>
                 </div>
@@ -200,9 +200,9 @@
                     <i class="fa-solid fa-user-plus"></i>
                 </div>
 
-                <h3 class="register-title">Register Staff Account</h3>
+                <h3 class="register-title">Đăng ký tài khoản nhân viên</h3>
                 <div class="register-subtitle">
-                    Tạo tài khoản nhân viên cho hệ thống Sushi Restaurant
+                    Tạo tài khoản nhân viên cho hệ thống Nhà hàng Sushi
                 </div>
             </div>
 
@@ -216,13 +216,13 @@
                         <button type="button"
                                 class="btn-close"
                                 data-bs-dismiss="alert"
-                                aria-label="Close"></button>
+                                aria-label="Đóng"></button>
                     </div>
                 }
 
                 <form method="post" class="register-form">
                     <div class="mb-3">
-                        <label class="form-label-custom">Full name</label>
+                        <label class="form-label-custom">Họ và tên</label>
                         <input asp-for="Input.FullName"
                                class="form-control"
                                placeholder="Nhập họ và tên nhân viên..." />
@@ -230,7 +230,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label-custom">Phone number</label>
+                        <label class="form-label-custom">Số điện thoại</label>
                         <input asp-for="Input.Phone"
                                class="form-control"
                                placeholder="Nhập số điện thoại đăng nhập..." />
@@ -238,7 +238,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label-custom">Password</label>
+                        <label class="form-label-custom">Mật khẩu</label>
                         <input asp-for="Input.Password"
                                type="password"
                                class="form-control"
@@ -247,7 +247,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label-custom">Confirm Password</label>
+                        <label class="form-label-custom">Xác nhận mật khẩu</label>
                         <input asp-for="Input.ConfirmPassword"
                                type="password"
                                class="form-control"
@@ -258,14 +258,14 @@
                     <div class="d-grid gap-2 mt-4">
                         <button class="btn-register">
                             <i class="fa-solid fa-floppy-disk me-1"></i>
-                            Register Staff
+                            Đăng ký nhân viên
                         </button>
 
                         @if (currentRole != "Admin")
                         {
                             <a asp-page="/Auth/Login"
                                class="login-link text-center small mt-2">
-                                Already have an account? Login here
+                                Đã có tài khoản? Đăng nhập tại đây
                             </a>
                         }
                     </div>

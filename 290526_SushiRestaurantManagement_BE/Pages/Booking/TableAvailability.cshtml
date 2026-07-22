@@ -2,7 +2,7 @@
 @model _290526_SushiRestaurantManagement_BE.Pages.Booking.TableAvailabilityModel
 
 @{
-    ViewData["Title"] = "Table Availability";
+    ViewData["Title"] = "Bàn trống";
 }
 
 @section Styles {
@@ -13,14 +13,14 @@
 
     <div class="availability-header">
         <div>
-            <h2 class="availability-title">Table Availability</h2>
+            <h2 class="availability-title">Bàn trống</h2>
             <div class="availability-subtitle">
                 Theo dõi sức chứa, bàn trống và tỷ lệ đặt bàn theo khung giờ
             </div>
         </div>
 
         <div class="availability-badge">
-            Live Status
+            Trạng thái trực tiếp
         </div>
     </div>
 
@@ -51,7 +51,7 @@
         </div>
 
         <div class="summary-card">
-            <div class="summary-label">Bàn được đặt</div>
+            <div class="summary-label">Bàn đã đặt</div>
             <div class="summary-value booked-color">@Model.BookedTablesCount</div>
         </div>
 
@@ -61,7 +61,7 @@
         </div>
 
         <div class="summary-card">
-            <div class="summary-label">Tỉ lệ chiếm</div>
+            <div class="summary-label">Tỷ lệ chiếm</div>
             <div class="summary-value occupancy-color">@Model.OccupancyRate%</div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                             <th>Khu vực</th>
                             <th class="text-center">Bàn</th>
                             <th class="text-center">Ghế</th>
-                            <th class="text-center">Đặt</th>
+                            <th class="text-center">Đã đặt</th>
                             <th class="text-center">Trống</th>
                             <th class="text-center">Ghế trống</th>
                         </tr>
@@ -115,9 +115,9 @@
                     <thead>
                         <tr>
                             <th>Khung giờ</th>
-                            <th class="text-center">Đặt</th>
+                            <th class="text-center">Đã đặt</th>
                             <th class="text-center">Trống</th>
-                            <th>Tỉ lệ</th>
+                            <th>Tỷ lệ</th>
                         </tr>
                     </thead>
 

@@ -31,7 +31,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
 
             if (existed)
             {
-                ModelState.AddModelError("Input.Phone", "Phone already exists.");
+                ModelState.AddModelError("Input.Phone", "Số điện thoại đã tồn tại.");
                 return Page();
             }
 
@@ -53,25 +53,25 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Auth
             _context.Staffs.Add(staff);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Register successfully. Please login.";
+            TempData["Success"] = "Đăng ký thành công. Vui lòng đăng nhập.";
             return RedirectToPage("/Auth/Login");
         }
     }
 
     public class RegisterInput
     {
-        [Required(ErrorMessage = "Full name is required")]
+        [Required(ErrorMessage = "Vui lòng nhập họ và tên.")]
         public string FullName { get; set; } = "";
 
-        [Required(ErrorMessage = "Phone is required")]
+        [Required(ErrorMessage = "Vui lòng nhập số điện thoại.")]
         public string Phone { get; set; } = "";
 
-        [Required(ErrorMessage = "Password is required")]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
+        [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự.")]
         public string Password { get; set; } = "";
 
-        [Required(ErrorMessage = "Confirm password is required")]
-        [Compare(nameof(Password), ErrorMessage = "Password does not match")]
+        [Required(ErrorMessage = "Vui lòng xác nhận mật khẩu.")]
+        [Compare(nameof(Password), ErrorMessage = "Mật khẩu xác nhận không khớp.")]
         public string ConfirmPassword { get; set; } = "";
     }
 }

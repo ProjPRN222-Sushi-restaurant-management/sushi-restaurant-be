@@ -38,7 +38,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             _context.Attach(StaffInfo).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Update successfull!";
+            TempData["Success"] = "Cập nhật nhân viên thành công.";
             return RedirectToPage("/Admin/StaffManager");
         }
     }

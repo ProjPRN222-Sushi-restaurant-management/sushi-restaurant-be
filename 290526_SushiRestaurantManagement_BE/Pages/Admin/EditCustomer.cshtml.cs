@@ -39,12 +39,12 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
             try
             {
                 await _customerService.UpdateCustomerAsync(CustomerInfo);
-                TempData["Success"] = "Customer updated successfully.";
+                TempData["Success"] = "Cập nhật khách hàng thành công.";
                 return RedirectToPage("/Admin/CustomerManager");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Unable to update customer: " + ex.Message);
+                ModelState.AddModelError(string.Empty, "Không thể cập nhật khách hàng: " + ex.Message);
                 return Page();
             }
         }

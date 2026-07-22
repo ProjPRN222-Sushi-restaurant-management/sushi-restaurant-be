@@ -9,7 +9,6 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         {
             var role = context.HttpContext.Session.GetString("StaffRole");
 
-            // Nếu không phải Admin thì đá ngược ra trang Login
             if (role != "Admin")
             {
                 context.Result = new RedirectToPageResult("/Auth/Login");

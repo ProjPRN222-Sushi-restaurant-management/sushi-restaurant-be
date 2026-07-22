@@ -137,145 +137,100 @@
             </div>
         </section>
 
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="detail-card">
-                    <div class="detail-card-header">
-                        Thông tin cơ bản
+                <section class="order-overview-card mb-4">
+            <div class="overview-header">
+                <div>
+                    <div class="overview-kicker">Tổng quan order</div>
+                    <div class="overview-title">
+                        @(customer?.FullName ?? "Khách chưa xác định")
                     </div>
+                </div>
 
-                    <div class="detail-card-body">
-                        <div class="info-line">
-                            <span class="info-label">Booking</span>
-                            <span class="info-value">
-                                @(Model.Order.BookingId.HasValue ? "#" + Model.Order.BookingId.Value : "-")
-                            </span>
-                        </div>
+                <span class="status-pill app-status @orderStatusClass">
+                    @Model.Order.OrderStatus
+                </span>
+            </div>
 
-                        <div class="info-line">
-                            <span class="info-label">Table</span>
-                            <span class="info-value">
-                                @(Model.Order.TableId.HasValue? Model.Order.TableId.Value.ToString() : "-")
-                            </span>
-                        </div>
+            <div class="overview-highlight-grid">
+                <div class="overview-highlight important">
+                    <span>Thanh toán</span>
+                    <strong>@Model.Order.TotalAmount.ToString("N0") đ</strong>
+                </div>
 
-                        <div class="info-line">
-                            <span class="info-label">Ngày tạo</span>
-                            <span class="info-value">
-                                @Model.Order.CreatedAt?.ToString("dd/MM/yyyy HH:mm")
-                            </span>
-                        </div>
+                <div class="overview-highlight">
+                    <span>Booking / Bàn</span>
+                    <strong>
+                        @(Model.Order.BookingId.HasValue ? "#" + Model.Order.BookingId.Value : "-")
+                        / @(Model.Order.TableId.HasValue ? Model.Order.TableId.Value.ToString() : "-")
+                    </strong>
+                </div>
 
-                        <div class="info-line">
-                            <span class="info-label">Hoàn thành</span>
-                            <span class="info-value">
-                                @Model.Order.CompletedAt?.ToString("dd/MM/yyyy HH:mm")
-                            </span>
-                        </div>
+                <div class="overview-highlight">
+                    <span>Khách hàng</span>
+                    <strong>@(customer?.Phone ?? "-")</strong>
+                </div>
 
-                        <div class="info-line">
-                            <span class="info-label">Xuất bởi</span>
-                            <span class="info-value">
-                                @if (ticketStaffId.HasValue)
-                                {
-                                    <a asp-page="/Admin/EditStaff"
-                                       asp-route-id="@ticketStaffId.Value"
-                                       class="invoice-staff-link">
-                                        @ticketStaffName
-                                    </a>
-                                }
-                                else
-                                {
-                                    @(ticketStaffName == "-" ? "Chưa xuất" : ticketStaffName)
-                                }
-                            </span>
-                        </div>
-
-                        <div class="info-line">
-                            <span class="info-label">Giờ xuất</span>
-                            <span class="info-value">
-                                @(ticketIssuedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")
-                            </span>
-                        </div>
-
-                        <div class="info-line">
-                            <span class="info-label">Tạm tính</span>
-                            <span class="info-value">
-                                @subtotalAmount.ToString("N0") đ
-                            </span>
-                        </div>
-
-                        <div class="info-line">
-                            <span class="info-label">Hạng áp dụng</span>
-                            <span class="info-value">
-                                @Model.Order.MembershipLevelApplied
-                                (@Model.Order.DiscountPercent.ToString("0.##")%)
-                            </span>
-                        </div>
-
-                        <div class="info-line">
-                            <span class="info-label">Giảm giá</span>
-                            <span class="info-value">
-                                -@Model.Order.DiscountAmount.ToString("N0") đ
-                            </span>
-                        </div>
-
-                        <div class="info-line">
-                            <span class="info-label">Tổng thanh toán</span>
-                            <span class="info-value money-value">
-                                @Model.Order.TotalAmount.ToString("N0") đ
-                            </span>
-                        </div>
-
-                        <div class="info-line">
-                            <span class="info-label">Điểm cộng</span>
-                            <span class="info-value">
-                                @Model.Order.EarnedLoyaltyPoints điểm
-                            </span>
-                        </div>
-                    </div>
+                <div class="overview-highlight">
+                    <span>Xuất bởi</span>
+                    <strong>
+                        @if (ticketStaffId.HasValue)
+                        {
+                            <a asp-page="/Admin/EditStaff"
+                               asp-route-id="@ticketStaffId.Value"
+                               class="invoice-staff-link">
+                                @ticketStaffName
+                            </a>
+                        }
+                        else
+                        {
+                            @(ticketStaffName == "-" ? "Chưa xuất" : ticketStaffName)
+                        }
+                    </strong>
                 </div>
             </div>
 
-            <div class="col-md-8">
-                <div class="detail-card">
-                    <div class="detail-card-header">
-                        Thông tin khách hàng
-                    </div>
+            <div class="overview-meta-grid">
+                <div class="overview-meta muted">
+                    <span>Ngày tạo</span>
+                    <strong>@(Model.Order.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</strong>
+                </div>
 
-                    <div class="detail-card-body">
-                        <div class="info-line">
-                            <span class="info-label">Tên</span>
-                            <span class="info-value">
-                                @(customer?.FullName ?? "-")
-                            </span>
-                        </div>
+                <div class="overview-meta muted">
+                    <span>Hoàn thành</span>
+                    <strong>@(Model.Order.CompletedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</strong>
+                </div>
 
-                        <div class="info-line">
-                            <span class="info-label">SĐT</span>
-                            <span class="info-value">
-                                @(customer?.Phone ?? "-")
-                            </span>
-                        </div>
+                <div class="overview-meta muted">
+                    <span>Giờ xuất</span>
+                    <strong>@(ticketIssuedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</strong>
+                </div>
 
-                        <div class="info-line">
-                            <span class="info-label">Hạng hiện tại</span>
-                            <span class="info-value">
-                                @(customer?.MembershipLevel.ToString() ?? "-")
-                            </span>
-                        </div>
+                <div class="overview-meta">
+                    <span>Tạm tính</span>
+                    <strong>@subtotalAmount.ToString("N0") đ</strong>
+                </div>
 
-                        <div class="info-line">
-                            <span class="info-label">Điểm hiện tại</span>
-                            <span class="info-value">
-                                @(customer != null ? $"{customer.LoyaltyPoints} điểm" : "-")
-                            </span>
-                        </div>
-                    </div>
+                <div class="overview-meta accent">
+                    <span>Hạng áp dụng</span>
+                    <strong>@Model.Order.MembershipLevelApplied (@Model.Order.DiscountPercent.ToString("0.##")%)</strong>
+                </div>
+
+                <div class="overview-meta danger">
+                    <span>Giảm giá</span>
+                    <strong>-@Model.Order.DiscountAmount.ToString("N0") đ</strong>
+                </div>
+
+                <div class="overview-meta accent">
+                    <span>Điểm cộng</span>
+                    <strong>@Model.Order.EarnedLoyaltyPoints điểm</strong>
+                </div>
+
+                <div class="overview-meta muted">
+                    <span>Hạng / điểm hiện tại</span>
+                    <strong>@(customer != null ? $"{customer.MembershipLevel} - {customer.LoyaltyPoints} điểm" : "-")</strong>
                 </div>
             </div>
-        </div>
-
+        </section>
         <div class="order-items-card">
             <div class="order-items-header">
                 <span>Chi tiết món ăn</span>

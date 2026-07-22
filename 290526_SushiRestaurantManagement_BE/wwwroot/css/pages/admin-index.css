@@ -225,6 +225,7 @@
     .phone-pill,
     .guest-pill,
     .time-pill,
+    .source-pill,
     .booking-status {
         display: inline-flex;
         align-items: center;
@@ -250,6 +251,28 @@
     .guest-pill {
         background: #fff7ed;
         color: #9a3412;
+    }
+
+    .source-pill {
+        border: 1px solid transparent;
+    }
+
+    .source-booking {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+    }
+
+    .source-direct {
+        background: #f1f5f9;
+        color: #475569;
+        border-color: #e2e8f0;
+    }
+
+    .revenue-cell {
+        color: #dc2626;
+        font-weight: 900;
+        white-space: nowrap;
     }
 
     .status-pending {

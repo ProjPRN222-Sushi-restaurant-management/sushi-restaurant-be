@@ -9,15 +9,22 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
     public class IndexModel : PageModel
     {
         private const string CartSessionKey = "CART";
+        private const int PageSize = 8;
 
         private readonly IMenuItemService _menuItemService;
+        private readonly IMenuCategoryService _menuCategoryService;
 
-        public IndexModel(IMenuItemService menuItemService)
+        public IndexModel(
+            IMenuItemService menuItemService,
+            IMenuCategoryService menuCategoryService)
         {
             _menuItemService = menuItemService;
+            _menuCategoryService = menuCategoryService;
         }
 
         public IReadOnlyList<MenuItem> MenuItems { get; set; } = [];
+
+        public IReadOnlyList<MenuCategory> Categories { get; set; } = [];
 
         public List<CartItemViewModel> CartItems { get; set; } = [];
 
@@ -27,9 +34,53 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
         [BindProperty(SupportsGet = true)]
         public long? TableId { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string? SearchTerm { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public long? CategoryId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
+
+        public int TotalItems { get; set; }
+
+        public int TotalPages { get; set; } = 1;
+
+        public int FirstItemNumber =>
+            TotalItems == 0 ? 0 : ((PageNumber - 1) * PageSize) + 1;
+
+        public int LastItemNumber =>
+            Math.Min(PageNumber * PageSize, TotalItems);
+
         public async Task OnGetAsync()
         {
-            MenuItems = await _menuItemService.GetAllMenuItemsAsync();
+            var items = await _menuItemService.GetAllMenuItemsAsync();
+            Categories = await _menuCategoryService.GetAllMenuCategoriesAsync();
+
+            var query = items.AsEnumerable();
+
+            if (CategoryId.HasValue)
+            {
+                query = query.Where(item => item.CategoryId == CategoryId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearchTerm))
+            {
+                var keyword = SearchTerm.Trim();
+                query = query.Where(item =>
+                    item.ItemName.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
+                    (item.Description?.Contains(keyword, StringComparison.OrdinalIgnoreCase) ?? false));
+            }
+
+            TotalItems = query.Count();
+            TotalPages = Math.Max(1, (int)Math.Ceiling(TotalItems / (double)PageSize));
+            PageNumber = Math.Clamp(PageNumber, 1, TotalPages);
+
+            MenuItems = query
+                .Skip((PageNumber - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
             CartItems = HttpContext.Session.GetObject<List<CartItemViewModel>>(CartSessionKey) ?? [];
         }
 
@@ -40,7 +91,10 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
             string? wasabiOption,
             string? gingerOption,
             long? bookingId,
-            long? tableId)
+            long? tableId,
+            string? searchTerm,
+            long? categoryId,
+            int pageNumber = 1)
         {
             if (quantity < 1)
                 quantity = 1;
@@ -90,9 +144,15 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
                 return new JsonResult(BuildCartPayload(cart));
             }
 
-            // Fallback cho trường hợp không có JavaScript
             TempData["Success"] = "Đã thêm món vào giỏ hàng.";
-            return RedirectToPage("/Menu/Index", new { bookingId, tableId });
+            return RedirectToPage("/Menu/Index", new
+            {
+                bookingId,
+                tableId,
+                searchTerm,
+                categoryId,
+                pageNumber
+            });
         }
 
         public IActionResult OnPostRemoveFromCart(long menuItemId, string? note)
@@ -160,3 +220,4 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Menu
         }
     }
 }
+

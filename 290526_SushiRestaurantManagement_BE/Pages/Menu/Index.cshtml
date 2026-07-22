@@ -2,7 +2,6 @@
 @model _290526_SushiRestaurantManagement_BE.Pages.Menu.IndexModel
 
 @functions {
-    // Map tên món -> tên file ảnh thực tế trong wwwroot/images/
     static readonly Dictionary<string, string> ImageMap = new(StringComparer.OrdinalIgnoreCase)
     {
         ["Salmon Sushi"]    = "salmon-sushi.png",
@@ -19,8 +18,6 @@
         ["Mochi Ice Cream"] = "mochi-ice-cream.png",
     };
 
-    // Ưu tiên map theo tên món (khớp file ảnh thực tế); nếu không có thì
-    // dùng image_url trong DB; cuối cùng là ảnh placeholder.
     static string ResolveImageUrl(string? itemName, string? imageUrl)
     {
         if (!string.IsNullOrWhiteSpace(itemName) && ImageMap.TryGetValue(itemName.Trim(), out var file))
@@ -36,6 +33,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/menu-index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/menu-controls.css" asp-append-version="true" />
 }
 
 
@@ -59,105 +57,218 @@
         </div>
     }
 
-    <div class="menu-grid">
-        @foreach (var item in Model.MenuItems)
-        {
-            <div class="menu-card">
+    <section class="menu-toolbar" aria-label="Lọc menu">
+        <form method="get" class="menu-filter-form">
+            <input type="hidden" name="bookingId" value="@Model.BookingId" />
+            <input type="hidden" name="tableId" value="@Model.TableId" />
+            <input type="hidden" name="pageNumber" value="1" />
 
-                <div class="menu-image-wrap">
-                    <img src="@ResolveImageUrl(item.ItemName, item.ImageUrl)" alt="@item.ItemName" loading="lazy"
-                         onerror="this.onerror=null;this.src='/images/placeholder.svg';" />
-                    <div class="price-pill">
-                        @item.Price.ToString("N0") đ
-                    </div>
-                </div>
+            <div class="menu-search-field">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search"
+                       name="searchTerm"
+                       value="@Model.SearchTerm"
+                       placeholder="Tìm món sushi, ramen, đồ uống..." />
+            </div>
 
-                <div class="menu-content">
-                    <h4 class="menu-name">@item.ItemName</h4>
+            <select name="categoryId" class="menu-category-select" aria-label="Lọc theo category">
+                <option value="">Tất cả category</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CategoryId" selected="@(Model.CategoryId == category.CategoryId)">
+                        @category.CategoryName
+                    </option>
+                }
+            </select>
 
-                    <p class="menu-description">
-                        @item.Description
-                    </p>
+            <button type="submit" class="menu-filter-btn">
+                <i class="fa-solid fa-filter"></i>
+                Lọc
+            </button>
 
-                    <form method="post" asp-page="/Menu/Index" asp-page-handler="AddToCart"
-                          class="menu-add-form" data-name="@item.ItemName">
-                        <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
-                        <input type="hidden" name="bookingId" value="@Model.BookingId" />
-                        <input type="hidden" name="tableId" value="@Model.TableId" />
+            <a asp-page="/Menu/Index"
+               asp-route-bookingId="@Model.BookingId"
+               asp-route-tableId="@Model.TableId"
+               class="menu-reset-btn">
+                Reset
+            </a>
+        </form>
 
-                        <div class="mb-3">
-                            <label class="form-label-custom">Số lượng</label>
-                            <input type="number" name="quantity" value="1" min="1" class="form-control" />
+        <div class="menu-result-summary">
+            Hiển thị <strong>@Model.FirstItemNumber-@Model.LastItemNumber</strong>
+            trong <strong>@Model.TotalItems</strong> món
+        </div>
+    </section>
+
+    @if (!Model.MenuItems.Any())
+    {
+        <div class="menu-empty-state">
+            Không tìm thấy món phù hợp.
+        </div>
+    }
+    else
+    {
+        <div class="menu-grid">
+            @foreach (var item in Model.MenuItems)
+            {
+                <div class="menu-card">
+
+                    <div class="menu-image-wrap">
+                        <img src="@ResolveImageUrl(item.ItemName, item.ImageUrl)" alt="@item.ItemName" loading="lazy"
+                             onerror="this.onerror=null;this.src='/images/placeholder.svg';" />
+                        <div class="price-pill">
+                            @item.Price.ToString("N0") đ
                         </div>
+                    </div>
 
-                        <div class="mb-2">
-                            <label class="form-label-custom">Tùy chọn món</label>
-                            <input type="hidden" name="note" value="Wasabi: Có; Gừng hồng: Có" />
+                    <div class="menu-content">
+                        <h4 class="menu-name">@item.ItemName</h4>
 
-                            <div class="quick-option-panel">
-                                <div class="quick-option-group">
-                                    <div class="quick-option-title">
-                                        <i class="fa-solid fa-leaf me-1"></i>
-                                        Wasabi
-                                    </div>
+                        <p class="menu-description">
+                            @item.Description
+                        </p>
 
-                                    <div class="quick-options" role="radiogroup" aria-label="Wasabi">
-                                        <input class="quick-option-input"
-                                               type="radio"
-                                               id="wasabi-@item.MenuItemId-co"
-                                               name="wasabiOption"
-                                               value="Có"
-                                               checked />
-                                        <label class="quick-option-label" for="wasabi-@item.MenuItemId-co">Có</label>
+                        <form method="post" asp-page="/Menu/Index" asp-page-handler="AddToCart"
+                              class="menu-add-form" data-name="@item.ItemName">
+                            <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                            <input type="hidden" name="bookingId" value="@Model.BookingId" />
+                            <input type="hidden" name="tableId" value="@Model.TableId" />
+                            <input type="hidden" name="searchTerm" value="@Model.SearchTerm" />
+                            <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                            <input type="hidden" name="pageNumber" value="@Model.PageNumber" />
 
-                                        <input class="quick-option-input"
-                                               type="radio"
-                                               id="wasabi-@item.MenuItemId-khong"
-                                               name="wasabiOption"
-                                               value="Không" />
-                                        <label class="quick-option-label" for="wasabi-@item.MenuItemId-khong">Không</label>
-                                    </div>
+                            <div class="compact-control-row">
+                                <label class="form-label-custom">Số lượng</label>
+                                <div class="quantity-stepper" aria-label="Số lượng">
+                                    <button type="button"
+                                            class="quantity-btn"
+                                            data-quantity-step="-1"
+                                            aria-label="Giảm số lượng">
+                                        -
+                                    </button>
+                                    <input type="number"
+                                           name="quantity"
+                                           value="1"
+                                           min="1"
+                                           class="quantity-input" />
+                                    <button type="button"
+                                            class="quantity-btn"
+                                            data-quantity-step="1"
+                                            aria-label="Tăng số lượng">
+                                        +
+                                    </button>
                                 </div>
+                            </div>
 
-                                <div class="quick-option-group">
-                                    <div class="quick-option-title">
-                                        <i class="fa-solid fa-seedling me-1"></i>
-                                        Gừng hồng
+                            <div class="compact-options-block">
+                                <label class="form-label-custom">Tùy chọn món</label>
+                                <input type="hidden" name="note" value="Wasabi: Có; Gừng hồng: Có" />
+
+                                <div class="quick-option-panel">
+                                    <div class="quick-option-row">
+                                        <div class="quick-option-title">
+                                            <i class="fa-solid fa-leaf me-1"></i>
+                                            Wasabi
+                                        </div>
+
+                                        <div class="quick-options" role="radiogroup" aria-label="Wasabi">
+                                            <input class="quick-option-input"
+                                                   type="radio"
+                                                   id="wasabi-@item.MenuItemId-co"
+                                                   name="wasabiOption"
+                                                   value="Có"
+                                                   checked />
+                                            <label class="quick-option-label" for="wasabi-@item.MenuItemId-co">Có</label>
+
+                                            <input class="quick-option-input"
+                                                   type="radio"
+                                                   id="wasabi-@item.MenuItemId-khong"
+                                                   name="wasabiOption"
+                                                   value="Không" />
+                                            <label class="quick-option-label" for="wasabi-@item.MenuItemId-khong">Không</label>
+                                        </div>
                                     </div>
 
-                                    <div class="quick-options" role="radiogroup" aria-label="Gừng hồng">
-                                        <input class="quick-option-input"
-                                               type="radio"
-                                               id="ginger-@item.MenuItemId-co"
-                                               name="gingerOption"
-                                               value="Có"
-                                               checked />
-                                        <label class="quick-option-label" for="ginger-@item.MenuItemId-co">Có</label>
+                                    <div class="quick-option-row">
+                                        <div class="quick-option-title">
+                                            <i class="fa-solid fa-seedling me-1"></i>
+                                            Gừng hồng
+                                        </div>
 
-                                        <input class="quick-option-input"
-                                               type="radio"
-                                               id="ginger-@item.MenuItemId-khong"
-                                               name="gingerOption"
-                                               value="Không" />
-                                        <label class="quick-option-label" for="ginger-@item.MenuItemId-khong">Không</label>
+                                        <div class="quick-options" role="radiogroup" aria-label="Gừng hồng">
+                                            <input class="quick-option-input"
+                                                   type="radio"
+                                                   id="ginger-@item.MenuItemId-co"
+                                                   name="gingerOption"
+                                                   value="Có"
+                                                   checked />
+                                            <label class="quick-option-label" for="ginger-@item.MenuItemId-co">Có</label>
+
+                                            <input class="quick-option-input"
+                                                   type="radio"
+                                                   id="ginger-@item.MenuItemId-khong"
+                                                   name="gingerOption"
+                                                   value="Không" />
+                                            <label class="quick-option-label" for="ginger-@item.MenuItemId-khong">Không</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <button class="btn-add-cart">
-                            Thêm vào giỏ
-                        </button>
-                    </form>
+                            <button class="btn-add-cart">
+                                Thêm vào giỏ
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
+            }
+        </div>
+    }
 
-            </div>
-        }
-    </div>
+    @if (Model.TotalPages > 1)
+    {
+        var startPage = Math.Max(1, Model.PageNumber - 2);
+        var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+
+        <nav class="menu-pagination" aria-label="Phân trang menu">
+            <a class="menu-page-link @(Model.PageNumber == 1 ? "disabled" : "")"
+               asp-page="/Menu/Index"
+               asp-route-bookingId="@Model.BookingId"
+               asp-route-tableId="@Model.TableId"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-categoryId="@Model.CategoryId"
+               asp-route-pageNumber="@(Model.PageNumber - 1)">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+
+            @for (var pageIndex = startPage; pageIndex <= endPage; pageIndex++)
+            {
+                <a class="menu-page-link @(pageIndex == Model.PageNumber ? "active" : "")"
+                   asp-page="/Menu/Index"
+                   asp-route-bookingId="@Model.BookingId"
+                   asp-route-tableId="@Model.TableId"
+                   asp-route-searchTerm="@Model.SearchTerm"
+                   asp-route-categoryId="@Model.CategoryId"
+                   asp-route-pageNumber="@pageIndex">
+                    @pageIndex
+                </a>
+            }
+
+            <a class="menu-page-link @(Model.PageNumber == Model.TotalPages ? "disabled" : "")"
+               asp-page="/Menu/Index"
+               asp-route-bookingId="@Model.BookingId"
+               asp-route-tableId="@Model.TableId"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-categoryId="@Model.CategoryId"
+               asp-route-pageNumber="@(Model.PageNumber + 1)">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        </nav>
+    }
 
 </div>
 
-<!-- ===== Giỏ hàng nổi (floating cart) ===== -->
 <div class="floating-cart">
     <div class="cart-panel" id="cartPanel" hidden>
         <div class="cart-panel-header">
@@ -177,8 +288,8 @@
                asp-page="/Cart/Index"
                asp-route-bookingId="@Model.BookingId"
                asp-route-tableId="@Model.TableId">
-                <i class="fa-solid fa-credit-card"></i>
-                Thanh toán
+                <i class="fa-solid fa-cart-shopping"></i>
+                Đến giỏ hàng
             </a>
         </div>
     </div>
@@ -331,13 +442,11 @@
                 .catch(function () { });
             }
 
-            // Khởi tạo trạng thái giỏ hàng từ dữ liệu server
             try {
                 var initEl = document.getElementById('cartInitData');
                 if (initEl) renderCart(JSON.parse(initEl.textContent));
             } catch (e) { }
 
-            // Đóng / mở panel giỏ hàng
             fab.addEventListener('click', function (e) {
                 e.stopPropagation();
                 panel.hidden = !panel.hidden;
@@ -349,20 +458,30 @@
                 }
             });
 
-            // Xóa món khỏi giỏ (nút ×)
             panelBody.addEventListener('click', function (e) {
                 var btn = e.target.closest('.cart-line-remove');
                 if (!btn) return;
                 removeItem(btn.getAttribute('data-id'), btn.getAttribute('data-note') || '');
             });
 
-            // Thêm vào giỏ bằng AJAX -> không reload trang, không nhảy về đầu trang
             document.querySelectorAll('form.menu-add-form').forEach(function (form) {
                 syncStructuredNote(form);
 
                 form.querySelectorAll('input[name="wasabiOption"], input[name="gingerOption"]').forEach(function (input) {
                     input.addEventListener('change', function () {
                         syncStructuredNote(form);
+                    });
+                });
+
+                form.querySelectorAll('[data-quantity-step]').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var qtyEl = form.querySelector('input[name="quantity"]');
+                        if (!qtyEl) return;
+
+                        var step = Number(button.getAttribute('data-quantity-step') || 0);
+                        var min = Number(qtyEl.getAttribute('min') || 1);
+                        var nextValue = Math.max(min, Number(qtyEl.value || min) + step);
+                        qtyEl.value = nextValue;
                     });
                 });
 
@@ -400,7 +519,6 @@
                         }
                     })
                     .catch(function () {
-                        // AJAX lỗi -> quay về submit thường (fallback)
                         if (btn) { btn.disabled = false; }
                         form.submit();
                     });

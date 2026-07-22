@@ -26,45 +26,146 @@
 
     @if (Model.Booking != null)
     {
-        <div class="card booking-card mb-4">
-            <div class="booking-header">
-                <h5>Booking #@Model.Booking.BookingId</h5>
+        var overviewOrders = Model.Orders.OrderBy(o => o.CreatedAt ?? DateTime.MinValue).ToList();
+        var overviewOrder = overviewOrders.LastOrDefault();
+        var overviewReceivedStaffId = overviewOrder?.ReceivedStaffId ?? overviewOrder?.InvoiceStaffId;
+        var overviewReceivedStaffName =
+            overviewOrder?.ReceivedStaff?.FullName ??
+            overviewOrder?.ReceivedStaffName ??
+            overviewOrder?.InvoiceStaff?.FullName ??
+            overviewOrder?.InvoiceStaffName ??
+            "Chưa xác định";
+        var overviewReceivedAt = overviewOrder?.ReceivedAt ?? overviewOrder?.CreatedAt;
+        var overviewItemsCount = overviewOrders.SelectMany(o => o.OrderItems).Sum(i => i.Quantity);
+        var overviewDiscount = overviewOrders.Sum(o => o.DiscountAmount);
+        var overviewPoints = overviewOrders.Sum(o => o.EarnedLoyaltyPoints);
+        var overviewLevel = overviewOrder?.MembershipLevelApplied.ToString() ?? "NONE";
+        var overviewStatusClass = overviewOrder == null
+            ? "status-other"
+            : overviewOrder.OrderStatus switch
+            {
+                OrderStatusEnum.PENDING => "status-pending",
+                OrderStatusEnum.PREPARING => "status-preparing",
+                OrderStatusEnum.COMPLETED => "status-completed",
+                OrderStatusEnum.CANCELLED => "status-cancelled",
+                _ => "status-other"
+            };
+
+        <section class="history-overview-card mb-4">
+            <div class="history-overview-header">
+                <div>
+                    <h5>Booking #@Model.Booking.BookingId</h5>
+                    <span>@overviewOrders.Count order | @overviewItemsCount món</span>
+                </div>
+                @if (overviewOrder != null)
+                {
+                    <span class="status-pill @overviewStatusClass">@overviewOrder.OrderStatus</span>
+                }
             </div>
 
-            <div class="card-body">
-                <div class="booking-info">
-                    <div class="info-box">
-                        <div class="info-label">Khách hàng</div>
-                        <div class="info-value">@Model.Booking.GuestName</div>
+            <div class="history-info-columns">
+                <div class="history-info-column">
+                    <div class="history-info-row">
+                        <span>Khách hàng</span>
+                        <strong>@Model.Booking.GuestName</strong>
                     </div>
 
-                    <div class="info-box">
-                        <div class="info-label">Số điện thoại</div>
-                        <div class="info-value">@Model.Booking.GuestPhone</div>
+                    <div class="history-info-row">
+                        <span>Số điện thoại</span>
+                        <strong>@Model.Booking.GuestPhone</strong>
                     </div>
 
-                    <div class="info-box">
-                        <div class="info-label">Ngày booking</div>
-                        <div class="info-value">@Model.Booking.BookingDate</div>
+                    <div class="history-info-row">
+                        <span>Bàn</span>
+                        <strong class="history-important">Bàn @Model.Booking.TableId</strong>
                     </div>
 
-                    <div class="info-box">
-                        <div class="info-label">Giờ booking</div>
-                        <div class="info-value">@Model.Booking.BookingTime</div>
+                    <div class="history-info-row">
+                        <span>Ngày booking</span>
+                        <strong>@Model.Booking.BookingDate</strong>
                     </div>
 
-                    <div class="info-box">
-                        <div class="info-label">Bàn</div>
-                        <div class="info-value">@Model.Booking.TableId</div>
+                    <div class="history-info-row">
+                        <span>Giờ booking</span>
+                        <strong>@Model.Booking.BookingTime</strong>
                     </div>
 
-                    <div class="info-box">
-                        <div class="info-label">Ghi chú</div>
-                        <div class="info-value">@Model.Booking.Note</div>
+                    <div class="history-info-row">
+                        <span>Ghi chú</span>
+                        <strong>@(string.IsNullOrWhiteSpace(Model.Booking.Note) ? "-" : Model.Booking.Note)</strong>
+                    </div>
+                </div>
+
+                <div class="history-info-column">
+                    <div class="history-info-row">
+                        <span>Order gần nhất</span>
+                        <strong class="history-important">@(overviewOrder != null ? $"#{overviewOrder.OrderId}" : "-")</strong>
+                    </div>
+
+                    <div class="history-info-row">
+                        <span>Nhân viên nhận</span>
+                    @if (overviewReceivedStaffId.HasValue)
+                    {
+                        <a asp-page="/Admin/EditStaff"
+                           asp-route-id="@overviewReceivedStaffId.Value"
+                           class="staff-link">
+                            @overviewReceivedStaffName
+                        </a>
+                    }
+                    else
+                    {
+                        <strong>@overviewReceivedStaffName</strong>
+                    }
+                    </div>
+
+                    <div class="history-info-row">
+                        <span>Thời gian nhận</span>
+                        <strong>@(overviewReceivedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa nhận")</strong>
+                    </div>
+
+                    <div class="history-info-row">
+                        <span>Hạng áp dụng</span>
+                        <strong>@overviewLevel</strong>
+                    </div>
+
+                    <div class="history-info-row">
+                        <span>Giảm giá</span>
+                        <strong>@(overviewDiscount > 0 ? $"-{overviewDiscount:N0} đ" : "-")</strong>
+                    </div>
+
+                    <div class="history-info-row">
+                        <span>Điểm cộng</span>
+                        <strong>@overviewPoints điểm</strong>
+                    </div>
+
+                    <div class="history-info-row">
+                        <span>Thanh toán</span>
+                        <strong class="history-money">@(overviewOrders.Any() ? $"{Model.TemporaryTotal:N0} đ" : "-")</strong>
                     </div>
                 </div>
             </div>
-        </div>
+
+            @if (overviewOrders.Count > 1)
+            {
+                <div class="history-order-line">
+                    <span>Các order</span>
+                    @foreach (var order in overviewOrders)
+                    {
+                        var stripStaffName =
+                            order.ReceivedStaff?.FullName ??
+                            order.ReceivedStaffName ??
+                            order.InvoiceStaff?.FullName ??
+                            order.InvoiceStaffName ??
+                            "Chưa xác định";
+
+                        <span>
+                            <strong>Order #@order.OrderId</strong>
+                            (@order.OrderStatus, @stripStaffName)
+                        </span>
+                    }
+                </div>
+            }
+        </section>
     }
 
     @if (!Model.Orders.Any())
@@ -81,68 +182,6 @@
             </div>
 
             <div class="card-body">
-                <div class="order-receipts">
-                    @foreach (var order in Model.Orders.OrderBy(o => o.CreatedAt ?? DateTime.MinValue))
-                    {
-                        var receivedStaffId = order.ReceivedStaffId ?? order.InvoiceStaffId;
-                        var receivedStaffName =
-                            order.ReceivedStaff?.FullName ??
-                            order.ReceivedStaffName ??
-                            order.InvoiceStaff?.FullName ??
-                            order.InvoiceStaffName ??
-                            "Chưa xác định";
-                        var receivedAt = order.ReceivedAt ?? order.CreatedAt;
-
-                        <div class="order-receipt">
-                            <div class="order-receipt-title">Order #@order.OrderId</div>
-
-                            <div class="order-receipt-line">
-                                <span class="order-receipt-label">Nhân viên nhận</span>
-                                @if (receivedStaffId.HasValue)
-                                {
-                                    <a asp-page="/Admin/EditStaff"
-                                       asp-route-id="@receivedStaffId.Value"
-                                       class="staff-link">
-                                        @receivedStaffName
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span>@receivedStaffName</span>
-                                }
-                            </div>
-
-                            <div class="order-receipt-line">
-                                <span class="order-receipt-label">Thời gian nhận</span>
-                                <span>@(receivedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
-                            </div>
-
-                            <div class="order-receipt-line">
-                                <span class="order-receipt-label">Trạng thái</span>
-                                <span>@order.OrderStatus</span>
-                            </div>
-
-                            <div class="order-receipt-line">
-                                <span class="order-receipt-label">Hạng áp dụng</span>
-                                <span>@order.MembershipLevelApplied</span>
-                            </div>
-
-                            @if (order.DiscountAmount > 0)
-                            {
-                                <div class="order-receipt-line">
-                                    <span class="order-receipt-label">Giảm giá</span>
-                                    <span>-@order.DiscountAmount.ToString("N0") đ</span>
-                                </div>
-                            }
-
-                            <div class="order-receipt-line">
-                                <span class="order-receipt-label">Điểm cộng</span>
-                                <span>@order.EarnedLoyaltyPoints điểm</span>
-                            </div>
-                        </div>
-                    }
-                </div>
-
                 <div class="table-responsive">
                     <table class="table order-table align-middle">
                         <thead>
@@ -274,7 +313,7 @@
             Order thêm
         </a>
 
-        <a asp-page="/Booking/Availability"
+        <a asp-page="/Booking/Reservations"
            class="btn btn-back">
             Quay lại
         </a>

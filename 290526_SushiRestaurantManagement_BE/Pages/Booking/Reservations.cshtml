@@ -1,0 +1,174 @@
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Booking.ReservationsModel
+
+@{
+    ViewData["Title"] = "Table Reservation Management";
+    ViewBag.PaginatedList = Model.Bookings;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/booking-availability.css" asp-append-version="true" />
+}
+
+<div class="availability-page">
+
+    <div class="availability-header">
+        <div>
+            <h2 class="availability-title">Table Reservation Management</h2>
+            <div class="availability-subtitle">
+                Quản lý danh sách đặt bàn, order và trạng thái theo ngày
+            </div>
+        </div>
+
+        <div class="availability-badge">
+            Reservation
+        </div>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            <div>
+                <label for="selectedDate" class="form-label-custom">
+                    Chọn ngày
+                </label>
+
+                <input type="date"
+                       id="selectedDate"
+                       name="selectedDate"
+                       class="form-control"
+                       value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <button type="submit" class="btn-filter">
+                Xem
+            </button>
+        </form>
+    </div>
+
+    <div class="section-card">
+        <div class="section-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>
+                Danh sách đặt bàn - @Model.SelectedDate.ToString("dd/MM/yyyy")
+            </span>
+
+            <span class="booking-count-badge">
+                @Model.Bookings.Items.Count booking
+            </span>
+        </div>
+
+        @if (!Model.Bookings.Items.Any())
+        {
+            <div class="empty-booking">
+                Không có đặt bàn nào trong ngày này.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table availability-table compact-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đặt</th>
+                            <th>Khách hàng</th>
+                            <th>SĐT</th>
+                            <th>Giờ</th>
+                            <th>Khách</th>
+                            <th>Bàn</th>
+                            <th>Trạng thái</th>
+                            <th>Ghi chú</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var booking in Model.Bookings.Items)
+                        {
+                            <tr>
+                                <td class="fw-bold text-danger">#@booking.BookingId</td>
+                                <td class="fw-bold">@booking.GuestName</td>
+                                <td>@booking.GuestPhone</td>
+                                <td>
+                                    @booking.BookingTime.ToString("HH:mm")-@booking.BookingTime.AddMinutes(booking.DurationMinutes > 0 ? booking.DurationMinutes : 90).ToString("HH:mm")
+                                </td>
+                                <td>@booking.GuestCount</td>
+                                <td>@booking.TableId</td>
+
+                                <td>
+                                    @{
+                                        var statusClass = booking.BookingStatus switch
+                                        {
+                                            BusinessObjects.Enums.BookingStatusEnum.PENDING => "status-pending",
+                                            BusinessObjects.Enums.BookingStatusEnum.PREPARING => "status-preparing",
+                                            BusinessObjects.Enums.BookingStatusEnum.COMPLETED => "status-completed",
+                                            BusinessObjects.Enums.BookingStatusEnum.CANCELLED => "status-cancelled",
+                                            _ => "status-other"
+                                        };
+                                    }
+
+                                    <span class="booking-status app-status @statusClass">@booking.BookingStatus</span>
+                                </td>
+
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(booking.Note))
+                                    {
+                                        <span class="text-muted fst-italic">Không có</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="note-tag">@booking.Note</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="action-group">
+                                        <a asp-page="/Order/History"
+                                           asp-route-bookingId="@booking.BookingId"
+                                           class="btn-action btn-history">
+                                            Xem order
+                                        </a>
+
+                                        <a asp-page="/Menu/Index"
+                                           asp-route-bookingId="@booking.BookingId"
+                                           asp-route-tableId="@booking.TableId"
+                                           class="btn-action btn-order">
+                                            Order thêm
+                                        </a>
+
+                                        <form method="post"
+                                              asp-page-handler="UpdateStatus"
+                                              class="status-form">
+
+                                            <input type="hidden"
+                                                   name="bookingId"
+                                                   value="@booking.BookingId" />
+
+                                            <input type="hidden"
+                                                   name="selectedDate"
+                                                   value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+
+                                            <select name="status"
+                                                    class="form-select form-select-sm status-select">
+                                                @foreach (var status in Enum.GetValues<BusinessObjects.Enums.BookingStatusEnum>())
+                                                {
+                                                    var selected = booking.BookingStatus == status ? "selected" : null;
+                                                    <option value="@status" selected="@selected">@status</option>
+                                                }
+                                            </select>
+
+                                            <button type="submit" class="btn-action btn-update">
+                                                Update
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <partial name="_Pagination" />
+        }
+    </div>
+
+</div>

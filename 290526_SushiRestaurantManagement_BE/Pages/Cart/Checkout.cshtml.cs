@@ -34,6 +34,10 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
 
         public BusinessObjects.Models.Order? SavedOrder { get; set; }
 
+        public long? CurrentBookingId { get; set; }
+
+        public long? CurrentTableId { get; set; }
+
         public MembershipLevelEnum CustomerMembershipLevel { get; set; }
 
         public int CustomerLoyaltyPoints { get; set; }
@@ -67,6 +71,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
                 try
                 {
                     SavedOrder = await _orderService.GetOrderByIdAsync(OrderId.Value);
+                    CurrentBookingId = SavedOrder.BookingId;
+                    CurrentTableId = SavedOrder.TableId ?? SavedOrder.Booking?.TableId;
                     CustomerMembershipLevel = SavedOrder.MembershipLevelApplied;
                     CustomerLoyaltyPoints =
                         SavedOrder.Customer?.LoyaltyPoints ??
@@ -91,6 +97,7 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             }
 
             CartItems = HttpContext.Session.GetObject<List<CartItemViewModel>>("CART") ?? [];
+            LoadCurrentRouteContextFromSession();
             await LoadCustomerLoyaltyContextAsync();
             return Page();
         }
@@ -200,6 +207,19 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Cart
             }
 
             return null;
+        }
+
+        private void LoadCurrentRouteContextFromSession()
+        {
+            if (long.TryParse(HttpContext.Session.GetString("BOOKING_ID"), out var bookingId))
+            {
+                CurrentBookingId = bookingId;
+            }
+
+            if (long.TryParse(HttpContext.Session.GetString("TABLE_ID"), out var tableId))
+            {
+                CurrentTableId = tableId;
+            }
         }
 
         private async Task LoadCustomerLoyaltyContextAsync()

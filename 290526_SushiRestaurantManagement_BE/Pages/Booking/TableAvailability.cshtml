@@ -1,0 +1,162 @@
+@page
+@model _290526_SushiRestaurantManagement_BE.Pages.Booking.TableAvailabilityModel
+
+@{
+    ViewData["Title"] = "Table Availability";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/booking-availability.css" asp-append-version="true" />
+}
+
+<div class="availability-page">
+
+    <div class="availability-header">
+        <div>
+            <h2 class="availability-title">Table Availability</h2>
+            <div class="availability-subtitle">
+                Theo dõi sức chứa, bàn trống và tỷ lệ đặt bàn theo khung giờ
+            </div>
+        </div>
+
+        <div class="availability-badge">
+            Live Status
+        </div>
+    </div>
+
+    <div class="filter-card">
+        <form method="get" class="filter-form">
+            <div>
+                <label for="selectedDate" class="form-label-custom">
+                    Chọn ngày
+                </label>
+
+                <input type="date"
+                       id="selectedDate"
+                       name="selectedDate"
+                       class="form-control"
+                       value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <button type="submit" class="btn-filter">
+                Xem
+            </button>
+        </form>
+    </div>
+
+    <div class="summary-grid compact-summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Tổng bàn</div>
+            <div class="summary-value total-color">@Model.TotalTables</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Bàn được đặt</div>
+            <div class="summary-value booked-color">@Model.BookedTablesCount</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Bàn trống</div>
+            <div class="summary-value available-color">@Model.AvailableTablesCount</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Tỉ lệ chiếm</div>
+            <div class="summary-value occupancy-color">@Model.OccupancyRate%</div>
+        </div>
+    </div>
+
+    <div class="availability-layout">
+        <div class="section-card">
+            <div class="section-card-header">
+                Tình trạng theo khu vực
+            </div>
+
+            <div class="table-responsive">
+                <table class="table availability-table compact-table">
+                    <thead>
+                        <tr>
+                            <th>Khu vực</th>
+                            <th class="text-center">Bàn</th>
+                            <th class="text-center">Ghế</th>
+                            <th class="text-center">Đặt</th>
+                            <th class="text-center">Trống</th>
+                            <th class="text-center">Ghế trống</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var area in Model.AreaStats)
+                        {
+                            <tr>
+                                <td class="fw-bold">@area.AreaName</td>
+                                <td class="text-center">@area.TableCount</td>
+                                <td class="text-center">@area.TotalSeats</td>
+                                <td class="text-center">
+                                    <span class="status-pill danger-pill">@area.BookedTables</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="status-pill success-pill">@area.AvailableTables</span>
+                                </td>
+                                <td class="text-center fw-bold text-success">@area.AvailableSeats</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-card-header">
+                Tình trạng theo khung giờ
+            </div>
+
+            <div class="table-responsive">
+                <table class="table availability-table compact-table">
+                    <thead>
+                        <tr>
+                            <th>Khung giờ</th>
+                            <th class="text-center">Đặt</th>
+                            <th class="text-center">Trống</th>
+                            <th>Tỉ lệ</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var timeSlot in Model.TimeSlots)
+                        {
+                            <tr>
+                                <td class="fw-bold">@timeSlot.Time.ToString("HH:mm")</td>
+
+                                <td class="text-center">
+                                    <span class="status-pill danger-pill">
+                                        @timeSlot.BookedCount
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="status-pill success-pill">
+                                        @timeSlot.AvailableCount
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="progress custom-progress">
+                                        @if (timeSlot.OccupancyPercentage > 0)
+                                        {
+                                            <div class="progress-bar custom-progress-bar"
+                                                 role="progressbar"
+                                                 style="width: @timeSlot.OccupancyPercentage%;">
+                                                @timeSlot.OccupancyPercentage%
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

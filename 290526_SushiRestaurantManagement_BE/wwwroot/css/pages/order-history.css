@@ -8,7 +8,6 @@
         margin-bottom: 22px;
     }
 
-    .booking-card,
     .order-card {
         border: none;
         border-radius: 22px;
@@ -16,40 +15,140 @@
         overflow: hidden;
     }
 
-    .booking-header {
-        background: linear-gradient(135deg, #dc2626, #f97316);
-        color: #fff;
-        padding: 18px 22px;
+    .history-overview-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 22px;
+        background: #ffffff;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
     }
 
-        .booking-header h5 {
+    .history-overview-header {
+        background: linear-gradient(135deg, #dc2626, #f97316);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 16px 22px;
+    }
+
+        .history-overview-header h5 {
             margin: 0;
             font-weight: 800;
         }
 
-    .booking-info {
+        .history-overview-header span {
+            font-weight: 700;
+            opacity: 0.9;
+        }
+
+    .history-info-columns {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 38px;
+        padding: 22px;
     }
 
-    .info-box {
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 14px 16px;
+    .history-info-column {
+        display: grid;
+        gap: 0;
     }
 
-    .info-label {
-        font-size: 0.82rem;
-        color: #64748b;
-        margin-bottom: 4px;
-        font-weight: 600;
+    .history-info-row {
+        display: grid;
+        grid-template-columns: minmax(130px, 0.8fr) minmax(0, 1.2fr);
+        align-items: baseline;
+        gap: 16px;
+        padding: 11px 0;
+        border-bottom: 1px dashed #e5e7eb;
     }
 
-    .info-value {
-        color: #1f2937;
+        .history-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .history-info-row span {
+            color: #64748b;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .history-info-row strong,
+        .history-info-row a {
+            color: #0f172a;
+            font-weight: 800;
+            text-align: right;
+        }
+
+    .history-important,
+    .history-info-row .staff-link {
+        color: #0f766e;
+        font-weight: 900;
+    }
+
+    .history-money {
+        color: #dc2626;
+        font-size: 1.16rem;
+        font-weight: 950;
+    }
+
+    .history-order-line {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        border-top: 1px solid #e5e7eb;
+        padding: 14px 22px 18px;
+        color: #475569;
+        font-size: 0.9rem;
         font-weight: 700;
+    }
+
+        .history-order-line > span:first-child {
+            color: #64748b;
+            font-weight: 800;
+        }
+
+        .history-order-line strong {
+            color: #991b1b;
+        }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 0.78rem;
+        font-weight: 900;
+        line-height: 1;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .status-preparing {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-completed {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .status-other {
+        background: #f1f5f9;
+        color: #475569;
     }
 
     .order-card .card-header {
@@ -94,39 +193,6 @@
     .money {
         font-weight: 800;
         color: #dc2626;
-    }
-
-    .order-receipts {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 12px;
-        margin-bottom: 18px;
-    }
-
-    .order-receipt {
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        background: #f8fafc;
-        padding: 14px 16px;
-    }
-
-    .order-receipt-title {
-        color: #991b1b;
-        font-weight: 900;
-        margin-bottom: 8px;
-    }
-
-    .order-receipt-line {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        font-size: 0.92rem;
-        margin-top: 5px;
-    }
-
-    .order-receipt-label {
-        color: #64748b;
-        font-weight: 700;
     }
 
     .staff-link {
@@ -204,6 +270,41 @@
 
     .payment-bill {
         display: none;
+    }
+
+    @media (max-width: 1100px) {
+        .history-info-columns {
+            gap: 22px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .history-overview-header,
+        .action-bar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .history-info-columns {
+            grid-template-columns: 1fr;
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+        .history-info-row {
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+
+        .history-info-row strong,
+        .history-info-row a {
+            text-align: left;
+        }
+
+        .history-order-line {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
     }
 
     @media print {

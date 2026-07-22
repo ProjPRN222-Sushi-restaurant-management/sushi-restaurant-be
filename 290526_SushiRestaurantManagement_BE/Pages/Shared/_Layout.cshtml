@@ -15,6 +15,7 @@
     <title>@ViewData["Title"] - Sushi Restaurant</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", required: false)
@@ -64,16 +65,46 @@
 
             .nav-menu .nav-link {
                 color: #475569;
-                font-weight: 600;
-                padding: 9px 15px;
+                font-weight: 800;
+                width: auto;
+                height: 40px;
+                padding: 0 12px;
                 border-radius: 999px;
                 transition: all 0.2s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 7px;
+                font-size: 1rem;
+                position: relative;
             }
 
                 .nav-menu .nav-link:hover {
                     color: #dc2626;
                     background: #fee2e2;
                     transform: translateY(-1px);
+                }
+
+                .nav-menu .nav-link span {
+                    position: static;
+                    width: auto;
+                    height: auto;
+                    padding: 0;
+                    margin: 0;
+                    overflow: visible;
+                    clip: auto;
+                    white-space: nowrap;
+                    border: 0;
+                    font-size: 0.86rem;
+                }
+
+                .nav-menu .nav-link::after {
+                    display: none;
+                }
+
+                .nav-menu .nav-link:hover::after,
+                .nav-menu .nav-link:focus::after {
+                    display: none;
                 }
 
         .admin-link {
@@ -164,14 +195,33 @@
                     </div>
 
                     <div class="nav-menu">
-                        <a class="nav-link" asp-page="/Booking/Create">Booking</a>
-                        <a class="nav-link" asp-page="/Menu/Index">Menu</a>
-                        <a class="nav-link" asp-page="/Cart/Index">Cart</a>
-                        <a class="nav-link" asp-page="/Booking/Availability">Management status</a>
+                        <a class="nav-link" asp-page="/Booking/Create" title="Đặt bàn" aria-label="Đặt bàn">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                            <span>Booking</span>
+                        </a>
+                        <a class="nav-link" asp-page="/Menu/Index" title="Menu" aria-label="Menu">
+                            <i class="fa-solid fa-utensils"></i>
+                            <span>Menu</span>
+                        </a>
+                        <a class="nav-link" asp-page="/Cart/Index" title="Giỏ hàng" aria-label="Giỏ hàng">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>Giỏ hàng</span>
+                        </a>
+                        <a class="nav-link" asp-page="/Booking/Reservations" title="Đơn đã đặt" aria-label="Đơn đã đặt">
+                            <i class="fa-solid fa-clipboard-list"></i>
+                            <span>Đơn đã đặt</span>
+                        </a>
+                        <a class="nav-link" asp-page="/Booking/TableAvailability" title="Bàn trống" aria-label="Bàn trống">
+                            <i class="fa-solid fa-table-cells"></i>
+                            <span>Bàn trống</span>
+                        </a>
 
                         @if (isAdmin)
                         {
-                            <a class="nav-link admin-link fw-bold" asp-page="/Admin/Index">Dashboard</a>
+                            <a class="nav-link admin-link fw-bold" asp-page="/Admin/Index" title="Dashboard" aria-label="Dashboard">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <span>Dashboard</span>
+                            </a>
                         }
                     </div>
 

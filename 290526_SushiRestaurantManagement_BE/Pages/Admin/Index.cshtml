@@ -4,7 +4,7 @@
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Trang Tổng Quan";
-    ViewBag.PaginatedList = Model.FilteredBookings;
+    ViewBag.PaginatedList = Model.FilteredOrders;
 }
 
 @section Styles {
@@ -66,12 +66,12 @@
         <div class="col-md-4">
             <div class="metric-card metric-booking">
                 <div class="metric-label">
-                    Tổng lượt đặt bàn
+                    Đơn đã đặt
                 </div>
                 <div class="metric-value">
-                    @Model.TotalBookingsCount
+                    @Model.TotalOrdersCount
                 </div>
-                <i class="fa-solid fa-calendar-check metric-icon"></i>
+                <i class="fa-solid fa-receipt metric-icon"></i>
             </div>
         </div>
 
@@ -104,11 +104,11 @@
         <div class="booking-card-header">
             <span>
                 <i class="fa-solid fa-list-check me-2"></i>
-                Danh sách đặt bàn trong khoảng thời gian lọc
+                Đơn đã đặt trong khoảng thời gian lọc
             </span>
 
             <span class="booking-count-badge">
-                @(Model.FilteredBookings?.Items.Count ?? 0) booking
+                @(Model.FilteredOrders?.Items.Count ?? 0) order
             </span>
         </div>
 
@@ -116,74 +116,98 @@
             <table class="table booking-table">
                 <thead>
                     <tr>
-                        <th class="ps-3">Mã Booking</th>
-                        <th>Ngày đặt</th>
-                        <th>Khách Hàng</th>
-                        <th>Số Điện Thoại</th>
-                        <th>Thời Gian Đến</th>
-                        <th>Số Khách</th>
-                        <th class="pe-3">Trạng Thái</th>
+                        <th class="ps-3">Order</th>
+                        <th>Ngày tạo</th>
+                        <th>Loại đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Bàn</th>
+                        <th>Nhân viên nhận</th>
+                        <th class="text-end">Tổng tiền</th>
+                        <th class="pe-3">Trạng thái</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @if (Model.FilteredBookings == null || !Model.FilteredBookings.Items.Any())
+                    @if (Model.FilteredOrders == null || !Model.FilteredOrders.Items.Any())
                     {
                         <tr>
-                            <td colspan="7" class="text-center empty-row">
-                                Không có lượt đặt bàn nào trong thời gian này.
+                            <td colspan="8" class="text-center empty-row">
+                                Không có order nào trong thời gian này.
                             </td>
                         </tr>
                     }
                     else
                     {
-                        @foreach (var b in Model.FilteredBookings.Items)
+                        @foreach (var order in Model.FilteredOrders.Items)
                         {
+                            var customerName =
+                                order.Customer?.FullName ??
+                                order.Booking?.GuestName ??
+                                "Khách lẻ";
+                            var tableName = order.Table?.TableNum ?? order.TableId?.ToString() ?? "-";
+                            var staffName =
+                                order.ReceivedStaff?.FullName ??
+                                order.ReceivedStaffName ??
+                                order.InvoiceStaff?.FullName ??
+                                order.InvoiceStaffName ??
+                                "Chưa xác định";
+                            var orderTotal = order.TotalAmount > 0
+                                ? order.TotalAmount
+                                : order.SubtotalAmount > 0
+                                    ? order.SubtotalAmount - order.DiscountAmount
+                                    : order.OrderItems.Sum(item => item.TotalPrice);
+                            var orderStatusClass = order.OrderStatus switch
+                            {
+                                BusinessObjects.Enums.OrderStatusEnum.PENDING => "status-pending",
+                                BusinessObjects.Enums.OrderStatusEnum.PREPARING => "status-preparing",
+                                BusinessObjects.Enums.OrderStatusEnum.COMPLETED => "status-completed",
+                                BusinessObjects.Enums.OrderStatusEnum.CANCELLED => "status-cancelled",
+                                _ => "status-other"
+                            };
+
                             <tr>
                                 <td class="ps-3 booking-id">
-                                    #@b.BookingId
+                                    #@order.OrderId
                                 </td>
 
                                 <td>
-                                    @b.BookingDate.ToString("dd/MM/yyyy")
+                                    @(order.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")
+                                </td>
+
+                                <td>
+                                    @if (order.BookingId.HasValue)
+                                    {
+                                        <span class="source-pill source-booking">
+                                            Booking #@order.BookingId
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="source-pill source-direct">
+                                            Không đặt bàn
+                                        </span>
+                                    }
                                 </td>
 
                                 <td class="guest-name">
-                                    @b.GuestName
+                                    @customerName
                                 </td>
 
                                 <td>
-                                    <span class="phone-pill">
-                                        @b.GuestPhone
-                                    </span>
+                                    <span class="time-pill">@tableName</span>
                                 </td>
 
                                 <td>
-                                    <span class="time-pill">
-                                        @b.BookingTime.ToString("HH:mm")
-                                    </span>
+                                    @staffName
                                 </td>
 
-                                <td>
-                                    <span class="guest-pill">
-                                        @b.GuestCount người
-                                    </span>
+                                <td class="text-end revenue-cell">
+                                    @orderTotal.ToString("N0") đ
                                 </td>
 
                                 <td class="pe-3">
-                                    @{
-                                        var bookingStatusClass = b.BookingStatus switch
-                                        {
-                                            BusinessObjects.Enums.BookingStatusEnum.PENDING => "status-pending",
-                                            BusinessObjects.Enums.BookingStatusEnum.PREPARING => "status-preparing",
-                                            BusinessObjects.Enums.BookingStatusEnum.COMPLETED => "status-completed",
-                                            BusinessObjects.Enums.BookingStatusEnum.CANCELLED => "status-cancelled",
-                                            _ => "status-other"
-                                        };
-                                    }
-
-                                    <span class="booking-status app-status @bookingStatusClass">
-                                        @b.BookingStatus
+                                    <span class="booking-status app-status @orderStatusClass">
+                                        @order.OrderStatus
                                     </span>
                                 </td>
                             </tr>
@@ -194,7 +218,7 @@
         </div>
     </div>
 
-    @if (Model.FilteredBookings != null && Model.FilteredBookings.Items.Any())
+    @if (Model.FilteredOrders != null && Model.FilteredOrders.Items.Any())
     {
         <partial name="_Pagination" />
     }

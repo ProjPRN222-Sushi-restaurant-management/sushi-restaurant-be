@@ -21,10 +21,33 @@ public class StaffService : IStaffService
 
     public async Task<bool> AddStaffAsync(Staff staff, CancellationToken ct = default)
     {
-        if (staff == null || string.IsNullOrWhiteSpace(staff.Phone)) return false;
+        if (staff == null || string.IsNullOrWhiteSpace(staff.Phone))
+        {
+            return false;
+        }
+
         try
         {
-            await _staffRepository.AddStaffAsync(staff, ct); // Ho?c tên hàm Add t??ng ?ng ? Repo c?a b?n
+            staff.Phone = staff.Phone.Trim();
+            var existingStaff = await _staffRepository.GetStaffByPhoneAsync(staff.Phone, ct);
+
+            if (existingStaff != null)
+            {
+                if (existingStaff.DeletedAt == null && existingStaff.IsActive)
+                {
+                    return false;
+                }
+
+                existingStaff.FullName = staff.FullName.Trim();
+                existingStaff.PasswordHash = staff.PasswordHash;
+                existingStaff.IsActive = true;
+                existingStaff.DeletedAt = null;
+
+                await _staffRepository.UpdateStaffAsync(existingStaff, ct);
+                return true;
+            }
+
+            await _staffRepository.AddStaffAsync(staff, ct);
             return true;
         }
         catch
@@ -33,13 +56,16 @@ public class StaffService : IStaffService
         }
     }
 
-    // 2. EDIT
     public async Task<bool> UpdateStaffAsync(Staff staff, CancellationToken ct = default)
     {
-        if (staff == null || staff.StaffId <= 0) return false;
+        if (staff == null || staff.StaffId <= 0)
+        {
+            return false;
+        }
+
         try
         {
-            await _staffRepository.UpdateStaffAsync(staff, ct); // Ho?c tên hàm Update t??ng ?ng ? Repo c?a b?n
+            await _staffRepository.UpdateStaffAsync(staff, ct);
             return true;
         }
         catch
@@ -48,12 +74,11 @@ public class StaffService : IStaffService
         }
     }
 
-    // 3. XÓA NHÂN VIÊN (DELETE)
     public async Task<bool> DeleteStaffAsync(long id, CancellationToken ct = default)
     {
         try
         {
-            return await _staffRepository.DeleteStaffAsync(id, ct); // Ho?c tên hàm Delete t??ng ?ng ? Repo c?a b?n
+            return await _staffRepository.DeleteStaffAsync(id, ct);
         }
         catch
         {

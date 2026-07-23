@@ -37,7 +37,9 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                 return;
             }
 
-            var query = allStaff.AsQueryable();
+            var query = allStaff
+                .Where(s => s.DeletedAt == null && s.IsActive)
+                .AsQueryable();
             if (!string.IsNullOrWhiteSpace(SearchString))
             {
                 var keyword = SearchString.Trim();
@@ -71,8 +73,8 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
 
             var result = await _staffService.AddStaffAsync(staff);
             TempData[result ? "Success" : "Error"] = result
-                ? "Thêm nhân viên thành công."
-                : "Không thể thêm nhân viên. Số điện thoại có thể đã tồn tại.";
+                ? "Thêm hoặc khôi phục nhân viên thành công."
+                : "Không thể thêm nhân viên. Số điện thoại đang được sử dụng.";
 
             return RedirectToPage("/Admin/StaffManager");
         }

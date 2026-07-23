@@ -1,35 +1,7 @@
 ﻿@page
 @model _290526_SushiRestaurantManagement_BE.Pages.Menu.IndexModel
 
-@functions {
-    static readonly Dictionary<string, string> ImageMap = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["Salmon Sushi"]    = "salmon-sushi.png",
-        ["Tuna Sushi"]      = "tuna-sushi.png",
-        ["Salmon Sashimi"]  = "salmon-sashimi.png",
-        ["Tuna Sashimi"]    = "tuna-sashimi.png",
-        ["Ebi Nigiri"]      = "ebi-nigiri.png",
-        ["California Roll"]  = "California-roll.png",
-        ["Tonkotsu Ramen"]  = "tonkotsu-ramen.png",
-        ["Tempura Udon"]    = "tempura-udon.png",
-        ["Shrimp Tempura"]  = "shrimp-tempura.png",
-        ["Matcha Latte"]    = "match-latte.png",
-        ["Sakura Tea"]      = "sakura-tea.png",
-        ["Mochi Ice Cream"] = "mochi-ice-cream.png",
-    };
-
-    static string ResolveImageUrl(string? itemName, string? imageUrl)
-    {
-        if (!string.IsNullOrWhiteSpace(itemName) && ImageMap.TryGetValue(itemName.Trim(), out var file))
-            return "/images/" + file;
-
-        if (string.IsNullOrWhiteSpace(imageUrl))
-            return "/images/placeholder.svg";
-        if (imageUrl.StartsWith("http://") || imageUrl.StartsWith("https://") || imageUrl.StartsWith("/"))
-            return imageUrl;
-        return "/" + imageUrl.TrimStart('~', '/');
-    }
-}
+@using _290526_SushiRestaurantManagement_BE.Utilities
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/menu-index.css" asp-append-version="true" />
@@ -115,7 +87,7 @@
                 <div class="menu-card">
 
                     <div class="menu-image-wrap">
-                        <img src="@ResolveImageUrl(item.ItemName, item.ImageUrl)" alt="@item.ItemName" loading="lazy"
+                        <img src="@MenuImageResolver.ResolveImageUrl(item.ItemName, item.ImageUrl)" alt="@item.ItemName" loading="lazy"
                              onerror="this.onerror=null;this.src='/images/placeholder.svg';" />
                         <div class="price-pill">
                             @item.Price.ToString("N0") đ
@@ -172,22 +144,17 @@
                                             Wasabi
                                         </div>
 
-                                        <div class="quick-options" role="radiogroup" aria-label="Wasabi">
-                                            <input class="quick-option-input"
-                                                   type="radio"
-                                                   id="wasabi-@item.MenuItemId-co"
-                                                   name="wasabiOption"
-                                                   value="Có"
-                                                   checked />
-                                            <label class="quick-option-label" for="wasabi-@item.MenuItemId-co">Có</label>
-
-                                            <input class="quick-option-input"
-                                                   type="radio"
-                                                   id="wasabi-@item.MenuItemId-khong"
-                                                   name="wasabiOption"
-                                                   value="Không" />
-                                            <label class="quick-option-label" for="wasabi-@item.MenuItemId-khong">Không</label>
-                                        </div>
+                                        <input class="quick-switch-input"
+                                               type="checkbox"
+                                               id="wasabi-@item.MenuItemId"
+                                               name="wasabiToggle"
+                                               data-option-target="wasabi"
+                                               checked />
+                                        <label class="quick-switch"
+                                               for="wasabi-@item.MenuItemId"
+                                               aria-label="Bật tắt Wasabi">
+                                            <span class="quick-switch-knob"></span>
+                                        </label>
                                     </div>
 
                                     <div class="quick-option-row">
@@ -196,22 +163,17 @@
                                             Gừng hồng
                                         </div>
 
-                                        <div class="quick-options" role="radiogroup" aria-label="Gừng hồng">
-                                            <input class="quick-option-input"
-                                                   type="radio"
-                                                   id="ginger-@item.MenuItemId-co"
-                                                   name="gingerOption"
-                                                   value="Có"
-                                                   checked />
-                                            <label class="quick-option-label" for="ginger-@item.MenuItemId-co">Có</label>
-
-                                            <input class="quick-option-input"
-                                                   type="radio"
-                                                   id="ginger-@item.MenuItemId-khong"
-                                                   name="gingerOption"
-                                                   value="Không" />
-                                            <label class="quick-option-label" for="ginger-@item.MenuItemId-khong">Không</label>
-                                        </div>
+                                        <input class="quick-switch-input"
+                                               type="checkbox"
+                                               id="ginger-@item.MenuItemId"
+                                               name="gingerToggle"
+                                               data-option-target="ginger"
+                                               checked />
+                                        <label class="quick-switch"
+                                               for="ginger-@item.MenuItemId"
+                                               aria-label="Bật tắt Gừng hồng">
+                                            <span class="quick-switch-knob"></span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -398,25 +360,22 @@
                 toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2200);
             }
 
-            function getCheckedValue(form, name) {
-                var input = form.querySelector('input[name="' + name + '"]:checked');
-                return input ? input.value : '';
-            }
-
             function syncStructuredNote(form) {
                 var noteEl = form.querySelector('input[name="note"]');
                 if (!noteEl) return;
 
-                var wasabi = getCheckedValue(form, 'wasabiOption') || 'Có';
-                var ginger = getCheckedValue(form, 'gingerOption') || 'Có';
+                var wasabiToggle = form.querySelector('input[data-option-target="wasabi"]');
+                var gingerToggle = form.querySelector('input[data-option-target="ginger"]');
+                var wasabi = !wasabiToggle || wasabiToggle.checked ? 'Có' : 'Không';
+                var ginger = !gingerToggle || gingerToggle.checked ? 'Có' : 'Không';
                 noteEl.value = 'Wasabi: ' + wasabi + '; Gừng hồng: ' + ginger;
             }
 
             function resetQuickOptions(form) {
-                var wasabiYes = form.querySelector('input[name="wasabiOption"][value="Có"]');
-                var gingerYes = form.querySelector('input[name="gingerOption"][value="Có"]');
-                if (wasabiYes) wasabiYes.checked = true;
-                if (gingerYes) gingerYes.checked = true;
+                var wasabiToggle = form.querySelector('input[data-option-target="wasabi"]');
+                var gingerToggle = form.querySelector('input[data-option-target="ginger"]');
+                if (wasabiToggle) wasabiToggle.checked = true;
+                if (gingerToggle) gingerToggle.checked = true;
                 syncStructuredNote(form);
             }
 
@@ -468,7 +427,7 @@
             document.querySelectorAll('form.menu-add-form').forEach(function (form) {
                 syncStructuredNote(form);
 
-                form.querySelectorAll('input[name="wasabiOption"], input[name="gingerOption"]').forEach(function (input) {
+                form.querySelectorAll('input[data-option-target]').forEach(function (input) {
                     input.addEventListener('change', function () {
                         syncStructuredNote(form);
                     });
@@ -528,3 +487,4 @@
         })();
     </script>
 }
+

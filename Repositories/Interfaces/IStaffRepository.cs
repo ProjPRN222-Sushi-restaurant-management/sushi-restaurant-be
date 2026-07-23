@@ -11,6 +11,7 @@ namespace Repositories.Interfaces
     {
         Task<IReadOnlyList<Staff>> GetAllStaffsAsync(CancellationToken ct = default);
         Task<Staff?> GetStaffById(long id, CancellationToken ct = default);
+        Task<Staff?> GetStaffByPhoneAsync(string phone, CancellationToken ct = default);
 
         Task<bool> AddStaffAsync(Staff staff, CancellationToken ct = default);
         Task<bool> UpdateStaffAsync(Staff staff, CancellationToken ct = default);

@@ -26,8 +26,26 @@ public class CustomerService : ICustomerService
 
     public async Task<bool> AddCustomerAsync(Customer customer, CancellationToken ct = default)
     {
+        customer.Phone = customer.Phone.Trim();
         customer.LoyaltyPoints = Math.Max(0, customer.LoyaltyPoints);
         customer.MembershipLevel = LoyaltyPolicy.CalculateMembershipLevel(customer.LoyaltyPoints);
+
+        var existingCustomer = await _customerRepository.GetCustomerByPhoneAsync(customer.Phone, ct);
+        if (existingCustomer != null)
+        {
+            if (existingCustomer.DeletedAt == null)
+            {
+                return false;
+            }
+
+            existingCustomer.FullName = customer.FullName.Trim();
+            existingCustomer.DeletedAt = null;
+            existingCustomer.MembershipLevel = LoyaltyPolicy.CalculateMembershipLevel(existingCustomer.LoyaltyPoints);
+
+            await _customerRepository.UpdateCustomerAsync(existingCustomer, ct);
+            return true;
+        }
+
         await _customerRepository.AddCustomerAsync(customer, ct);
         return true;
     }

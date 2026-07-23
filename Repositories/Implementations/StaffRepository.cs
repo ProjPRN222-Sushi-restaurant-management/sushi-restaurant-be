@@ -32,6 +32,14 @@ namespace Repositories.Implementations
                 .FirstOrDefaultAsync(s => s.StaffId == id, ct);
         }
 
+        public async Task<Staff?> GetStaffByPhoneAsync(
+            string phone,
+            CancellationToken ct = default)
+        {
+            return await _context.Staffs
+                .FirstOrDefaultAsync(s => s.Phone == phone, ct);
+        }
+
         public async Task<bool> AddStaffAsync(
             Staff staff,
             CancellationToken ct = default)

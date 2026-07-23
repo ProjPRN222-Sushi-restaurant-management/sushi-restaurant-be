@@ -28,7 +28,9 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
         public async Task OnGetAsync()
         {
             var allCustomers = await _customerService.GetAllCustomersAsync();
-            var query = allCustomers.AsQueryable();
+            var query = allCustomers
+                .Where(c => c.DeletedAt == null)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(SearchString))
             {
@@ -60,8 +62,10 @@ namespace _290526_SushiRestaurantManagement_BE.Pages.Admin
                     CreatedAt = DateTime.Now
                 };
 
-                await _customerService.AddCustomerAsync(customer);
-                TempData["Success"] = "Tạo khách hàng thành công.";
+                var result = await _customerService.AddCustomerAsync(customer);
+                TempData[result ? "Success" : "Error"] = result
+                    ? "Tạo hoặc khôi phục khách hàng thành công."
+                    : "Không thể tạo khách hàng. Số điện thoại đang được sử dụng.";
             }
             catch (Exception ex)
             {
